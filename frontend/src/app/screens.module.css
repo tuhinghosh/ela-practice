@@ -1,0 +1,138 @@
+.muted {
+  margin: 0;
+  color: #495a90;
+  line-height: 1.52;
+}
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.stat {
+  border-radius: 14px;
+  background: #f1f5ff;
+  border: 1px solid #dce6ff;
+  padding: 11px;
+}
+
+.statLabel {
+  display: block;
+  color: #596292;
+  font-size: 0.8rem;
+  margin-bottom: 4px;
+}
+
+.statValue {
+  margin: 0;
+  font-weight: 800;
+  color: #1b2a62;
+  font-size: 1.03rem;
+}
+
+.list {
+  margin: 0;
+  padding-left: 20px;
+  color: #2b3768;
+  line-height: 1.6;
+}
+
+.passage {
+  margin-top: 8px;
+  border-radius: 14px;
+  background: #f8faff;
+  border: 1px solid #e1e9ff;
+  padding: 15px;
+  color: #1b2a62;
+  font-size: 1.05rem;
+  line-height: 1.68;
+  letter-spacing: 0.012em;
+}
+
+.question {
+  margin-top: 10px;
+  border-radius: 14px;
+  border: 1px solid #dce5ff;
+  background: #fcfdff;
+  padding: 13px;
+}
+
+.question p {
+  margin: 0 0 8px;
+  font-weight: 700;
+  color: #2a3970;
+}
+
+.choiceList {
+  display: grid;
+  gap: 8px;
+}
+
+.choiceLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #2b3b73;
+  border-radius: 9px;
+  padding: 5px 7px;
+}
+
+.choiceLabel:hover {
+  background: #eef3ff;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 90px;
+  border-radius: 11px;
+  border: 1px solid #c7d5ff;
+  padding: 10px;
+  background: #ffffff;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.textarea:focus {
+  border-color: #7d68ff;
+  box-shadow: 0 0 0 3px rgba(125, 104, 255, 0.18);
+  outline: none;
+}
+
+.input {
+  width: 100%;
+  height: 42px;
+  border-radius: 11px;
+  border: 1px solid #c7d5ff;
+  padding: 10px;
+  background: #ffffff;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.input:focus {
+  border-color: #7d68ff;
+  box-shadow: 0 0 0 3px rgba(125, 104, 255, 0.18);
+  outline: none;
+}
+
+.form {
+  display: grid;
+  gap: 12px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 700;
+  color: #2b3c76;
+}
+
+.error {
+  border-radius: 11px;
+  background: #ffe8eb;
+  border: 1px solid #f5b3bd;
+  color: #8b2234;
+  padding: 10px 12px;
+  font-weight: 800;
+}
+

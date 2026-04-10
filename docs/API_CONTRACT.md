@@ -1,0 +1,34 @@
+# MVP API contract summary
+
+This document captures the stable backend JSON surfaces used by the frontend in MVP.
+
+## Auth and session
+
+- `POST /api/auth/login`
+- `POST /api/auth/logout`
+- `GET /api/auth/session`
+
+## Learning flow
+
+- `GET /api/dashboard`
+- `GET /api/activities`
+- `GET /api/activities/{activity_id}`
+- `POST /api/activities/{activity_id}/submit`
+- `GET /api/sessions/{session_id}`
+
+## Progress and rewards
+
+- `GET /api/progress/parent`
+- `GET /api/rewards`
+
+## AI services
+
+- `POST /api/ai/connectivity-check`
+- `POST /api/ai/coach` (post-submission only, requires `session_id`)
+
+## Contract notes
+
+- Seeded activity content remains file-based in MVP.
+- Progress, reward, and chat/session history persist in SQLite.
+- Validation failures return safe 4xx responses.
+- Provider failures in AI routes return safe 5xx responses with bounded error messages.

@@ -1,0 +1,86 @@
+[
+  {
+    "id": "forest-friends",
+    "title": "Forest Friends",
+    "passageType": "literary",
+    "missionLabel": "Help Mira the Explorer understand the story clues.",
+    "passageTitle": "A Visit to Pine Hill",
+    "passageText": "Mira packed a sandwich, a notebook, and a pencil before walking up Pine Hill. At the top, she heard chirping near an old oak tree. Two small birds were carrying tiny twigs. Mira watched as they built a nest, one twig at a time. She wrote, \"The birds are working together and not giving up.\" When a breeze knocked a twig down, one bird flew back and picked it up again. Mira smiled and whispered, \"Teamwork makes hard jobs easier.\"",
+    "questions": [
+      {
+        "id": "q1",
+        "type": "multiple-choice",
+        "prompt": "What is the main idea of this story?",
+        "correctChoice": "The birds show teamwork while building a nest.",
+        "choices": [
+          "Mira forgot her lunch on Pine Hill.",
+          "The birds show teamwork while building a nest.",
+          "The weather on the hill is always windy.",
+          "Mira wants to be a bird scientist someday."
+        ]
+      },
+      {
+        "id": "q2",
+        "type": "short-response",
+        "prompt": "Write 2-3 sentences explaining one clue that shows the birds did not give up."
+      }
+    ],
+    "skillTags": ["reading-comprehension", "main-idea", "inference", "short-writing"]
+  },
+  {
+    "id": "bees-and-flowers",
+    "title": "How Bees Help Flowers",
+    "passageType": "informational",
+    "missionLabel": "Read the facts and discover why pollinators matter.",
+    "passageTitle": "Busy Bees at Work",
+    "passageText": "Bees visit flowers to collect nectar and pollen. While moving from flower to flower, they carry tiny grains of pollen on their legs. Some of this pollen rubs off on another flower. This process is called pollination. Pollination helps many plants make seeds and fruit. Without pollinators like bees, fewer flowers and fruits would grow in gardens and farms.",
+    "questions": [
+      {
+        "id": "q1",
+        "type": "multiple-choice",
+        "prompt": "Which sentence best explains pollination?",
+        "correctChoice": "Bees spread pollen from one flower to another.",
+        "choices": [
+          "Bees build hives in flower gardens.",
+          "Bees spread pollen from one flower to another.",
+          "Flowers make nectar only at night.",
+          "Farmers plant fruit trees in rows."
+        ]
+      },
+      {
+        "id": "q2",
+        "type": "short-response",
+        "prompt": "Summarize why bees are important using two complete sentences."
+      }
+    ],
+    "skillTags": ["reading-comprehension", "vocabulary", "summary", "short-writing"]
+  },
+  {
+    "id": "river-map",
+    "title": "The River Map Clue",
+    "passageType": "literary",
+    "missionLabel": "Follow clues and infer what happens next.",
+    "passageTitle": "A Folded Map",
+    "passageText": "Jalen found a folded map under a smooth river rock. A note on top said, \"Start where the willow tree leans.\" Jalen and his cousin Nia walked to the willow and counted ten steps east, just like the note said. They did not find treasure, but they did find a small box with bird seed and a message: \"Thank you for helping feed the park birds.\" Jalen laughed and said, \"The clue was really about helping, not gold.\"",
+    "questions": [
+      {
+        "id": "q1",
+        "type": "multiple-choice",
+        "prompt": "What can you infer about the person who left the map?",
+        "correctChoice": "They wanted someone to help birds in the park.",
+        "choices": [
+          "They wanted someone to help birds in the park.",
+          "They forgot where they hid money.",
+          "They planned to close the park.",
+          "They wanted Jalen to stay home."
+        ]
+      },
+      {
+        "id": "q2",
+        "type": "short-response",
+        "prompt": "In 2-3 complete sentences, explain how the ending changes Jalen's idea about the map."
+      }
+    ],
+    "skillTags": ["reading-comprehension", "inference", "summary", "short-writing"]
+  }
+]

@@ -1,0 +1,10 @@
+.git
+.gitignore
+.DS_Store
+**/__pycache__
+**/*.pyc
+.env
+frontend/node_modules
+frontend/.next
+frontend/out
+docs
