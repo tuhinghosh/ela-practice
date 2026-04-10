@@ -23,9 +23,14 @@ This document describes the current frontend scaffold and how to work within it 
 - `src/app/globals.css`: global styles
 - `src/components/app-shell.tsx`: shared app shell and top-level navigation
 - `src/components/app-shell.module.css`: shell/header/navigation styles
+- `src/components/button.tsx`: shared button primitives with tone variants (`primary`, `secondary`, `ghost`)
+- `src/components/card.tsx`: shared card wrapper primitive
+- `src/components/tag.tsx`: shared tag/chip primitive
+- `src/components/layout.tsx`: shared layout utilities (`Stack`, `Split`, `StatGrid`)
 - `src/components/ai-coach-panel.tsx`: post-submission coach panel with limited question input
 - `src/content/activities.json`: file-based seeded activities for MVP
 - `src/content/skill-tags.json`: allowed skill tag list for seeded content
+- `src/content/themes.json`: allowed theme list for seeded activities and theme browsing
 - `src/lib/content-schema.ts`: frontend runtime validation and typed parsing for seeded content
 - `src/lib/mock-data.ts`: app-facing exports combining seeded content and placeholder progress data
 - `src/lib/api.ts`: typed backend API client for dashboard, activities, submission, results, and progress
@@ -42,6 +47,12 @@ This document describes the current frontend scaffold and how to work within it 
 - `/parent/progress`: parent progress view
 
 Part 8 integrates these screens with backend APIs while keeping fallback data for frontend-only development mode.
+
+## Themed activity browsing
+
+- Home screen supports selecting a theme and filtering available activities.
+- Activity list API returns both `activities` and `themes`.
+- Mission selection can be set from the available activity list without changing backend submission flow.
 
 ## Reward loop behavior (Part 9)
 

@@ -6,6 +6,7 @@ This document defines the file-based seeded content model for MVP Part 5.
 
 - `frontend/src/content/activities.json`
 - `frontend/src/content/skill-tags.json`
+- `frontend/src/content/themes.json`
 
 Seeded content remains in local versioned files for MVP and is not stored as the source-of-truth library in SQLite.
 
@@ -15,6 +16,7 @@ Each activity entry contains:
 
 - `id` (string, unique)
 - `title` (string)
+- `theme` (string, one of the allowed values in `themes.json`)
 - `passageType` (`literary` or `informational`)
 - `missionLabel` (string)
 - `passageTitle` (string)
@@ -50,6 +52,21 @@ Allowed MVP tags are defined in `frontend/src/content/skill-tags.json`:
 - `vocabulary`
 - `sentence-quality`
 - `short-writing`
+
+## Theme schema
+
+Allowed MVP content themes are defined in `frontend/src/content/themes.json`:
+
+- `nature`
+- `space`
+- `community`
+- `sports`
+- `mystery`
+- `history`
+- `ocean-weather`
+- `arts`
+- `friendship`
+- `logic`
 
 ## Deterministic short-writing rubric (MVP v1)
 

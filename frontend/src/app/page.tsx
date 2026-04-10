@@ -14,7 +14,9 @@ import styles from "./screens.module.css";
 
 export default function Home() {
   const [dashboard, setDashboard] = useState<DashboardResponse | null>(null);
+  const [availableThemes, setAvailableThemes] = useState<string[]>([]);
   const [activityList, setActivityList] = useState<ActivitiesResponse["activities"]>([]);
+  const [selectedTheme, setSelectedTheme] = useState<string>("all");
   const [userSelectedActivityId, setUserSelectedActivityId] = useState<string | null>(null);
   const [error, setError] = useState("");
 
@@ -23,8 +25,6 @@ export default function Home() {
       try {
         const payload = await getDashboard();
         setDashboard(payload);
-        const activitiesPayload = await listActivities();
-        setActivityList(activitiesPayload.activities);
       } catch (err) {
         if (err instanceof ApiError && err.status === 401) {
           window.location.href = "/login";
@@ -36,20 +36,41 @@ export default function Home() {
     void run();
   }, []);
 
+  useEffect(() => {
+    const run = async () => {
+      try {
+        const payload = await listActivities(selectedTheme === "all" ? undefined : selectedTheme);
+        setActivityList(payload.activities);
+        setAvailableThemes(payload.themes);
+      } catch (err) {
+        if (err instanceof ApiError && err.status === 401) {
+          window.location.href = "/login";
+          return;
+        }
+        setError("Could not load activity list. Showing local preview data.");
+      }
+    };
+    void run();
+  }, [selectedTheme]);
+
   const availableActivities =
     activityList.length > 0
       ? activityList.map((activity) => ({
           id: activity.id,
           title: activity.title,
+          theme: activity.theme,
           missionLabel: activity.mission_label,
           skillTags: activity.skill_tags,
         }))
       : fallbackActivities.map((activity) => ({
           id: activity.id,
           title: activity.title,
+          theme: activity.theme,
           missionLabel: activity.missionLabel,
           skillTags: activity.skillTags,
         }));
+  const fallbackThemes = Array.from(new Set(fallbackActivities.map((activity) => activity.theme)));
+  const themeOptions = availableThemes.length > 0 ? availableThemes : fallbackThemes;
   const suggestedActivityId = typeof window !== "undefined" ? localStorage.getItem("ela:suggested-activity") : null;
 
   const attempted = new Set((dashboard?.recent_sessions ?? []).map((session) => session.activity_id));
@@ -114,6 +135,27 @@ export default function Home() {
         <Card>
           <h2>Today&apos;s mission</h2>
           <p className={styles.muted}>{mission.missionLabel}</p>
+          <div>
+            <label className={styles.label} htmlFor="theme-filter">
+              Theme
+            </label>
+            <select
+              id="theme-filter"
+              className={styles.input}
+              value={selectedTheme}
+              onChange={(event) => {
+                setSelectedTheme(event.target.value);
+                setUserSelectedActivityId(null);
+              }}
+            >
+              <option value="all">All themes</option>
+              {themeOptions.map((theme) => (
+                <option key={theme} value={theme}>
+                  {theme}
+                </option>
+              ))}
+            </select>
+          </div>
           <div className={styles.chipRow}>
             {mission.skillTags.map((skill) => (
               <Tag key={skill}>{skill}</Tag>
@@ -168,6 +210,7 @@ export default function Home() {
                 <li key={item.id} className={styles.activityItem}>
                   <div>
                     <strong>{item.title}</strong>
+                    <div className={styles.muted}>Theme: {item.theme}</div>
                     {selectedActivityId === item.id ? <span className={styles.muted}> (Current mission)</span> : null}
                   </div>
                   <div className={styles.activityActions}>

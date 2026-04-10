@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import AsyncIterator, Dict, List, Optional
 
-from fastapi import Depends, FastAPI, HTTPException, Request, status
+from fastapi import Depends, FastAPI, HTTPException, Query, Request, status
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from pydantic import BaseModel, Field
 from starlette.middleware.sessions import SessionMiddleware
@@ -16,7 +16,7 @@ from backend.app.ai_client import (
     run_openrouter_connectivity_check,
 )
 from backend.app.ai_coach import generate_ai_coach_output
-from backend.app.content_schema import get_seed_activity, list_seed_activities
+from backend.app.content_schema import get_seed_activity, list_seed_activities, list_seed_themes
 from backend.app.db import ensure_database
 from backend.app.db import (
     create_submission,
@@ -176,14 +176,28 @@ def get_dashboard(username: str = Depends(_require_authenticated_username)) -> J
 
 
 @app.get("/api/activities")
-def list_activities(_: str = Depends(_require_authenticated_username)) -> JSONResponse:
+def list_activities(
+    _: str = Depends(_require_authenticated_username),
+    theme: Optional[str] = Query(default=None),
+) -> JSONResponse:
     activities = list_seed_activities()
+    allowed_themes = list_seed_themes()
+    if theme:
+        if theme not in allowed_themes:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+                detail=f'Unsupported theme "{theme}".',
+            )
+        activities = [item for item in activities if item.theme == theme]
+
     return JSONResponse(
         {
+            "themes": allowed_themes,
             "activities": [
                 {
                     "id": item.id,
                     "title": item.title,
+                    "theme": item.theme,
                     "passage_type": item.passageType,
                     "mission_label": item.missionLabel,
                     "skill_tags": item.skillTags,
@@ -205,6 +219,7 @@ def get_activity(activity_id: str, _: str = Depends(_require_authenticated_usern
         {
             "id": activity.id,
             "title": activity.title,
+            "theme": activity.theme,
             "passage_type": activity.passageType,
             "mission_label": activity.missionLabel,
             "passage_title": activity.passageTitle,

@@ -534,6 +534,35 @@ Testing expectations for this contract:
 
 ---
 
+## Part 15: Themed content expansion (50+ activities)
+
+### Goals
+- Expand the seeded activity library to at least 50 high-utility activities
+- Organize content by explicit themes so discovery and mission selection are more useful
+
+### Checklist
+- [x] Add a required `theme` field to seeded activity schema
+- [x] Add a centralized allowed theme list in seeded content files
+- [x] Expand seeded content to 50+ activities with broad theme coverage
+- [x] Add backend activity list filtering by theme
+- [x] Return available theme metadata in activity listing responses
+- [x] Add frontend theme selector and mission filtering on home screen
+- [x] Keep scoring, submissions, and persistence contracts unchanged
+- [x] Update docs for content and API contracts
+
+### Tests
+- [x] Backend API tests cover theme filter success and invalid theme handling
+- [x] Frontend/unit tests assert 50+ seeded activities and broad theme coverage
+- [x] End-to-end seeded-content test remains stable with expanded catalog
+- [x] Full backend and frontend test suites pass
+
+### Success criteria
+- A signed-in child can access a large, themed activity catalog from home
+- Mission selection is no longer limited to a fixed small set
+- Expanded content remains schema-valid and deterministic-scoring compatible
+
+---
+
 ## Explicit non-goals for MVP
 
 These should not be built in the first version unless scope changes explicitly:

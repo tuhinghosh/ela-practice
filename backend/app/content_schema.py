@@ -29,6 +29,7 @@ else:
 
 ACTIVITIES_FILE = CONTENT_DIR / "activities.json"
 SKILL_TAGS_FILE = CONTENT_DIR / "skill-tags.json"
+THEMES_FILE = CONTENT_DIR / "themes.json"
 
 
 class QuestionModel(BaseModel):
@@ -42,6 +43,7 @@ class QuestionModel(BaseModel):
 class ActivityModel(BaseModel):
     id: str = Field(min_length=1)
     title: str = Field(min_length=1)
+    theme: str = Field(min_length=1)
     passageType: PassageType
     missionLabel: str = Field(min_length=1)
     passageTitle: str = Field(min_length=1)
@@ -60,6 +62,7 @@ class DeterministicWritingRubricModel(BaseModel):
 def load_seed_activities() -> list[ActivityModel]:
     import json
 
+    allowed_themes = json.loads(THEMES_FILE.read_text(encoding="utf-8"))
     raw = json.loads(ACTIVITIES_FILE.read_text(encoding="utf-8"))
     activities = [ActivityModel.model_validate(item) for item in raw]
 
@@ -68,6 +71,8 @@ def load_seed_activities() -> list[ActivityModel]:
         if activity.id in seen_ids:
             raise ValueError(f"Duplicate activity id: {activity.id}")
         seen_ids.add(activity.id)
+        if activity.theme not in allowed_themes:
+            raise ValueError(f'Activity "{activity.id}" has unsupported theme "{activity.theme}".')
 
         for question in activity.questions:
             if question.type == "multiple-choice":
@@ -94,6 +99,20 @@ def load_seed_activities() -> list[ActivityModel]:
 
 def list_seed_activities() -> list[ActivityModel]:
     return load_seed_activities()
+
+
+def list_seed_themes() -> list[str]:
+    import json
+
+    raw = json.loads(THEMES_FILE.read_text(encoding="utf-8"))
+    if not isinstance(raw, list) or not raw:
+        raise ValueError("themes.json must be a non-empty array.")
+    parsed = [str(item) for item in raw if isinstance(item, str) and item.strip()]
+    if len(parsed) != len(raw):
+        raise ValueError("themes.json must include non-empty strings only.")
+    if len(set(parsed)) != len(parsed):
+        raise ValueError("themes.json contains duplicate values.")
+    return parsed
 
 
 def get_seed_activity(activity_id: str) -> ActivityModel:

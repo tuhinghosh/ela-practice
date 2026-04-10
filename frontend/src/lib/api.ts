@@ -51,9 +51,11 @@ export type DashboardResponse = {
 };
 
 export type ActivitiesResponse = {
+  themes: string[];
   activities: Array<{
     id: string;
     title: string;
+    theme: string;
     passage_type: "literary" | "informational";
     mission_label: string;
     skill_tags: string[];
@@ -63,6 +65,7 @@ export type ActivitiesResponse = {
 export type ActivityDetailResponse = {
   id: string;
   title: string;
+  theme: string;
   passage_type: "literary" | "informational";
   mission_label: string;
   passage_title: string;
@@ -177,8 +180,9 @@ export async function getDashboard(): Promise<DashboardResponse> {
   return request<DashboardResponse>("/api/dashboard");
 }
 
-export async function listActivities(): Promise<ActivitiesResponse> {
-  return request<ActivitiesResponse>("/api/activities");
+export async function listActivities(theme?: string): Promise<ActivitiesResponse> {
+  const params = theme ? `?theme=${encodeURIComponent(theme)}` : "";
+  return request<ActivitiesResponse>(`/api/activities${params}`);
 }
 
 export async function getActivity(activityId: string): Promise<ActivityDetailResponse> {

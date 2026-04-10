@@ -1,8 +1,11 @@
 import activitiesRaw from "@/content/activities.json";
 import skillTagsRaw from "@/content/skill-tags.json";
+import themesRaw from "@/content/themes.json";
 
 export const skillTags = skillTagsRaw;
 export type SkillTag = (typeof skillTags)[number];
+export const activityThemes = themesRaw;
+export type ActivityTheme = (typeof activityThemes)[number];
 
 export type QuestionType = "multiple-choice" | "short-response";
 
@@ -16,6 +19,7 @@ export type Question = {
 export type Activity = {
   id: string;
   title: string;
+  theme: ActivityTheme;
   passageType: "literary" | "informational";
   missionLabel: string;
   passageTitle: string;
@@ -69,6 +73,7 @@ function parseActivity(value: unknown): Activity {
 
   const id = value.id;
   const title = value.title;
+  const theme = value.theme;
   const passageType = value.passageType;
   const missionLabel = value.missionLabel;
   const passageTitle = value.passageTitle;
@@ -78,6 +83,9 @@ function parseActivity(value: unknown): Activity {
 
   if (!isNonEmptyString(id)) throw new Error("Activity id is required.");
   if (!isNonEmptyString(title)) throw new Error(`Activity "${id}" is missing title.`);
+  if (!isNonEmptyString(theme) || !activityThemes.includes(theme as ActivityTheme)) {
+    throw new Error(`Activity "${id}" has invalid or unsupported theme.`);
+  }
   if (passageType !== "literary" && passageType !== "informational") {
     throw new Error(`Activity "${id}" has invalid passageType.`);
   }
@@ -106,6 +114,7 @@ function parseActivity(value: unknown): Activity {
   return {
     id,
     title,
+    theme: theme as ActivityTheme,
     passageType,
     missionLabel,
     passageTitle,

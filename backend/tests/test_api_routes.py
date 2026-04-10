@@ -63,8 +63,14 @@ def test_activity_and_progress_routes(client: TestClient) -> None:
 
     activities = client.get("/api/activities")
     assert activities.status_code == 200
+    assert len(activities.json()["themes"]) >= 5
     activity_items = activities.json()["activities"]
-    assert len(activity_items) >= 1
+    assert len(activity_items) >= 50
+    first_theme = activity_items[0]["theme"]
+    themed = client.get(f"/api/activities?theme={first_theme}")
+    assert themed.status_code == 200
+    assert len(themed.json()["activities"]) >= 1
+    assert all(item["theme"] == first_theme for item in themed.json()["activities"])
     activity_id = activity_items[0]["id"]
 
     activity_detail = client.get(f"/api/activities/{activity_id}")
@@ -116,6 +122,9 @@ def test_invalid_payload_returns_validation_error(client: TestClient) -> None:
         },
     )
     assert unknown_question.status_code == 422
+
+    bad_theme = client.get("/api/activities?theme=not-a-theme")
+    assert bad_theme.status_code == 422
 
 
 def test_repeat_submissions_are_predictable(client: TestClient) -> None:

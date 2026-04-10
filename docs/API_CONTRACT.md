@@ -11,7 +11,7 @@ This document captures the stable backend JSON surfaces used by the frontend in 
 ## Learning flow
 
 - `GET /api/dashboard`
-- `GET /api/activities`
+- `GET /api/activities` (supports optional `theme` query filter)
 - `GET /api/activities/{activity_id}`
 - `POST /api/activities/{activity_id}/submit`
 - `GET /api/sessions/{session_id}`
@@ -29,6 +29,7 @@ This document captures the stable backend JSON surfaces used by the frontend in 
 ## Contract notes
 
 - Seeded activity content remains file-based in MVP.
+- Activity entries include a required `theme` field and `/api/activities` returns available theme values.
 - Progress, reward, and chat/session history persist in SQLite.
 - Validation failures return safe 4xx responses.
 - Provider failures in AI routes return safe 5xx responses with bounded error messages.
