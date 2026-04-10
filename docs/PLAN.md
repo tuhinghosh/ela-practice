@@ -542,11 +542,13 @@ Testing expectations for this contract:
 
 ### Checklist
 - [x] Add a required `theme` field to seeded activity schema
+- [x] Add a difficulty tier (`easy`, `medium`, `difficult`) with good distribution across catalog activities
 - [x] Add a centralized allowed theme list in seeded content files
 - [x] Expand seeded content to 50+ activities with broad theme coverage
 - [x] Add backend activity list filtering by theme
+- [x] Add backend activity list filtering by difficulty
 - [x] Return available theme metadata in activity listing responses
-- [x] Add frontend theme selector and mission filtering on home screen
+- [x] Add frontend theme + difficulty selectors and mission filtering on home screen
 - [x] Keep scoring, submissions, and persistence contracts unchanged
 - [x] Update docs for content and API contracts
 

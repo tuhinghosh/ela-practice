@@ -4,6 +4,12 @@
   line-height: 1.52;
 }
 
+.difficultyLevel {
+  margin: 6px 0;
+  font-weight: 800;
+  color: #213a82;
+}
+
 .chipRow {
   display: flex;
   flex-wrap: wrap;

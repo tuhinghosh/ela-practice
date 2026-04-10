@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { Button } from "@/components/button";
 import { Card } from "@/components/card";
+import { Tag } from "@/components/tag";
 import { ApiError, getActivity, submitActivity, type ActivityDetailResponse } from "@/lib/api";
 import { activities } from "@/lib/mock-data";
 
@@ -42,6 +43,7 @@ export default function ActivityClient({ activityId }: Props) {
   const resolved = activity ?? {
     id: fallback.id,
     title: fallback.title,
+    difficulty: fallback.difficulty,
     passage_type: fallback.passageType,
     mission_label: fallback.missionLabel,
     passage_title: fallback.passageTitle,
@@ -49,6 +51,7 @@ export default function ActivityClient({ activityId }: Props) {
     skill_tags: fallback.skillTags,
     questions: fallback.questions,
   };
+  const difficultyLabel = (resolved.difficulty ?? "medium").toUpperCase();
 
   const onSubmit = async () => {
     setIsSubmitting(true);
@@ -87,6 +90,9 @@ export default function ActivityClient({ activityId }: Props) {
       ) : null}
       <Card>
         <h2>{resolved.passage_title}</h2>
+        <div className={styles.chipRow}>
+          <Tag>Difficulty: {difficultyLabel}</Tag>
+        </div>
         <p className={styles.passage}>{resolved.passage_text}</p>
       </Card>
 

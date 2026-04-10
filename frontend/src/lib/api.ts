@@ -52,10 +52,12 @@ export type DashboardResponse = {
 
 export type ActivitiesResponse = {
   themes: string[];
+  difficulties: Array<"easy" | "medium" | "difficult">;
   activities: Array<{
     id: string;
     title: string;
     theme: string;
+    difficulty: "easy" | "medium" | "difficult";
     passage_type: "literary" | "informational";
     mission_label: string;
     skill_tags: string[];
@@ -66,6 +68,7 @@ export type ActivityDetailResponse = {
   id: string;
   title: string;
   theme: string;
+  difficulty: "easy" | "medium" | "difficult";
   passage_type: "literary" | "informational";
   mission_label: string;
   passage_title: string;
@@ -180,9 +183,16 @@ export async function getDashboard(): Promise<DashboardResponse> {
   return request<DashboardResponse>("/api/dashboard");
 }
 
-export async function listActivities(theme?: string): Promise<ActivitiesResponse> {
-  const params = theme ? `?theme=${encodeURIComponent(theme)}` : "";
-  return request<ActivitiesResponse>(`/api/activities${params}`);
+export async function listActivities(filters?: {
+  theme?: string;
+  difficulty?: "easy" | "medium" | "difficult";
+}): Promise<ActivitiesResponse> {
+  const params = new URLSearchParams();
+  if (filters?.theme) params.set("theme", filters.theme);
+  if (filters?.difficulty) params.set("difficulty", filters.difficulty);
+  const query = params.toString();
+  const suffix = query ? `?${query}` : "";
+  return request<ActivitiesResponse>(`/api/activities${suffix}`);
 }
 
 export async function getActivity(activityId: string): Promise<ActivityDetailResponse> {

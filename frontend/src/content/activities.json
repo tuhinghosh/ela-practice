@@ -6,7 +6,7 @@
     "passageType": "literary",
     "missionLabel": "Help Mira the Explorer understand the story clues.",
     "passageTitle": "A Visit to Pine Hill",
-    "passageText": "Mira packed a sandwich, a notebook, and a pencil before walking up Pine Hill. At the top, she heard chirping near an old oak tree. Two small birds were carrying tiny twigs. Mira watched as they built a nest, one twig at a time. She wrote, \"The birds are working together and not giving up.\" When a breeze knocked a twig down, one bird flew back and picked it up again. Mira smiled and whispered, \"Teamwork makes hard jobs easier.\"",
+    "passageText": "Mira packed a sandwich, a notebook, and a pencil before walking up Pine Hill. The morning air smelled like pine needles and wet soil. At the top, she heard chirping near an old oak tree. Two small birds were carrying tiny twigs to the same branch. Mira sat quietly so she would not scare them away. She noticed that one bird arranged the twigs while the other searched for more. A gust of wind knocked one twig to the ground. Instead of flying away, the bird dropped down, picked it up, and returned to the nest. Mira wrote that teamwork and patience were helping the birds finish a hard job. Before she left, she checked the branch one last time and saw the nest taking shape.",
     "questions": [
       {
         "id": "q1",
@@ -35,7 +35,7 @@
     "passageType": "informational",
     "missionLabel": "Read the facts and discover why pollinators matter.",
     "passageTitle": "Busy Bees at Work",
-    "passageText": "Bees visit flowers to collect nectar and pollen. While moving from flower to flower, they carry tiny grains of pollen on their legs. Some of this pollen rubs off on another flower. This process is called pollination. Pollination helps many plants make seeds and fruit. Without pollinators like bees, fewer flowers and fruits would grow in gardens and farms.",
+    "passageText": "Bees visit flowers to collect nectar and pollen during warm parts of the day. As they crawl inside blooms, pollen sticks to tiny hairs on their legs and bodies. When bees travel to the next flower, some of that pollen rubs off. This transfer process is called pollination. Pollination helps plants produce seeds and fruit. Farmers depend on pollination for crops like berries, melons, and apples. Gardeners also notice stronger harvests when pollinators are active. Bees are not the only pollinators, but they are among the most efficient. Without them, many flowering plants would produce less food. Protecting pollinator habitats helps both wild ecosystems and human communities.",
     "questions": [
       {
         "id": "q1",
@@ -64,7 +64,7 @@
     "passageType": "literary",
     "missionLabel": "Follow clues and infer what happens next.",
     "passageTitle": "A Folded Map",
-    "passageText": "Jalen found a folded map under a smooth river rock. A note on top said, \"Start where the willow tree leans.\" Jalen and his cousin Nia walked to the willow and counted ten steps east, just like the note said. They did not find treasure, but they did find a small box with bird seed and a message: \"Thank you for helping feed the park birds.\" Jalen laughed and said, \"The clue was really about helping, not gold.\"",
+    "passageText": "Jalen found a folded map under a smooth river rock by the trail. A note on top said to start where the willow tree leaned over the bank. He called his cousin Nia and showed her the drawing. Together they followed the arrows and counted ten steps east. The first spot was empty, so they checked the map again for a second clue. Nia noticed a tiny bird symbol next to a bench on the page. They walked there and found a wooden box under the seat. Inside was a bag of bird seed and a thank-you message from a park volunteer. The note explained that the map was a kindness challenge, not a treasure hunt. Jalen laughed and said the best prize was helping something alive.",
     "questions": [
       {
         "id": "q1",
@@ -93,7 +93,7 @@
     "passageType": "informational",
     "missionLabel": "Discover how living things keep a garden healthy.",
     "passageTitle": "Busy Garden Team",
-    "passageText": "A school garden grows tomatoes, beans, and marigolds. Worms loosen the soil so roots can spread. Ladybugs eat tiny pests that hurt leaves. Bees move pollen from flower to flower. Each helper does a different job, and together they help plants grow strong.",
+    "passageText": "A school garden near the playground grows tomatoes, beans, lettuce, and marigolds. Students check the beds every morning before class starts. They often see worms turning the soil after rainy nights. Those tunnels let water and air reach plant roots more easily. Ladybugs crawl across leaves and eat pests that damage stems. Bees visit blossoms and carry pollen from one flower to another. Compost made from cafeteria scraps adds nutrients to the soil. Students record which beds look healthiest each week. Their chart shows that gardens do best when many helpers work together. The project teaches that healthy systems depend on many small jobs, not one single fix.",
     "questions": [
       {
         "id": "q1",
@@ -122,7 +122,7 @@
     "passageType": "literary",
     "missionLabel": "Use clues to infer why a stream changes.",
     "passageTitle": "After the Rain",
-    "passageText": "Kai visited the trail after a long rainstorm. The stream that was usually clear looked brown and moved quickly. Small branches floated by. Kai noticed muddy footprints near the bridge and a broken path sign. He guessed that heavy rain washed dirt into the water and changed the trail.",
+    "passageText": "Kai visited the trail the morning after a long rainstorm ended. The stream that was usually clear looked brown and rushed past the rocks. Small branches floated by in fast swirls. Mud covered the edges of the path near the bridge. Kai saw deep footprints where hikers had stepped around puddles. A wooden trail sign leaned sideways, and one corner was cracked. He remembered that the hill above the stream had loose soil. Heavy rain likely washed that soil downhill into the water. He also guessed that the strong current bumped debris against the signpost. Kai took photos to share with the ranger so repairs could happen quickly.",
     "questions": [
       {
         "id": "q1",
@@ -151,7 +151,7 @@
     "passageType": "informational",
     "missionLabel": "Read signs and sequence events in a nature walk.",
     "passageTitle": "Trail Safety Steps",
-    "passageText": "Before the class hike, Ranger Lee gave everyone a short note. First, stay on marked paths. Next, carry out all trash. Then, watch animals from a distance. Last, tell an adult if the group gets separated. These steps help people and wildlife stay safe.",
+    "passageText": "Before the class hike, Ranger Lee handed each student a safety card. The card listed four steps in a clear order. First, stay on marked paths so plants and nests are not damaged. Next, carry out all trash, including snack wrappers and juice tops. Then, watch animals from a distance instead of trying to touch them. Last, tell an adult right away if someone in the group gets separated. Ranger Lee explained why each step protects both hikers and wildlife. Students practiced the steps before leaving the trailhead. During the hike, they reminded one another when someone drifted off the path. By the end, the group understood that simple routines can prevent bigger problems.",
     "questions": [
       {
         "id": "q1",
@@ -180,7 +180,7 @@
     "passageType": "literary",
     "missionLabel": "Follow a space-themed story and find the big idea.",
     "passageTitle": "A Garden Under the Stars",
-    "passageText": "Lena placed glow sticks around the community garden for night science club. She pointed to the moon and said the light helped them compare shadows. Every ten minutes, the shadow lines moved a little. Lena wrote notes in her chart and shared them with her team. The group learned that careful observation can turn a fun night into real science.",
+    "passageText": "Lena placed glow sticks around the community garden for night science club. The sticks marked where students should stand safely in the dark. She pointed to the moon and asked everyone to notice the long shadows. Every ten minutes, the shadow lines moved a little across the path. Lena measured each change with a ruler and wrote it in her chart. Her partner checked the time and called out each interval. Another teammate sketched the garden bed to show where shadows started and ended. By the fourth measurement, the class could see a clear pattern. They discussed how moonlight and Earth movement can change what we see. The club ended the night excited that simple tools could produce real scientific evidence.",
     "questions": [
       {
         "id": "q1",
@@ -209,7 +209,7 @@
     "passageType": "informational",
     "missionLabel": "Learn vocabulary about the solar system.",
     "passageTitle": "What Is an Orbit?",
-    "passageText": "Planets travel around the sun on paths called orbits. Some planets have short orbits and circle the sun quickly. Others are farther away and take longer to travel one full path. Earth takes about one year to finish one orbit. Scientists use models to show how these paths work.",
+    "passageText": "Planets travel around the sun on paths called orbits. An orbit is not a straight line but a curved path that repeats. Planets close to the sun complete shorter trips in less time. Planets farther away have larger paths and need more time to circle once. Earth completes one orbit in about 365 days. Mercury finishes an orbit much faster than Earth because it is closer to the sun. Neptune takes many years because it travels a much longer path. Scientists use models and diagrams to compare these distances. They also use observations from telescopes and space missions to verify movement. Understanding orbits helps explain why years are different lengths on different planets.",
     "questions": [
       {
         "id": "q1",
@@ -238,7 +238,7 @@
     "passageType": "literary",
     "missionLabel": "Infer why a school signal changed during weather class.",
     "passageTitle": "The Missing Signal",
-    "passageText": "During weather club, Amara checked a tablet that showed cloud images from a satellite. Suddenly, the picture froze. She looked outside and saw thick storm clouds and strong wind. The teacher said tall clouds can block signals for a short time. When the storm moved away, the images returned.",
+    "passageText": "During weather club, Amara checked a tablet that displayed live cloud images from a satellite. She and her team used the pictures to compare local clouds with regional patterns. Suddenly, the screen froze and stopped updating. Amara looked outside and noticed dark storm clouds building quickly. Flags near the field were snapping in strong gusts. The teacher explained that severe weather can interfere with signals for short periods. The club switched to paper maps while they waited. Ten minutes later, the storm moved farther east. The tablet refreshed and began showing new images again. Amara recorded the interruption as evidence that weather can affect communication tools.",
     "questions": [
       {
         "id": "q1",
@@ -267,7 +267,7 @@
     "passageType": "informational",
     "missionLabel": "Sequence steps for a safe rocket launch.",
     "passageTitle": "Launch Day Checklist",
-    "passageText": "The rocket club follows four safety steps on launch day. First, check that the launch field is clear. Next, count down with all team members behind the line. Then, press the launch switch when the teacher says ready. Last, wait for the rocket to land before anyone walks forward.",
+    "passageText": "The rocket club follows a strict checklist each time it launches. First, students check that the launch field is clear of people and backpacks. They also confirm that wind conditions are safe for a straight flight. Next, everyone stands behind the painted safety line. One student leads a loud countdown while another watches the rocket angle. Then, the launch switch is pressed only after the teacher gives approval. The rocket rises quickly, and students track it with their eyes. After touchdown, the team waits for an all-clear signal before moving forward. Finally, they inspect the rocket and write notes about the flight. This sequence keeps launch day exciting and safe at the same time.",
     "questions": [
       {
         "id": "q1",
@@ -296,7 +296,7 @@
     "passageType": "informational",
     "missionLabel": "Summarize how a team uses a map of stars.",
     "passageTitle": "Finding North in the Sky",
-    "passageText": "Students at Sky Club used a printed star map to find the North Star. One student held a red flashlight so everyone could still see at night. Another student matched bright stars on the map to stars in the sky. Together, they found the North Star and marked its position. Teamwork helped the class finish quickly and accurately.",
+    "passageText": "Students at Sky Club used a printed star map to find the North Star. They met after sunset in the school field when the sky was clear. One student held a red flashlight so eyes could stay adjusted to darkness. Another student lined up the map with the horizon using a compass. Two teammates searched for the Big Dipper pattern first. From that pattern, they traced an imaginary line toward the North Star. Each student took a turn checking the location to confirm the result. The group marked the position in their notebooks and compared answers. Their notes matched, showing they had found the correct star. Teamwork and careful roles helped the class finish quickly and accurately.",
     "questions": [
       {
         "id": "q1",
@@ -325,7 +325,7 @@
     "passageType": "literary",
     "missionLabel": "Use clues to understand how helpers support a community.",
     "passageTitle": "New Books Arrive",
-    "passageText": "When boxes of new books arrived, Ms. Patel, the librarian, smiled at the class. She asked Marco to sort books by topic while Ana placed labels on shelves. Another group made signs for the reading corner. By afternoon, students could quickly find books they wanted. Everyone's small jobs helped the library open on time.",
+    "passageText": "When boxes of new books arrived, Ms. Patel asked the class for help. Marco sorted adventure, science, and history titles into separate stacks. Ana placed new labels on shelves so books could be returned correctly. Two students checked each title against the library list. Another group made bright signs for the reading corner and biography wall. By lunch, the room looked organized but still needed final checks. Ms. Patel asked everyone to test the shelves by finding one book in each category. Students discovered two mislabeled bins and fixed them quickly. In the afternoon, younger classes visited and found books without long waits. The team learned that organized systems make shared spaces easier for everyone.",
     "questions": [
       {
         "id": "q1",
@@ -354,7 +354,7 @@
     "passageType": "informational",
     "missionLabel": "Learn sequence from a community helper's routine.",
     "passageTitle": "How Mail Gets Delivered",
-    "passageText": "A mail carrier starts by sorting letters at the post office. Next, the carrier places mail in route order. Then, the carrier drives to each street and delivers letters and packages. Last, undelivered items return to the post office. This routine helps neighbors receive mail each day.",
+    "passageText": "A mail carrier starts early at the post office each morning. First, letters and small packages are sorted by neighborhood and street. Next, the carrier places items in route order to save time on the road. A scanner is checked to track deliveries accurately. Then, the carrier drives the route and delivers mail house by house. At each stop, the carrier verifies address numbers before leaving items. If no one is home for a package, a pickup notice is left. By afternoon, undelivered items return to the post office. The route report is updated so families can track important deliveries. This dependable sequence helps the whole community receive mail on time.",
     "questions": [
       {
         "id": "q1",
@@ -383,7 +383,7 @@
     "passageType": "informational",
     "missionLabel": "Identify the main idea in safety directions.",
     "passageTitle": "Safe Rides to School",
-    "passageText": "Students should stand back from the curb while waiting for the bus. They should keep backpacks closed and avoid pushing. When the bus stops, students line up and board one at a time. Following these rules keeps everyone safer and helps the ride begin smoothly.",
+    "passageText": "Bus safety begins before the bus even arrives. Students should stand back from the curb while they wait. Backpacks should stay zipped so straps do not catch on rails. Pushing or rough play can cause accidents in crowded lines. When the bus stops, students form one line and wait for the driver's signal. Boarding one at a time keeps steps clear and reduces confusion. Once seated, students keep aisles open for others to move safely. The same calm behavior is important when leaving the bus after school. Drivers rely on these routines to protect every rider. Following simple rules makes the trip safer and smoother for everyone.",
     "questions": [
       {
         "id": "q1",
@@ -412,7 +412,7 @@
     "passageType": "literary",
     "missionLabel": "Infer how a helper calms a worried child.",
     "passageTitle": "A Brave Checkup",
-    "passageText": "Noah felt nervous before his checkup. Nurse Elena knelt down and explained each step before it happened. She let Noah choose which arm to use for the blood pressure cuff. Noah took a deep breath and said he was ready. By the end, he smiled and asked if he could come back to show his sticker collection.",
+    "passageText": "Noah felt nervous while waiting for his checkup at the clinic. The room looked unfamiliar, and he worried about what would happen first. Nurse Elena knelt down so they were at eye level. She explained each step before doing anything, including temperature and blood pressure checks. She let Noah choose which arm to use for the cuff. Noah practiced a slow breath while she counted with him. During the exam, she praised him for asking clear questions. Noah noticed that knowing the plan made each step feel easier. By the end, he was smiling and talking about his sticker collection. He left feeling proud because support and choice helped him stay calm.",
     "questions": [
       {
         "id": "q1",
@@ -441,7 +441,7 @@
     "passageType": "informational",
     "missionLabel": "Use vocabulary in context about reducing waste.",
     "passageTitle": "Sort It Right",
-    "passageText": "The school recycling team sorts paper, plastic, and metal into labeled bins. Clean bottles can be recycled, but food-covered containers should be thrown away. The team teaches classmates to rinse containers first. Correct sorting reduces waste and helps materials become new products.",
+    "passageText": "The school recycling team meets every Tuesday after lunch. They start by checking labels on paper, plastic, and metal bins. Maya reminds everyone that clean bottles can be recycled, but sticky containers cannot. The team sets up a quick rinse station near the sink. During class visits, students practice sorting five sample items into the right bins. If someone makes a mistake, a team member explains why the item belongs somewhere else. At the end of the day, the team weighs each bin and records totals. Their chart shows that cleaner sorting means fewer items get thrown away. The custodian says the recycling room stays much more organized now. The team feels proud because better habits help materials become useful products again.",
     "questions": [
       {
         "id": "q1",
@@ -470,7 +470,7 @@
     "passageType": "literary",
     "missionLabel": "Identify the main idea in a teamwork story.",
     "passageTitle": "Second-Half Switch",
-    "passageText": "At halftime, Coach Ruiz moved Maya from defense to midfield. Maya listened and passed quickly to teammates instead of dribbling too long. The team spread out and created open space. In the final minutes, they scored after three smart passes. Maya learned that teamwork can matter more than one player's speed.",
+    "passageText": "At halftime, Coach Ruiz moved Maya from defense to midfield. Maya felt surprised but listened carefully to the new plan. Coach explained that the team needed quicker passing through the center. In the second half, Maya kept her head up and looked for open teammates. She made short passes instead of dribbling too long. Her teammates spread wide along the sidelines and created more space. The ball moved faster, and the other team struggled to defend every lane. With two minutes left, the team scored after three clean passes in a row. Maya realized the goal happened because everyone changed together, not because one player tried to do everything. She finished the game understanding that smart teamwork can be stronger than speed alone.",
     "questions": [
       {
         "id": "q1",
@@ -499,7 +499,7 @@
     "passageType": "informational",
     "missionLabel": "Follow sequence directions for a relay exchange.",
     "passageTitle": "Passing the Baton",
-    "passageText": "In a relay race, each runner has a zone for passing the baton. First, the waiting runner starts jogging when the teammate approaches. Next, the waiting runner reaches back without turning around. Then, the first runner places the baton in the teammate's hand. Last, the new runner sprints forward.",
+    "passageText": "In a relay race, each runner has a marked exchange zone. Before practice, Coach Allen draws the zone lines in bright chalk. First, the waiting runner starts jogging when the teammate reaches the signal cone. Next, the waiting runner reaches a hand back without turning around. The incoming runner calls \"stick\" so the teammate knows the pass is coming. Then, the baton is placed firmly into the open hand. If the pass is shaky, both runners slow down and try the exchange again. Last, the new runner drives forward and builds speed down the lane. Teams practice this sequence many times to make it smooth and safe. A clean exchange can save valuable seconds in a close race.",
     "questions": [
       {
         "id": "q1",
@@ -528,7 +528,7 @@
     "passageType": "informational",
     "missionLabel": "Use context clues for sports vocabulary.",
     "passageTitle": "Building Endurance",
-    "passageText": "Coach Kim planned short swim sets with rest breaks. She explained that endurance means being able to keep moving for a long time. Swimmers practiced steady strokes instead of racing every lap. After two weeks, the team could finish longer sets without stopping.",
+    "passageText": "Coach Kim planned short swim sets with rest breaks for the first week of training. She explained that endurance means keeping your body moving for a long time without losing control. Instead of racing each lap, swimmers practiced smooth and steady strokes. They counted breaths to keep a consistent rhythm. After each set, swimmers checked their pulse and wrote it on a chart. Coach Kim used the chart to show progress over several days. In week two, she increased the number of laps in each set. The team noticed they could keep pace longer before feeling tired. By Friday, most swimmers completed the new sets without stopping. They learned that endurance grows through steady practice, not fast starts.",
     "questions": [
       {
         "id": "q1",
@@ -557,7 +557,7 @@
     "passageType": "literary",
     "missionLabel": "Infer what a team should practice next.",
     "passageTitle": "The Missed Passes",
-    "passageText": "The Tigers had many turnovers in the first quarter. During timeout, Coach Lee pointed to open teammates on the whiteboard. In the second half, players called out names before passing and looked up quickly. Turnovers dropped, and the game became close. The team still lost by one point, but they understood what to practice.",
+    "passageText": "The Tigers had many turnovers in the first quarter of the game. Several passes were rushed, and players dribbled into crowded spaces. During timeout, Coach Lee drew simple passing lanes on the whiteboard. He asked players to call a teammate's name before each pass. In the second half, the Tigers lifted their eyes and moved the ball faster. They also spaced out better so receivers had room. Turnovers dropped, and the score stayed close through the final minute. Even though the Tigers lost by one point, they finished with much stronger teamwork. After the game, players agreed to practice communication drills first at the next practice. They understood that clear calls and quick decisions could change future results.",
     "questions": [
       {
         "id": "q1",
@@ -586,7 +586,7 @@
     "passageType": "informational",
     "missionLabel": "Summarize rules that support respectful play.",
     "passageTitle": "Rules for Respect",
-    "passageText": "In gym class games, students call their own fouls and respect referee decisions. Teams shake hands before and after each game. Players encourage teammates instead of blaming mistakes. Fair play makes competition fun and safe for everyone.",
+    "passageText": "In gym class games, students follow fair-play rules from the first whistle to the last. Teams shake hands before each game to show respect. If a foul happens, players call it honestly instead of arguing. Referee decisions are accepted so the game can continue safely. Coaches remind students to encourage teammates after mistakes. Positive words help players reset and focus on the next play. At halftime, teams check whether everyone feels included. After the game, players shake hands again and thank opponents. These habits keep competition friendly, even when the score is close. Fair play makes sports more fun and safer for everyone involved.",
     "questions": [
       {
         "id": "q1",
@@ -615,7 +615,7 @@
     "passageType": "literary",
     "missionLabel": "Solve a school mystery using textual clues.",
     "passageTitle": "A Sticky Note Surprise",
-    "passageText": "Nora opened her locker and found a sticky note that said, \"Check the science shelf.\" She walked to the classroom and noticed a small star sticker on the shelf edge. Behind a stack of notebooks, she found her missing ruler. Nora smiled when she saw another note: \"From your secret helper.\"",
+    "passageText": "Nora opened her locker and found a sticky note that said, \"Check the science shelf.\" She had been searching for her missing ruler all morning. In class, she walked to the shelf and noticed a tiny star sticker on the edge. The sticker pointed toward a stack of old lab notebooks. Nora carefully moved the notebooks and found her ruler tucked behind them. Next to it was a second note that read, \"One more clue near the globe.\" She followed that clue and found a thank-you message for helping clean the lab yesterday. Nora realized the secret helper had turned returning her ruler into a puzzle. She smiled and guessed it was someone who knew she liked mysteries. Instead of feeling frustrated, she felt appreciated and excited.",
     "questions": [
       {
         "id": "q1",
@@ -644,7 +644,7 @@
     "passageType": "literary",
     "missionLabel": "Track clue order in a mystery story.",
     "passageTitle": "Where Did the Tray Go?",
-    "passageText": "After lunch, Ben could not find the class project tray. First, he checked the art table. Next, he asked the lunch monitor, who pointed to the reading corner. Then Ben noticed paint smudges on the floor leading to a shelf. He found the tray there and wrote a reminder sign for next time.",
+    "passageText": "After lunch, Ben could not find the class project tray with paint brushes. First, he checked the art table where the tray was usually stored. It was not there, so he asked the lunch monitor for any clues. The monitor remembered seeing two students carry supplies toward the reading corner. Ben walked there and noticed small blue paint smudges on the floor. The smudges formed a path to a low shelf near the window. Behind a stack of magazines, he found the missing tray. He carried it back to the art station and checked that all brushes were still inside. Then he wrote a reminder sign so supplies would be returned to the same place. Following clues in order helped him solve the problem quickly.",
     "questions": [
       {
         "id": "q1",
@@ -673,7 +673,7 @@
     "passageType": "informational",
     "missionLabel": "Use vocabulary clues to solve a riddle.",
     "passageTitle": "Clue Cards at the Museum",
-    "passageText": "At the history museum, students solved a riddle by reading clue cards. One card said, \"I tell time with sand.\" Another card said, \"I was used before digital clocks.\" Students matched the clues to an hourglass display. Context clues helped them understand unknown words and solve the puzzle.",
+    "passageText": "At the history museum, students worked in teams to solve a gallery riddle. Each team received three clue cards and one answer sheet. The first card said, \"I tell time with sand.\" The second card said, \"People used me before digital clocks and watches.\" The third card said, \"Turn me over to start again.\" Students walked through displays and compared objects to the clues. One group first guessed compass, but the clues did not fully match. Then they found an hourglass in a case labeled \"Timekeepers.\" All three clues fit, so they wrote hourglass on their sheet. The activity showed how context clues can help readers understand unfamiliar words and ideas.",
     "questions": [
       {
         "id": "q1",
@@ -702,7 +702,7 @@
     "passageType": "informational",
     "missionLabel": "Find the main idea of a mystery challenge.",
     "passageTitle": "Map of Shelves",
-    "passageText": "The librarian designed a scavenger mystery to teach shelf maps. Each clue told students a section letter and a number range. By following each map clue, teams located three hidden bookmarks. The challenge showed that maps can help readers find information quickly.",
+    "passageText": "The librarian created a scavenger mystery to teach students how shelf maps work. Each team started with a map that showed section letters and number ranges. The first clue directed them to section B, range 400 to 499. There they found a second clue tucked inside a science book. The next clue sent them to section D near the biography shelves. Teams had to read the map carefully so they did not waste time searching random rows. After the third clue, each team located a hidden bookmark with a final code word. Students compared routes and noticed that teams who followed map labels finished faster. By the end, everyone understood that maps save time when searching for information. The mystery game made library skills feel like solving a puzzle.",
     "questions": [
       {
         "id": "q1",
@@ -731,7 +731,7 @@
     "passageType": "literary",
     "missionLabel": "Infer the meaning of a coded playground message.",
     "passageTitle": "Chalk Symbols",
-    "passageText": "On the blacktop, Tia saw chalk symbols near the hopscotch grid. A circle, a star, and an arrow pointed toward the bench. She remembered the class code game where symbols matched words. The symbols translated to \"Check under seat.\" Tia found a thank-you card for the recess helpers.",
+    "passageText": "On the blacktop, Tia saw chalk symbols beside the hopscotch grid. A circle, a star, and an arrow were drawn in a row. She recognized the shapes from the class code game they played last week. In that game, each symbol stood for one word in a message. Tia copied the symbols into her notebook and matched them to the classroom key. The message translated to \"Check under seat.\" She looked under the nearby bench and found an envelope. Inside was a thank-you card for students who helped clean up recess equipment. Tia realized someone used the code to make the note more fun to discover. She decided to leave a coded reply for the helpers the next day.",
     "questions": [
       {
         "id": "q1",
@@ -760,7 +760,7 @@
     "passageType": "informational",
     "missionLabel": "Read a problem-solving sequence and summarize results.",
     "passageTitle": "Design, Test, Improve",
-    "passageText": "The class built paper bridges to hold toy blocks. First, teams folded paper in different shapes. Next, they tested each bridge with one block at a time. Then, they improved weak designs by adding support folds. Teams learned that testing and revising leads to stronger solutions.",
+    "passageText": "The class built paper bridges to hold toy blocks during engineering lab. First, teams folded copy paper into different shapes, like tubes and triangles. They predicted which shape would hold the most weight. Next, each bridge was tested with one block at a time. Some bridges bent quickly, while others stayed strong. Teams recorded results in a table after every test round. Then, they revised weaker designs by adding support folds under the center. A second test showed that most revised bridges held more blocks. Students compared before-and-after results to explain what changed. They learned that good solutions often come from testing, revising, and testing again.",
     "questions": [
       {
         "id": "q1",
@@ -789,7 +789,7 @@
     "passageType": "literary",
     "missionLabel": "Infer the next step from a repeating pattern.",
     "passageTitle": "Tiles in the Hall",
-    "passageText": "During math walk, Eli noticed floor tiles repeating blue, blue, green. He drew the pattern in his notebook and counted the tiles to the classroom door. When he reached a missing tile, he predicted the color should be green. The custodian later confirmed Eli was right.",
+    "passageText": "During a math walk, Eli noticed floor tiles repeating blue, blue, green in the hallway. He paused and checked the pattern across two full rows. To avoid guessing, he wrote the sequence in his notebook. Then he counted each tile from the water fountain to the classroom door. Near the end of the hall, one tile space was empty for repairs. Eli used the pattern to predict the missing color should be green. His teacher asked him to explain how he knew. Eli showed that every third tile in the sequence was green. Later, the custodian returned with a replacement tile and confirmed Eli's prediction. Eli felt proud because he used a pattern rule instead of random choice.",
     "questions": [
       {
         "id": "q1",
@@ -818,7 +818,7 @@
     "passageType": "informational",
     "missionLabel": "Use details to identify the main idea of a logic puzzle.",
     "passageTitle": "Who Chose Which Fruit?",
-    "passageText": "Students solved a lunch puzzle using clues about fruit choices. One clue said Mia did not choose apples. Another said Jordan chose bananas. The last clue said Theo chose the fruit left over. By combining clues, students matched each classmate to a fruit choice.",
+    "passageText": "Students solved a lunch puzzle using clues about fruit choices in the cafeteria. The teacher gave three names and three fruits on the board. The first clue said Mia did not choose apples. The second clue said Jordan chose bananas. The third clue said Theo chose the fruit left over after the first two matches. Students first wrote possible matches in a simple chart. They crossed out choices that could not work after each clue. By the final step, only one option remained for each person. The class checked the chart to make sure all clues still matched. They learned that solving logic puzzles works best when clues are combined carefully.",
     "questions": [
       {
         "id": "q1",
@@ -847,7 +847,7 @@
     "passageType": "literary",
     "missionLabel": "Sequence clues through a classroom maze activity.",
     "passageTitle": "Left, Right, Forward",
-    "passageText": "In coding club, Rina guided a robot through a tape maze on the floor. First, she gave a forward command. Next, she turned the robot left at a paper cone. Then, she moved forward two spaces and turned right. The robot reached a card that read, \"Great debugging!\"",
+    "passageText": "In coding club, Rina guided a robot through a tape maze on the floor. She began by studying the map of cones and turns before entering commands. First, she programmed one forward move from the start line. Next, she added a left turn at the yellow cone. Then, she programmed two more forward moves and a right turn. On the first run, the robot stopped one square too early. Rina checked her commands and added one final forward step. The second run reached the goal card near the wall. The card read, \"Great debugging!\" and made the team cheer. Rina explained that debugging means finding and fixing mistakes in a sequence. The maze showed that careful edits can turn a wrong path into a successful one.",
     "questions": [
       {
         "id": "q1",

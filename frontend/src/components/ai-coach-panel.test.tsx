@@ -28,6 +28,7 @@ describe("AICoachPanel", () => {
       />,
     );
 
+    expect(screen.getByText("Great work!")).toBeInTheDocument();
     expect(screen.getByText("Quest complete!")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Try coach suggestion" })).toBeInTheDocument();
 

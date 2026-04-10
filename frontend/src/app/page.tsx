@@ -15,8 +15,10 @@ import styles from "./screens.module.css";
 export default function Home() {
   const [dashboard, setDashboard] = useState<DashboardResponse | null>(null);
   const [availableThemes, setAvailableThemes] = useState<string[]>([]);
+  const [availableDifficulties, setAvailableDifficulties] = useState<Array<"easy" | "medium" | "difficult">>([]);
   const [activityList, setActivityList] = useState<ActivitiesResponse["activities"]>([]);
   const [selectedTheme, setSelectedTheme] = useState<string>("all");
+  const [selectedDifficulty, setSelectedDifficulty] = useState<"all" | "easy" | "medium" | "difficult">("all");
   const [userSelectedActivityId, setUserSelectedActivityId] = useState<string | null>(null);
   const [error, setError] = useState("");
 
@@ -39,9 +41,13 @@ export default function Home() {
   useEffect(() => {
     const run = async () => {
       try {
-        const payload = await listActivities(selectedTheme === "all" ? undefined : selectedTheme);
+        const payload = await listActivities({
+          theme: selectedTheme === "all" ? undefined : selectedTheme,
+          difficulty: selectedDifficulty === "all" ? undefined : selectedDifficulty,
+        });
         setActivityList(payload.activities);
         setAvailableThemes(payload.themes);
+        setAvailableDifficulties(payload.difficulties);
       } catch (err) {
         if (err instanceof ApiError && err.status === 401) {
           window.location.href = "/login";
@@ -51,7 +57,7 @@ export default function Home() {
       }
     };
     void run();
-  }, [selectedTheme]);
+  }, [selectedTheme, selectedDifficulty]);
 
   const availableActivities =
     activityList.length > 0
@@ -59,6 +65,7 @@ export default function Home() {
           id: activity.id,
           title: activity.title,
           theme: activity.theme,
+          difficulty: activity.difficulty,
           missionLabel: activity.mission_label,
           skillTags: activity.skill_tags,
         }))
@@ -66,9 +73,12 @@ export default function Home() {
           id: activity.id,
           title: activity.title,
           theme: activity.theme,
+          difficulty: activity.difficulty,
           missionLabel: activity.missionLabel,
           skillTags: activity.skillTags,
         }));
+  const difficultyOptions =
+    availableDifficulties.length > 0 ? availableDifficulties : (["easy", "medium", "difficult"] as const);
   const fallbackThemes = Array.from(new Set(fallbackActivities.map((activity) => activity.theme)));
   const themeOptions = availableThemes.length > 0 ? availableThemes : fallbackThemes;
   const suggestedActivityId = typeof window !== "undefined" ? localStorage.getItem("ela:suggested-activity") : null;
@@ -89,6 +99,7 @@ export default function Home() {
   const mission = selectedActivity
     ? {
         activityId: selectedActivity.id,
+        difficulty: selectedActivity.difficulty,
         missionLabel:
           selectedActivity.id === suggestedActivityId
             ? `Coach quest unlocked: ${selectedActivity.title}`
@@ -100,6 +111,7 @@ export default function Home() {
       }
     : {
         activityId: "forest-friends",
+        difficulty: "easy" as const,
         missionLabel: "Choose an activity to start your reading quest.",
         skillTags: [],
       };
@@ -134,6 +146,7 @@ export default function Home() {
         ) : null}
         <Card>
           <h2>Today&apos;s mission</h2>
+          <p className={styles.difficultyLevel}>Difficulty level: {mission.difficulty.toUpperCase()}</p>
           <p className={styles.muted}>{mission.missionLabel}</p>
           <div>
             <label className={styles.label} htmlFor="theme-filter">
@@ -152,6 +165,27 @@ export default function Home() {
               {themeOptions.map((theme) => (
                 <option key={theme} value={theme}>
                   {theme}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className={styles.label} htmlFor="difficulty-filter">
+              Difficulty
+            </label>
+            <select
+              id="difficulty-filter"
+              className={styles.input}
+              value={selectedDifficulty}
+              onChange={(event) => {
+                setSelectedDifficulty(event.target.value as "all" | "easy" | "medium" | "difficult");
+                setUserSelectedActivityId(null);
+              }}
+            >
+              <option value="all">All levels</option>
+              {difficultyOptions.map((difficulty) => (
+                <option key={difficulty} value={difficulty}>
+                  {difficulty}
                 </option>
               ))}
             </select>
@@ -211,6 +245,7 @@ export default function Home() {
                   <div>
                     <strong>{item.title}</strong>
                     <div className={styles.muted}>Theme: {item.theme}</div>
+                    <p className={styles.difficultyLevel}>Difficulty: {item.difficulty.toUpperCase()}</p>
                     {selectedActivityId === item.id ? <span className={styles.muted}> (Current mission)</span> : null}
                   </div>
                   <div className={styles.activityActions}>

@@ -16,7 +16,12 @@ from backend.app.ai_client import (
     run_openrouter_connectivity_check,
 )
 from backend.app.ai_coach import generate_ai_coach_output
-from backend.app.content_schema import get_seed_activity, list_seed_activities, list_seed_themes
+from backend.app.content_schema import (
+    get_seed_activity,
+    list_seed_activities,
+    list_seed_difficulty_tiers,
+    list_seed_themes,
+)
 from backend.app.db import ensure_database
 from backend.app.db import (
     create_submission,
@@ -179,9 +184,11 @@ def get_dashboard(username: str = Depends(_require_authenticated_username)) -> J
 def list_activities(
     _: str = Depends(_require_authenticated_username),
     theme: Optional[str] = Query(default=None),
+    difficulty: Optional[str] = Query(default=None),
 ) -> JSONResponse:
     activities = list_seed_activities()
     allowed_themes = list_seed_themes()
+    allowed_difficulties = list_seed_difficulty_tiers()
     if theme:
         if theme not in allowed_themes:
             raise HTTPException(
@@ -189,15 +196,24 @@ def list_activities(
                 detail=f'Unsupported theme "{theme}".',
             )
         activities = [item for item in activities if item.theme == theme]
+    if difficulty:
+        if difficulty not in allowed_difficulties:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+                detail=f'Unsupported difficulty "{difficulty}".',
+            )
+        activities = [item for item in activities if item.difficulty == difficulty]
 
     return JSONResponse(
         {
             "themes": allowed_themes,
+            "difficulties": allowed_difficulties,
             "activities": [
                 {
                     "id": item.id,
                     "title": item.title,
                     "theme": item.theme,
+                    "difficulty": item.difficulty,
                     "passage_type": item.passageType,
                     "mission_label": item.missionLabel,
                     "skill_tags": item.skillTags,
@@ -220,6 +236,7 @@ def get_activity(activity_id: str, _: str = Depends(_require_authenticated_usern
             "id": activity.id,
             "title": activity.title,
             "theme": activity.theme,
+            "difficulty": activity.difficulty,
             "passage_type": activity.passageType,
             "mission_label": activity.missionLabel,
             "passage_title": activity.passageTitle,

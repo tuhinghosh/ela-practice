@@ -51,7 +51,8 @@ Part 8 integrates these screens with backend APIs while keeping fallback data fo
 ## Themed activity browsing
 
 - Home screen supports selecting a theme and filtering available activities.
-- Activity list API returns both `activities` and `themes`.
+- Home screen supports selecting a difficulty tier (`easy`, `medium`, `difficult`) and combining it with theme filtering.
+- Activity list API returns `activities`, `themes`, and `difficulties`.
 - Mission selection can be set from the available activity list without changing backend submission flow.
 
 ## Reward loop behavior (Part 9)

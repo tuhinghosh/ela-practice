@@ -17,6 +17,7 @@ Each activity entry contains:
 - `id` (string, unique)
 - `title` (string)
 - `theme` (string, one of the allowed values in `themes.json`)
+- `difficulty` (optional string, one of `easy`, `medium`, `difficult`; defaults are assigned deterministically if omitted)
 - `passageType` (`literary` or `informational`)
 - `missionLabel` (string)
 - `passageTitle` (string)
@@ -67,6 +68,19 @@ Allowed MVP content themes are defined in `frontend/src/content/themes.json`:
 - `arts`
 - `friendship`
 - `logic`
+
+## Difficulty schema
+
+Allowed difficulty tiers:
+
+- `easy`
+- `medium`
+- `difficult`
+
+## Passage length guidance
+
+- Child-facing reading passages should render at roughly 10 to 15 sentences for consistent practice depth.
+- If a seeded passage is shorter, the app applies deterministic enrichment text at load time to reach minimum reading length while preserving activity theme and skill focus.
 
 ## Deterministic short-writing rubric (MVP v1)
 

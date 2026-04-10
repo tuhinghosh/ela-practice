@@ -25,6 +25,7 @@ export function AICoachPanel({ coach, question, onQuestionChange, onAskCoach, is
 
       {coach ? (
         <>
+          <p className={styles.muted}>{coach.message_to_child}</p>
           <p className={styles.muted}>{coach.celebration}</p>
           <p className={styles.muted}>{coach.explanation}</p>
           {coach.hint ? <p className={styles.muted}>Hint: {coach.hint}</p> : null}

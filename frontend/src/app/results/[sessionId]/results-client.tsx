@@ -17,6 +17,26 @@ type Props = {
   initialSessionId: string;
 };
 
+function cleanText(value: string | null | undefined, fallback: string): string {
+  if (typeof value !== "string") return fallback;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : fallback;
+}
+
+function normalizeCoachPayload(payload: AICoachResponse): AICoachResponse {
+  return {
+    ...payload,
+    message_to_child: cleanText(
+      payload.message_to_child,
+      "Great effort. Keep using details from the passage to support your ideas.",
+    ),
+    celebration: cleanText(payload.celebration, "Nice work finishing this activity."),
+    explanation: cleanText(payload.explanation, "Your strongest answers use clear evidence from the text."),
+    hint: payload.hint ? cleanText(payload.hint, "") : payload.hint,
+    writing_feedback: payload.writing_feedback ? cleanText(payload.writing_feedback, "") : payload.writing_feedback,
+  };
+}
+
 export default function ResultsClient({ initialSessionId }: Props) {
   const searchParams = useSearchParams();
   const querySessionId = searchParams.get("session");
@@ -55,7 +75,7 @@ export default function ResultsClient({ initialSessionId }: Props) {
     setCoachError("");
     try {
       const payload = await getAICoachFeedback(result.session_id, question);
-      setCoach(payload);
+      setCoach(normalizeCoachPayload(payload));
       if (payload.suggested_next_activity_id) {
         localStorage.setItem("ela:suggested-activity", payload.suggested_next_activity_id);
       }
@@ -146,7 +166,9 @@ export default function ResultsClient({ initialSessionId }: Props) {
             <p className={styles.muted}>Great effort. Keep your reading adventure streak going!</p>
           )}
           <h3>Coach feedback (post-submission)</h3>
-          <p className={styles.muted}>{coach?.celebration ?? coachSample.celebration}</p>
+          <p className={styles.muted}>
+            {coach?.message_to_child ?? coach?.celebration ?? coachSample.celebration}
+          </p>
           <p className={styles.muted}>{coach?.explanation ?? coachSample.explanation}</p>
           <p className={styles.muted}>{coach?.hint ?? coachSample.nextStepSuggestion}</p>
           <ButtonLink href="/" tone="secondary">
