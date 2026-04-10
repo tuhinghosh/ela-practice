@@ -39,6 +39,37 @@
   line-height: 1.6;
 }
 
+.activityList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.activityItem {
+  border: 1px solid #dce6ff;
+  background: #f7faff;
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.activityActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.inlineAction {
+  margin-top: 0;
+  padding: 7px 12px;
+  font-size: 0.85rem;
+}
+
 .passage {
   margin-top: 8px;
   border-radius: 14px;

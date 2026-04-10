@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { AppShell } from "@/components/app-shell";
-import { ButtonLink } from "@/components/button";
+import { Button, ButtonLink } from "@/components/button";
 import { Card } from "@/components/card";
 import { Split, Stack, StatGrid } from "@/components/layout";
 import { Tag } from "@/components/tag";
@@ -15,6 +15,7 @@ import styles from "./screens.module.css";
 export default function Home() {
   const [dashboard, setDashboard] = useState<DashboardResponse | null>(null);
   const [activityList, setActivityList] = useState<ActivitiesResponse["activities"]>([]);
+  const [userSelectedActivityId, setUserSelectedActivityId] = useState<string | null>(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -35,29 +36,52 @@ export default function Home() {
     void run();
   }, []);
 
-  const fallbackMission = fallbackActivities[0];
-  const baseMission = dashboard
+  const availableActivities =
+    activityList.length > 0
+      ? activityList.map((activity) => ({
+          id: activity.id,
+          title: activity.title,
+          missionLabel: activity.mission_label,
+          skillTags: activity.skill_tags,
+        }))
+      : fallbackActivities.map((activity) => ({
+          id: activity.id,
+          title: activity.title,
+          missionLabel: activity.missionLabel,
+          skillTags: activity.skillTags,
+        }));
+  const suggestedActivityId = typeof window !== "undefined" ? localStorage.getItem("ela:suggested-activity") : null;
+
+  const attempted = new Set((dashboard?.recent_sessions ?? []).map((session) => session.activity_id));
+  const suggested = availableActivities.find((activity) => activity.id === suggestedActivityId);
+  const unattempted = availableActivities.find((activity) => !attempted.has(activity.id));
+  const fromDashboard = availableActivities.find((activity) => activity.id === dashboard?.mission.activity_id);
+  const autoSelectedActivityId = (suggested ?? unattempted ?? fromDashboard ?? availableActivities[0])?.id ?? null;
+  const selectedActivityId =
+    userSelectedActivityId && availableActivities.some((activity) => activity.id === userSelectedActivityId)
+      ? userSelectedActivityId
+      : autoSelectedActivityId;
+
+  const selectedActivity =
+    availableActivities.find((activity) => activity.id === selectedActivityId) ?? availableActivities[0] ?? null;
+
+  const mission = selectedActivity
     ? {
-        activityId: dashboard.mission.activity_id,
-        missionLabel: dashboard.mission.mission_label,
-        skillTags: dashboard.mission.skill_tags,
+        activityId: selectedActivity.id,
+        missionLabel:
+          selectedActivity.id === suggestedActivityId
+            ? `Coach quest unlocked: ${selectedActivity.title}`
+            : selectedActivity.missionLabel,
+        skillTags:
+          selectedActivity.id === suggestedActivityId
+            ? ["coach-suggested", ...(dashboard?.progress.growth_areas ?? []).slice(0, 2)]
+            : selectedActivity.skillTags,
       }
     : {
-        activityId: fallbackMission.id,
-        missionLabel: fallbackMission.missionLabel,
-        skillTags: fallbackMission.skillTags,
+        activityId: "forest-friends",
+        missionLabel: "Choose an activity to start your reading quest.",
+        skillTags: [],
       };
-  const suggestedActivityId = typeof window !== "undefined" ? localStorage.getItem("ela:suggested-activity") : null;
-  const suggestedActivity = (activityList.length > 0 ? activityList : fallbackActivities).find(
-    (activity) => activity.id === suggestedActivityId,
-  );
-  const mission = suggestedActivity
-    ? {
-        activityId: suggestedActivity.id,
-        missionLabel: `Coach quest unlocked: ${suggestedActivity.title}`,
-        skillTags: ["coach-suggested", ...(dashboard?.progress.growth_areas ?? []).slice(0, 2)],
-      }
-    : baseMission;
 
   const rewards = dashboard
     ? {
@@ -138,22 +162,28 @@ export default function Home() {
 
           <Card as="article">
             <h3>Available activities</h3>
-            <ul className={styles.list}>
-              {(activityList.length > 0
-                ? activityList.map((item) => ({
-                    id: item.id,
-                    label: item.title,
-                  }))
-                : fallbackActivities.map((item) => ({ id: item.id, label: item.title }))
-              ).length === 0 ? <li>No activities available yet.</li> : null}
-              {(activityList.length > 0
-                ? activityList.map((item) => ({
-                    id: item.id,
-                    label: item.title,
-                  }))
-                : fallbackActivities.map((item) => ({ id: item.id, label: item.title }))
-              ).map((item) => (
-                <li key={item.id}>{item.label}</li>
+            <ul className={styles.activityList}>
+              {availableActivities.length === 0 ? <li>No activities available yet.</li> : null}
+              {availableActivities.map((item) => (
+                <li key={item.id} className={styles.activityItem}>
+                  <div>
+                    <strong>{item.title}</strong>
+                    {selectedActivityId === item.id ? <span className={styles.muted}> (Current mission)</span> : null}
+                  </div>
+                  <div className={styles.activityActions}>
+                    <Button
+                      type="button"
+                      tone="ghost"
+                      className={styles.inlineAction}
+                      onClick={() => setUserSelectedActivityId(item.id)}
+                    >
+                      Set mission
+                    </Button>
+                    <ButtonLink href={`/activity/${item.id}`} tone="secondary" className={styles.inlineAction}>
+                      Start now
+                    </ButtonLink>
+                  </div>
+                </li>
               ))}
             </ul>
           </Card>
