@@ -58,7 +58,10 @@ def test_structured_output_parsing_success(monkeypatch: pytest.MonkeyPatch) -> N
       "confidence": 0.88
     }"""
 
+    captured = {}
+
     def fake_chat(messages, **kwargs):
+        captured["kwargs"] = kwargs
         return {"model": "openai/gpt-oss-120b", "response_text": valid_json}
 
     monkeypatch.setattr(ai_coach, "run_openrouter_chat", fake_chat)
@@ -66,6 +69,7 @@ def test_structured_output_parsing_success(monkeypatch: pytest.MonkeyPatch) -> N
     assert result["used_fallback"] is False
     assert result["confidence"] == 0.88
     assert result["suggested_skill_tag"] == "inference"
+    assert captured["kwargs"]["response_format"] == {"type": "json_object"}
 
 
 def test_invalid_schema_uses_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -73,9 +77,10 @@ def test_invalid_schema_uses_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
         return {"model": "openai/gpt-oss-120b", "response_text": "Not JSON at all"}
 
     monkeypatch.setattr(ai_coach, "run_openrouter_chat", fake_chat)
-    result = generate_ai_coach_output(_sample_context())
+    result = generate_ai_coach_output(_sample_context(), child_question="How can I make the evidence stronger?")
     assert result["used_fallback"] is True
     assert result["message_to_child"]
+    assert "evidence" in result["message_to_child"].lower()
     assert 0 <= result["confidence"] <= 1
 
 

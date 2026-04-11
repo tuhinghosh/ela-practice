@@ -46,6 +46,7 @@ def run_openrouter_chat(
     temperature: float = 0.0,
     timeout_s: float = 20.0,
     model: Optional[str] = None,
+    response_format: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     target_model = model or os.environ.get("OPENROUTER_MODEL", DEFAULT_MODEL)
     request_payload = {
@@ -53,6 +54,8 @@ def run_openrouter_chat(
         "messages": messages,
         "temperature": temperature,
     }
+    if response_format:
+        request_payload["response_format"] = response_format
     response_payload = _post_chat_completion(request_payload, timeout_s=timeout_s)
     text = _extract_text_from_response(response_payload)
     return {"model": target_model, "response_text": text}
