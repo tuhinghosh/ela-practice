@@ -9,13 +9,22 @@ import styles from "@/app/screens.module.css";
 type Props = {
   coach: AICoachResponse | null;
   question: string;
+  lastAskedQuestion: string;
   onQuestionChange: (value: string) => void;
   onAskCoach: () => void;
   isAsking: boolean;
   error: string;
 };
 
-export function AICoachPanel({ coach, question, onQuestionChange, onAskCoach, isAsking, error }: Props) {
+export function AICoachPanel({
+  coach,
+  question,
+  lastAskedQuestion,
+  onQuestionChange,
+  onAskCoach,
+  isAsking,
+  error,
+}: Props) {
   return (
     <Card>
       <h2>AI Coach Corner</h2>
@@ -25,6 +34,7 @@ export function AICoachPanel({ coach, question, onQuestionChange, onAskCoach, is
 
       {coach ? (
         <>
+          {lastAskedQuestion ? <p className={styles.muted}>Asked: &quot;{lastAskedQuestion}&quot;</p> : null}
           <p className={styles.muted}>{coach.message_to_child}</p>
           <p className={styles.muted}>{coach.celebration}</p>
           <p className={styles.muted}>{coach.explanation}</p>

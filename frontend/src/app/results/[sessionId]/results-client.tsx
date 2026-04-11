@@ -50,6 +50,7 @@ export default function ResultsClient({ initialSessionId }: Props) {
   const [error, setError] = useState("");
   const [coach, setCoach] = useState<AICoachResponse | null>(null);
   const [coachQuestion, setCoachQuestion] = useState("");
+  const [lastAskedQuestion, setLastAskedQuestion] = useState("");
   const [coachError, setCoachError] = useState("");
   const [isAskingCoach, setIsAskingCoach] = useState(false);
 
@@ -71,10 +72,14 @@ export default function ResultsClient({ initialSessionId }: Props) {
 
   const requestCoach = useCallback(async (question?: string) => {
     if (!result) return;
+    const normalizedQuestion = (question ?? "").trim();
     setIsAskingCoach(true);
     setCoachError("");
+    if (normalizedQuestion) {
+      setLastAskedQuestion(normalizedQuestion);
+    }
     try {
-      const payload = await getAICoachFeedback(result.session_id, question);
+      const payload = await getAICoachFeedback(result.session_id, normalizedQuestion || undefined);
       setCoach(normalizeCoachPayload(payload));
       if (payload.suggested_next_activity_id) {
         localStorage.setItem("ela:suggested-activity", payload.suggested_next_activity_id);
@@ -178,6 +183,7 @@ export default function ResultsClient({ initialSessionId }: Props) {
         <AICoachPanel
           coach={coach}
           question={coachQuestion}
+          lastAskedQuestion={lastAskedQuestion}
           onQuestionChange={setCoachQuestion}
           onAskCoach={() => void requestCoach(coachQuestion.trim())}
           isAsking={isAskingCoach}

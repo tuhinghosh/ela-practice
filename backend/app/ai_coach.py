@@ -58,22 +58,41 @@ def _extract_json_object(raw_text: str) -> Dict[str, Any]:
         raise
 
 
-def build_fallback_coach_output(context: Dict[str, Any]) -> Dict[str, Any]:
+def build_fallback_coach_output(context: Dict[str, Any], child_question: Optional[str] = None) -> Dict[str, Any]:
     score_percent = float(context.get("score_percent", 0))
     celebration = (
         "Great effort! You finished your reading quest and kept trying."
         if score_percent < 80
         else "Amazing work! You finished your reading quest with strong answers."
     )
+    question = (child_question or "").strip().lower()
+    if "evidence" in question:
+        hint = "Quote or paraphrase one exact clue from the passage, then explain how it proves your idea."
+        explanation = (
+            "Strong evidence answers use a specific passage detail and then connect that detail to the claim."
+        )
+        writing_feedback = "Try this frame: \"In the passage, ___. This shows ___ because ___.\""
+        message_to_child = "Great question. To make evidence stronger, use one exact text clue and explain why it matters."
+    elif "main idea" in question:
+        hint = "State the topic first, then include one key detail that appears more than once."
+        explanation = "Main-idea answers are strongest when they include the big point and one supporting detail."
+        writing_feedback = "Write one sentence for the big idea and one sentence for supporting evidence."
+        message_to_child = "Nice thinking. A strong main-idea answer includes the big point plus a key supporting detail."
+    else:
+        hint = "Look for clue words in the passage and connect them to your answer."
+        explanation = "Strong answers match the passage details and use complete sentences."
+        writing_feedback = "Try adding one sentence that clearly explains your evidence."
+        message_to_child = "I am proud of your hard work today. Keep using evidence from the passage."
+
     return {
-        "message_to_child": "I am proud of your hard work today. Keep using evidence from the passage.",
+        "message_to_child": message_to_child,
         "message_to_parent": "The child completed a post-submission coaching step with safe fallback guidance.",
-        "hint": "Look for clue words in the passage and connect them to your answer.",
-        "explanation": "Strong answers match the passage details and use complete sentences.",
+        "hint": hint,
+        "explanation": explanation,
         "celebration": celebration,
         "suggested_next_activity_id": None,
         "suggested_skill_tag": "reading-comprehension",
-        "writing_feedback": "Try adding one sentence that clearly explains your evidence.",
+        "writing_feedback": writing_feedback,
         "confidence": 0.5,
     }
 
@@ -83,7 +102,11 @@ def generate_ai_coach_output(context: Dict[str, Any], child_question: Optional[s
         {"role": "system", "content": build_ai_coach_system_prompt()},
         {"role": "user", "content": build_ai_coach_user_prompt(context, child_question)},
     ]
-    result = run_openrouter_chat(messages, temperature=0.2)
+    result = run_openrouter_chat(
+        messages,
+        temperature=0.2,
+        response_format={"type": "json_object"},
+    )
     raw_text = result["response_text"]
 
     try:
@@ -94,7 +117,7 @@ def generate_ai_coach_output(context: Dict[str, Any], child_question: Optional[s
         payload["model"] = result["model"]
         return payload
     except (json.JSONDecodeError, ValidationError):
-        fallback = build_fallback_coach_output(context)
+        fallback = build_fallback_coach_output(context, child_question=child_question)
         fallback["used_fallback"] = True
         fallback["model"] = result["model"]
         return fallback

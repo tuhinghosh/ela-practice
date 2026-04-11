@@ -21,6 +21,7 @@ describe("AICoachPanel", () => {
           hint: "Use clue words.",
         }}
         question="How can I improve?"
+        lastAskedQuestion="How can I improve?"
         onQuestionChange={onQuestionChange}
         onAskCoach={onAskCoach}
         isAsking={false}
@@ -28,6 +29,7 @@ describe("AICoachPanel", () => {
       />,
     );
 
+    expect(screen.getByText('Asked: "How can I improve?"')).toBeInTheDocument();
     expect(screen.getByText("Great work!")).toBeInTheDocument();
     expect(screen.getByText("Quest complete!")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Try coach suggestion" })).toBeInTheDocument();
