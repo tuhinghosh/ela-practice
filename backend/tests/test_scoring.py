@@ -15,6 +15,7 @@ def test_scoring_returns_expected_shape() -> None:
     assert "rubric" in result
     assert "question_feedback" in result
     assert result["score_percent"] >= 0
+    assert set(result["skill_breakdown"].keys()) == set(activity.skillTags)
 
 
 def test_scoring_is_deterministic_for_same_payload() -> None:

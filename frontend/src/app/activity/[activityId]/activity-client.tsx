@@ -52,6 +52,10 @@ export default function ActivityClient({ activityId }: Props) {
     questions: fallback.questions,
   };
   const difficultyLabel = (resolved.difficulty ?? "medium").toUpperCase();
+  const passageParagraphs = resolved.passage_text
+    .split(/\n\s*\n/)
+    .map((paragraph) => paragraph.trim())
+    .filter((paragraph) => paragraph.length > 0);
 
   const onSubmit = async () => {
     setIsSubmitting(true);
@@ -93,7 +97,13 @@ export default function ActivityClient({ activityId }: Props) {
         <div className={styles.chipRow}>
           <Tag>Difficulty: {difficultyLabel}</Tag>
         </div>
-        <p className={styles.passage}>{resolved.passage_text}</p>
+        <div className={styles.passage}>
+          {(passageParagraphs.length > 0 ? passageParagraphs : [resolved.passage_text]).map((paragraph, index) => (
+            <p key={`passage-paragraph-${index}`} className={styles.passageParagraph}>
+              {paragraph}
+            </p>
+          ))}
+        </div>
       </Card>
 
       <Card>

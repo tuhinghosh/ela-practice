@@ -6,7 +6,7 @@
     "passageType": "literary",
     "missionLabel": "Help Mira the Explorer understand the story clues.",
     "passageTitle": "A Visit to Pine Hill",
-    "passageText": "Mira packed a sandwich, a notebook, and a pencil before walking up Pine Hill. The morning air smelled like pine needles and wet soil. At the top, she heard chirping near an old oak tree. Two small birds were carrying tiny twigs to the same branch. Mira sat quietly so she would not scare them away. She noticed that one bird arranged the twigs while the other searched for more. A gust of wind knocked one twig to the ground. Instead of flying away, the bird dropped down, picked it up, and returned to the nest. Mira wrote that teamwork and patience were helping the birds finish a hard job. Before she left, she checked the branch one last time and saw the nest taking shape.",
+    "passageText": "Mira packed a sandwich, a notebook, and a pencil before walking up Pine Hill. The morning air smelled like pine needles and wet soil. At the top, she heard chirping near an old oak tree. Two small birds were carrying tiny twigs to the same branch. Mira sat quietly so she would not scare them away. She noticed that one bird arranged the twigs while the other searched for more. A gust of wind knocked one twig to the ground. Instead of flying away, the bird dropped down, picked it up, and returned to the nest.\n\nMira wrote that teamwork and patience were helping the birds finish a hard job. Before she left, she checked the branch one last time and saw the nest taking shape. By the end, the experience showed that careful observation reveals surprising connections in nature.",
     "questions": [
       {
         "id": "q1",
@@ -26,7 +26,12 @@
         "prompt": "Write 2-3 sentences explaining one clue that shows the birds did not give up."
       }
     ],
-    "skillTags": ["reading-comprehension", "main-idea", "inference", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "main-idea",
+      "inference",
+      "short-writing"
+    ]
   },
   {
     "id": "bees-and-flowers",
@@ -35,7 +40,7 @@
     "passageType": "informational",
     "missionLabel": "Read the facts and discover why pollinators matter.",
     "passageTitle": "Busy Bees at Work",
-    "passageText": "Bees visit flowers to collect nectar and pollen during warm parts of the day. As they crawl inside blooms, pollen sticks to tiny hairs on their legs and bodies. When bees travel to the next flower, some of that pollen rubs off. This transfer process is called pollination. Pollination helps plants produce seeds and fruit. Farmers depend on pollination for crops like berries, melons, and apples. Gardeners also notice stronger harvests when pollinators are active. Bees are not the only pollinators, but they are among the most efficient. Without them, many flowering plants would produce less food. Protecting pollinator habitats helps both wild ecosystems and human communities.",
+    "passageText": "Bees visit flowers to collect nectar and pollen during warm parts of the day. As they crawl inside blooms, pollen sticks to tiny hairs on their legs and bodies. When bees travel to the next flower, some of that pollen rubs off. This transfer process is called pollination. Pollination helps plants produce seeds and fruit. Farmers depend on pollination for crops like berries, melons, and apples. Gardeners also notice stronger harvests when pollinators are active. Bees are not the only pollinators, but they are among the most efficient.\n\nWithout them, many flowering plants would produce less food. Protecting pollinator habitats helps both wild ecosystems and human communities. By the end, the facts showed how small details connect to larger natural systems.",
     "questions": [
       {
         "id": "q1",
@@ -55,7 +60,12 @@
         "prompt": "Summarize why bees are important using two complete sentences."
       }
     ],
-    "skillTags": ["reading-comprehension", "vocabulary", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "vocabulary",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "river-map",
@@ -64,7 +74,7 @@
     "passageType": "literary",
     "missionLabel": "Follow clues and infer what happens next.",
     "passageTitle": "A Folded Map",
-    "passageText": "Jalen found a folded map under a smooth river rock by the trail. A note on top said to start where the willow tree leaned over the bank. He called his cousin Nia and showed her the drawing. Together they followed the arrows and counted ten steps east. The first spot was empty, so they checked the map again for a second clue. Nia noticed a tiny bird symbol next to a bench on the page. They walked there and found a wooden box under the seat. Inside was a bag of bird seed and a thank-you message from a park volunteer. The note explained that the map was a kindness challenge, not a treasure hunt. Jalen laughed and said the best prize was helping something alive.",
+    "passageText": "Jalen found a folded map under a smooth river rock by the trail. A note on top said to start where the willow tree leaned over the bank. He called his cousin Nia and showed her the drawing. Together they followed the arrows and counted ten steps east. The first spot was empty, so they checked the map again for a second clue. Nia noticed a tiny bird symbol next to a bench on the page. They walked there and found a wooden box under the seat. Inside was a bag of bird seed and a thank-you message from a park volunteer.\n\nThe note explained that the map was a kindness challenge, not a treasure hunt. Jalen laughed and said the best prize was helping something alive. By the end, careful thinking solved what quick guesses could not.",
     "questions": [
       {
         "id": "q1",
@@ -84,7 +94,12 @@
         "prompt": "In 2-3 complete sentences, explain how the ending changes Jalen's idea about the map."
       }
     ],
-    "skillTags": ["reading-comprehension", "inference", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "inference",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "garden-helpers",
@@ -93,7 +108,7 @@
     "passageType": "informational",
     "missionLabel": "Discover how living things keep a garden healthy.",
     "passageTitle": "Busy Garden Team",
-    "passageText": "A school garden near the playground grows tomatoes, beans, lettuce, and marigolds. Students check the beds every morning before class starts. They often see worms turning the soil after rainy nights. Those tunnels let water and air reach plant roots more easily. Ladybugs crawl across leaves and eat pests that damage stems. Bees visit blossoms and carry pollen from one flower to another. Compost made from cafeteria scraps adds nutrients to the soil. Students record which beds look healthiest each week. Their chart shows that gardens do best when many helpers work together. The project teaches that healthy systems depend on many small jobs, not one single fix.",
+    "passageText": "A school garden near the playground grows tomatoes, beans, lettuce, and marigolds. Students check the beds every morning before class starts. They often see worms turning the soil after rainy nights. Those tunnels let water and air reach plant roots more easily. Ladybugs crawl across leaves and eat pests that damage stems. Bees visit blossoms and carry pollen from one flower to another. Compost made from cafeteria scraps adds nutrients to the soil. Students record which beds look healthiest each week.\n\nTheir chart shows that gardens do best when many helpers work together. The project teaches that healthy systems depend on many small jobs, not one single fix. By the end, the facts showed how small details connect to larger natural systems.",
     "questions": [
       {
         "id": "q1",
@@ -113,7 +128,12 @@
         "prompt": "Write two sentences explaining how two different helpers support the garden."
       }
     ],
-    "skillTags": ["reading-comprehension", "main-idea", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "main-idea",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "mountain-stream",
@@ -122,7 +142,7 @@
     "passageType": "literary",
     "missionLabel": "Use clues to infer why a stream changes.",
     "passageTitle": "After the Rain",
-    "passageText": "Kai visited the trail the morning after a long rainstorm ended. The stream that was usually clear looked brown and rushed past the rocks. Small branches floated by in fast swirls. Mud covered the edges of the path near the bridge. Kai saw deep footprints where hikers had stepped around puddles. A wooden trail sign leaned sideways, and one corner was cracked. He remembered that the hill above the stream had loose soil. Heavy rain likely washed that soil downhill into the water. He also guessed that the strong current bumped debris against the signpost. Kai took photos to share with the ranger so repairs could happen quickly.",
+    "passageText": "Kai visited the trail the morning after a long rainstorm ended. The stream that was usually clear looked brown and rushed past the rocks. Small branches floated by in fast swirls. Mud covered the edges of the path near the bridge. Kai saw deep footprints where hikers had stepped around puddles. A wooden trail sign leaned sideways, and one corner was cracked. He remembered that the hill above the stream had loose soil. Heavy rain likely washed that soil downhill into the water. They knew they had to solve the challenge by tracking details in the environment.\n\nHe also guessed that the strong current bumped debris against the signpost. Kai took photos to share with the ranger so repairs could happen quickly. By the end, they understood how careful observations led to a stronger explanation.",
     "questions": [
       {
         "id": "q1",
@@ -142,7 +162,12 @@
         "prompt": "In 2-3 sentences, explain what likely caused the stream to look different."
       }
     ],
-    "skillTags": ["reading-comprehension", "inference", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "inference",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "park-ranger-note",
@@ -151,7 +176,7 @@
     "passageType": "informational",
     "missionLabel": "Read signs and sequence events in a nature walk.",
     "passageTitle": "Trail Safety Steps",
-    "passageText": "Before the class hike, Ranger Lee handed each student a safety card. The card listed four steps in a clear order. First, stay on marked paths so plants and nests are not damaged. Next, carry out all trash, including snack wrappers and juice tops. Then, watch animals from a distance instead of trying to touch them. Last, tell an adult right away if someone in the group gets separated. Ranger Lee explained why each step protects both hikers and wildlife. Students practiced the steps before leaving the trailhead. During the hike, they reminded one another when someone drifted off the path. By the end, the group understood that simple routines can prevent bigger problems.",
+    "passageText": "Before the class hike, Ranger Lee handed each student a safety card. The card listed four steps in a clear order. First, stay on marked paths so plants and nests are not damaged. Next, carry out all trash, including snack wrappers and juice tops. Then, watch animals from a distance instead of trying to touch them. Last, tell an adult right away if someone in the group gets separated. Ranger Lee explained why each step protects both hikers and wildlife. Students practiced the steps before leaving the trailhead.\n\nDuring the hike, they reminded one another when someone drifted off the path. By the end, the group understood that simple routines can prevent bigger problems.",
     "questions": [
       {
         "id": "q1",
@@ -171,7 +196,12 @@
         "prompt": "Write two sentences summarizing why the steps are listed in order."
       }
     ],
-    "skillTags": ["reading-comprehension", "sequence", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "sequence",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "moon-garden",
@@ -180,7 +210,7 @@
     "passageType": "literary",
     "missionLabel": "Follow a space-themed story and find the big idea.",
     "passageTitle": "A Garden Under the Stars",
-    "passageText": "Lena placed glow sticks around the community garden for night science club. The sticks marked where students should stand safely in the dark. She pointed to the moon and asked everyone to notice the long shadows. Every ten minutes, the shadow lines moved a little across the path. Lena measured each change with a ruler and wrote it in her chart. Her partner checked the time and called out each interval. Another teammate sketched the garden bed to show where shadows started and ended. By the fourth measurement, the class could see a clear pattern. They discussed how moonlight and Earth movement can change what we see. The club ended the night excited that simple tools could produce real scientific evidence.",
+    "passageText": "Lena placed glow sticks around the community garden for night science club. The sticks marked where students should stand safely in the dark. She pointed to the moon and asked everyone to notice the long shadows. Every ten minutes, the shadow lines moved a little across the path. Lena measured each change with a ruler and wrote it in her chart. Her partner checked the time and called out each interval. Another teammate sketched the garden bed to show where shadows started and ended. By the fourth measurement, the class could see a clear pattern. Their conclusion improved after they validated one more measurement. They knew they had to confirm the answer with reliable data.\n\nThey discussed how moonlight and Earth movement can change what we see. The club ended the night excited that simple tools could produce real scientific evidence.",
     "questions": [
       {
         "id": "q1",
@@ -200,7 +230,12 @@
         "prompt": "In 2-3 sentences, explain how Lena showed good science habits."
       }
     ],
-    "skillTags": ["reading-comprehension", "main-idea", "inference", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "main-idea",
+      "inference",
+      "short-writing"
+    ]
   },
   {
     "id": "planet-parade",
@@ -209,7 +244,7 @@
     "passageType": "informational",
     "missionLabel": "Learn vocabulary about the solar system.",
     "passageTitle": "What Is an Orbit?",
-    "passageText": "Planets travel around the sun on paths called orbits. An orbit is not a straight line but a curved path that repeats. Planets close to the sun complete shorter trips in less time. Planets farther away have larger paths and need more time to circle once. Earth completes one orbit in about 365 days. Mercury finishes an orbit much faster than Earth because it is closer to the sun. Neptune takes many years because it travels a much longer path. Scientists use models and diagrams to compare these distances. They also use observations from telescopes and space missions to verify movement. Understanding orbits helps explain why years are different lengths on different planets.",
+    "passageText": "Planets travel around the sun on paths called orbits. An orbit is not a straight line but a curved path that repeats. Planets close to the sun complete shorter trips in less time. Planets farther away have larger paths and need more time to circle once. Earth completes one orbit in about 365 days. Mercury finishes an orbit much faster than Earth because it is closer to the sun. Neptune takes many years because it travels a much longer path. Scientists use models and diagrams to compare these distances.\n\nThey also use observations from telescopes and space missions to verify movement. Understanding orbits helps explain why years are different lengths on different planets. A second instrument check made their evidence more dependable. By the conclusion, each teammate could explain the sequence. They confirmed one more measurement before locking in the answer. By the end, the data helped build a clearer picture of how space works.",
     "questions": [
       {
         "id": "q1",
@@ -229,7 +264,12 @@
         "prompt": "Write two complete sentences describing why some planets take longer to orbit."
       }
     ],
-    "skillTags": ["reading-comprehension", "vocabulary", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "vocabulary",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "satellite-clue",
@@ -238,7 +278,7 @@
     "passageType": "literary",
     "missionLabel": "Infer why a school signal changed during weather class.",
     "passageTitle": "The Missing Signal",
-    "passageText": "During weather club, Amara checked a tablet that displayed live cloud images from a satellite. She and her team used the pictures to compare local clouds with regional patterns. Suddenly, the screen froze and stopped updating. Amara looked outside and noticed dark storm clouds building quickly. Flags near the field were snapping in strong gusts. The teacher explained that severe weather can interfere with signals for short periods. The club switched to paper maps while they waited. Ten minutes later, the storm moved farther east. The tablet refreshed and began showing new images again. Amara recorded the interruption as evidence that weather can affect communication tools.",
+    "passageText": "During weather club, Amara checked a tablet that displayed live cloud images from a satellite. She and her team used the pictures to compare local clouds with regional patterns. Suddenly, the screen froze and stopped updating. Amara looked outside and noticed dark storm clouds building quickly. Flags near the field were snapping in strong gusts. The teacher explained that severe weather can interfere with signals for short periods. The club switched to paper maps while they waited. Ten minutes later, the storm moved farther east.\n\nThe tablet refreshed and began showing new images again. Amara recorded the interruption as evidence that weather can affect communication tools. By the end, the discovery changed how they understood the sky above.",
     "questions": [
       {
         "id": "q1",
@@ -258,7 +298,12 @@
         "prompt": "Explain in two sentences which clues support your inference."
       }
     ],
-    "skillTags": ["reading-comprehension", "inference", "vocabulary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "inference",
+      "vocabulary",
+      "short-writing"
+    ]
   },
   {
     "id": "rocket-rules",
@@ -267,7 +312,7 @@
     "passageType": "informational",
     "missionLabel": "Sequence steps for a safe rocket launch.",
     "passageTitle": "Launch Day Checklist",
-    "passageText": "The rocket club follows a strict checklist each time it launches. First, students check that the launch field is clear of people and backpacks. They also confirm that wind conditions are safe for a straight flight. Next, everyone stands behind the painted safety line. One student leads a loud countdown while another watches the rocket angle. Then, the launch switch is pressed only after the teacher gives approval. The rocket rises quickly, and students track it with their eyes. After touchdown, the team waits for an all-clear signal before moving forward. Finally, they inspect the rocket and write notes about the flight. This sequence keeps launch day exciting and safe at the same time.",
+    "passageText": "The rocket club follows a strict checklist each time it launches. First, students check that the launch field is clear of people and backpacks. They also confirm that wind conditions are safe for a straight flight. Next, everyone stands behind the painted safety line. One student leads a loud countdown while another watches the rocket angle. Then, the launch switch is pressed only after the teacher gives approval. The rocket rises quickly, and students track it with their eyes. After touchdown, the team waits for an all-clear signal before moving forward. A signal check confirmed which interpretation matched the observation. They knew they had to confirm the answer with reliable data.\n\nFinally, they inspect the rocket and write notes about the flight. This sequence keeps launch day exciting and safe at the same time. A second instrument check made their evidence more dependable. By the end, the data helped build a clearer picture of how space works.",
     "questions": [
       {
         "id": "q1",
@@ -287,7 +332,12 @@
         "prompt": "Write 2-3 sentences explaining why following sequence matters in this activity."
       }
     ],
-    "skillTags": ["reading-comprehension", "sequence", "main-idea", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "sequence",
+      "main-idea",
+      "short-writing"
+    ]
   },
   {
     "id": "star-map-helpers",
@@ -296,7 +346,7 @@
     "passageType": "informational",
     "missionLabel": "Summarize how a team uses a map of stars.",
     "passageTitle": "Finding North in the Sky",
-    "passageText": "Students at Sky Club used a printed star map to find the North Star. They met after sunset in the school field when the sky was clear. One student held a red flashlight so eyes could stay adjusted to darkness. Another student lined up the map with the horizon using a compass. Two teammates searched for the Big Dipper pattern first. From that pattern, they traced an imaginary line toward the North Star. Each student took a turn checking the location to confirm the result. The group marked the position in their notebooks and compared answers. Their notes matched, showing they had found the correct star. Teamwork and careful roles helped the class finish quickly and accurately.",
+    "passageText": "Students at Sky Club used a printed star map to find the North Star. They met after sunset in the school field when the sky was clear. One student held a red flashlight so eyes could stay adjusted to darkness. Another student lined up the map with the horizon using a compass. Two teammates searched for the Big Dipper pattern first. From that pattern, they traced an imaginary line toward the North Star. Each student took a turn checking the location to confirm the result. The group marked the position in their notebooks and compared answers. The mission log helped them connect each data point to the final claim. They knew they had to confirm the answer with reliable data.\n\nTheir notes matched, showing they had found the correct star. Teamwork and careful roles helped the class finish quickly and accurately. By the end, the data helped build a clearer picture of how space works.",
     "questions": [
       {
         "id": "q1",
@@ -316,7 +366,12 @@
         "prompt": "In two complete sentences, explain how teamwork improved the activity."
       }
     ],
-    "skillTags": ["reading-comprehension", "summary", "main-idea", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "summary",
+      "main-idea",
+      "short-writing"
+    ]
   },
   {
     "id": "library-day",
@@ -325,7 +380,7 @@
     "passageType": "literary",
     "missionLabel": "Use clues to understand how helpers support a community.",
     "passageTitle": "New Books Arrive",
-    "passageText": "When boxes of new books arrived, Ms. Patel asked the class for help. Marco sorted adventure, science, and history titles into separate stacks. Ana placed new labels on shelves so books could be returned correctly. Two students checked each title against the library list. Another group made bright signs for the reading corner and biography wall. By lunch, the room looked organized but still needed final checks. Ms. Patel asked everyone to test the shelves by finding one book in each category. Students discovered two mislabeled bins and fixed them quickly. In the afternoon, younger classes visited and found books without long waits. The team learned that organized systems make shared spaces easier for everyone.",
+    "passageText": "When boxes of new books arrived, Ms. Patel asked the class for help. Marco sorted adventure, science, and history titles into separate stacks. Ana placed new labels on shelves so books could be returned correctly. Two students checked each title against the library list. Another group made bright signs for the reading corner and biography wall. By lunch, the room looked organized but still needed final checks. Ms. Their update board helped everyone see progress and next responsibilities. They knew they had to follow a plan that served the community goal.\n\nPatel asked everyone to test the shelves by finding one book in each category. Students discovered two mislabeled bins and fixed them quickly. In the afternoon, younger classes visited and found books without long waits. The team learned that organized systems make shared spaces easier for everyone.",
     "questions": [
       {
         "id": "q1",
@@ -345,7 +400,12 @@
         "prompt": "Write 2-3 sentences describing two jobs students completed and why they mattered."
       }
     ],
-    "skillTags": ["reading-comprehension", "inference", "main-idea", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "inference",
+      "main-idea",
+      "short-writing"
+    ]
   },
   {
     "id": "mail-route",
@@ -354,7 +414,7 @@
     "passageType": "informational",
     "missionLabel": "Learn sequence from a community helper's routine.",
     "passageTitle": "How Mail Gets Delivered",
-    "passageText": "A mail carrier starts early at the post office each morning. First, letters and small packages are sorted by neighborhood and street. Next, the carrier places items in route order to save time on the road. A scanner is checked to track deliveries accurately. Then, the carrier drives the route and delivers mail house by house. At each stop, the carrier verifies address numbers before leaving items. If no one is home for a package, a pickup notice is left. By afternoon, undelivered items return to the post office. The route report is updated so families can track important deliveries. This dependable sequence helps the whole community receive mail on time.",
+    "passageText": "A mail carrier starts early at the post office each morning. First, letters and small packages are sorted by neighborhood and street. Next, the carrier places items in route order to save time on the road. A scanner is checked to track deliveries accurately. Then, the carrier drives the route and delivers mail house by house. At each stop, the carrier verifies address numbers before leaving items. If no one is home for a package, a pickup notice is left. By afternoon, undelivered items return to the post office. The team checked in with neighbors to make sure the plan matched community needs.\n\nThe route report is updated so families can track important deliveries. This dependable sequence helps the whole community receive mail on time. By the end, they understood how teamwork improved the outcome.",
     "questions": [
       {
         "id": "q1",
@@ -374,7 +434,12 @@
         "prompt": "In two sentences, summarize why this routine is useful for the community."
       }
     ],
-    "skillTags": ["reading-comprehension", "sequence", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "sequence",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "bus-stop-safety",
@@ -383,7 +448,7 @@
     "passageType": "informational",
     "missionLabel": "Identify the main idea in safety directions.",
     "passageTitle": "Safe Rides to School",
-    "passageText": "Bus safety begins before the bus even arrives. Students should stand back from the curb while they wait. Backpacks should stay zipped so straps do not catch on rails. Pushing or rough play can cause accidents in crowded lines. When the bus stops, students form one line and wait for the driver's signal. Boarding one at a time keeps steps clear and reduces confusion. Once seated, students keep aisles open for others to move safely. The same calm behavior is important when leaving the bus after school. Drivers rely on these routines to protect every rider. Following simple rules makes the trip safer and smoother for everyone.",
+    "passageText": "Bus safety begins before the bus even arrives. Students should stand back from the curb while they wait. Backpacks should stay zipped so straps do not catch on rails. Pushing or rough play can cause accidents in crowded lines. When the bus stops, students form one line and wait for the driver's signal. Boarding one at a time keeps steps clear and reduces confusion. Once seated, students keep aisles open for others to move safely. The same calm behavior is important when leaving the bus after school. They measured success by how clearly the project helped families nearby. They knew they had to follow a plan that served the community goal.\n\nDrivers rely on these routines to protect every rider. Following simple rules makes the trip safer and smoother for everyone. By the end, they understood how teamwork improved the outcome.",
     "questions": [
       {
         "id": "q1",
@@ -403,7 +468,12 @@
         "prompt": "Write two complete sentences about one rule and how it prevents problems."
       }
     ],
-    "skillTags": ["reading-comprehension", "main-idea", "sentence-quality", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "main-idea",
+      "sentence-quality",
+      "short-writing"
+    ]
   },
   {
     "id": "clinic-visit",
@@ -412,7 +482,7 @@
     "passageType": "literary",
     "missionLabel": "Infer how a helper calms a worried child.",
     "passageTitle": "A Brave Checkup",
-    "passageText": "Noah felt nervous while waiting for his checkup at the clinic. The room looked unfamiliar, and he worried about what would happen first. Nurse Elena knelt down so they were at eye level. She explained each step before doing anything, including temperature and blood pressure checks. She let Noah choose which arm to use for the cuff. Noah practiced a slow breath while she counted with him. During the exam, she praised him for asking clear questions. Noah noticed that knowing the plan made each step feel easier. By the end, he was smiling and talking about his sticker collection. He left feeling proud because support and choice helped him stay calm.",
+    "passageText": "Noah felt nervous while waiting for his checkup at the clinic. The room looked unfamiliar, and he worried about what would happen first. Nurse Elena knelt down so they were at eye level. She explained each step before doing anything, including temperature and blood pressure checks. She let Noah choose which arm to use for the cuff. Noah practiced a slow breath while she counted with him. During the exam, she praised him for asking clear questions. Noah noticed that knowing the plan made each step feel easier.\n\nBy the end, he was smiling and talking about his sticker collection. He left feeling proud because support and choice helped him stay calm.",
     "questions": [
       {
         "id": "q1",
@@ -432,7 +502,12 @@
         "prompt": "Explain in 2-3 sentences which details show Nurse Elena was helpful."
       }
     ],
-    "skillTags": ["reading-comprehension", "inference", "sentence-quality", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "inference",
+      "sentence-quality",
+      "short-writing"
+    ]
   },
   {
     "id": "recycling-team",
@@ -441,7 +516,7 @@
     "passageType": "informational",
     "missionLabel": "Use vocabulary in context about reducing waste.",
     "passageTitle": "Sort It Right",
-    "passageText": "The school recycling team meets every Tuesday after lunch. They start by checking labels on paper, plastic, and metal bins. Maya reminds everyone that clean bottles can be recycled, but sticky containers cannot. The team sets up a quick rinse station near the sink. During class visits, students practice sorting five sample items into the right bins. If someone makes a mistake, a team member explains why the item belongs somewhere else. At the end of the day, the team weighs each bin and records totals. Their chart shows that cleaner sorting means fewer items get thrown away. The custodian says the recycling room stays much more organized now. The team feels proud because better habits help materials become useful products again.",
+    "passageText": "The school recycling team meets every Tuesday after lunch. They start by checking labels on paper, plastic, and metal bins. Maya reminds everyone that clean bottles can be recycled, but sticky containers cannot. The team sets up a quick rinse station near the sink. During class visits, students practice sorting five sample items into the right bins. If someone makes a mistake, a team member explains why the item belongs somewhere else. At the end of the day, the team weighs each bin and records totals. Their chart shows that cleaner sorting means fewer items get thrown away. The team checked in with neighbors to make sure the plan matched community needs.\n\nThe custodian says the recycling room stays much more organized now. The team feels proud because better habits help materials become useful products again. By the end, they understood how teamwork improved the outcome.",
     "questions": [
       {
         "id": "q1",
@@ -461,7 +536,12 @@
         "prompt": "Write two complete sentences summarizing how the recycling team helps the school."
       }
     ],
-    "skillTags": ["reading-comprehension", "vocabulary", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "vocabulary",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "soccer-formation",
@@ -470,7 +550,7 @@
     "passageType": "literary",
     "missionLabel": "Identify the main idea in a teamwork story.",
     "passageTitle": "Second-Half Switch",
-    "passageText": "At halftime, Coach Ruiz moved Maya from defense to midfield. Maya felt surprised but listened carefully to the new plan. Coach explained that the team needed quicker passing through the center. In the second half, Maya kept her head up and looked for open teammates. She made short passes instead of dribbling too long. Her teammates spread wide along the sidelines and created more space. The ball moved faster, and the other team struggled to defend every lane. With two minutes left, the team scored after three clean passes in a row. Maya realized the goal happened because everyone changed together, not because one player tried to do everything. She finished the game understanding that smart teamwork can be stronger than speed alone.",
+    "passageText": "At halftime, Coach Ruiz moved Maya from defense to midfield. Maya felt surprised but listened carefully to the new plan. Coach explained that the team needed quicker passing through the center. In the second half, Maya kept her head up and looked for open teammates. She made short passes instead of dribbling too long. Her teammates spread wide along the sidelines and created more space. The ball moved faster, and the other team struggled to defend every lane. With two minutes left, the team scored after three clean passes in a row.\n\nMaya realized the goal happened because everyone changed together, not because one player tried to do everything. She finished the game understanding that smart teamwork can be stronger than speed alone. By the end, the team understood that effort and teamwork drive real improvement.",
     "questions": [
       {
         "id": "q1",
@@ -490,7 +570,12 @@
         "prompt": "In two sentences, explain how the position change helped the team."
       }
     ],
-    "skillTags": ["reading-comprehension", "main-idea", "inference", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "main-idea",
+      "inference",
+      "short-writing"
+    ]
   },
   {
     "id": "relay-race-steps",
@@ -499,7 +584,7 @@
     "passageType": "informational",
     "missionLabel": "Follow sequence directions for a relay exchange.",
     "passageTitle": "Passing the Baton",
-    "passageText": "In a relay race, each runner has a marked exchange zone. Before practice, Coach Allen draws the zone lines in bright chalk. First, the waiting runner starts jogging when the teammate reaches the signal cone. Next, the waiting runner reaches a hand back without turning around. The incoming runner calls \"stick\" so the teammate knows the pass is coming. Then, the baton is placed firmly into the open hand. If the pass is shaky, both runners slow down and try the exchange again. Last, the new runner drives forward and builds speed down the lane. Teams practice this sequence many times to make it smooth and safe. A clean exchange can save valuable seconds in a close race.",
+    "passageText": "In a relay race, each runner has a marked exchange zone. Before practice, Coach Allen draws the zone lines in bright chalk. First, the waiting runner starts jogging when the teammate reaches the signal cone. Next, the waiting runner reaches a hand back without turning around. The incoming runner calls \"stick\" so the teammate knows the pass is coming. Then, the baton is placed firmly into the open hand. If the pass is shaky, both runners slow down and try the exchange again. Last, the new runner drives forward and builds speed down the lane. Their execution improved once everyone anticipated the same sequence. They knew they had to adjust strategy to solve the challenge as a team.\n\nTeams practice this sequence many times to make it smooth and safe. A clean exchange can save valuable seconds in a close race.",
     "questions": [
       {
         "id": "q1",
@@ -519,7 +604,12 @@
         "prompt": "Write 2-3 sentences about why the order of steps matters in a relay."
       }
     ],
-    "skillTags": ["reading-comprehension", "sequence", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "sequence",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "swim-practice",
@@ -528,7 +618,7 @@
     "passageType": "informational",
     "missionLabel": "Use context clues for sports vocabulary.",
     "passageTitle": "Building Endurance",
-    "passageText": "Coach Kim planned short swim sets with rest breaks for the first week of training. She explained that endurance means keeping your body moving for a long time without losing control. Instead of racing each lap, swimmers practiced smooth and steady strokes. They counted breaths to keep a consistent rhythm. After each set, swimmers checked their pulse and wrote it on a chart. Coach Kim used the chart to show progress over several days. In week two, she increased the number of laps in each set. The team noticed they could keep pace longer before feeling tired. By Friday, most swimmers completed the new sets without stopping. They learned that endurance grows through steady practice, not fast starts.",
+    "passageText": "Coach Kim planned short swim sets with rest breaks for the first week of training. She explained that endurance means keeping your body moving for a long time without losing control. Instead of racing each lap, swimmers practiced smooth and steady strokes. They counted breaths to keep a consistent rhythm. After each set, swimmers checked their pulse and wrote it on a chart. Coach Kim used the chart to show progress over several days. In week two, she increased the number of laps in each set. The team noticed they could keep pace longer before feeling tired.\n\nBy Friday, most swimmers completed the new sets without stopping. They learned that endurance grows through steady practice, not fast starts.",
     "questions": [
       {
         "id": "q1",
@@ -548,7 +638,12 @@
         "prompt": "In two complete sentences, explain one strategy Coach Kim used and why it helped."
       }
     ],
-    "skillTags": ["reading-comprehension", "vocabulary", "sentence-quality", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "vocabulary",
+      "sentence-quality",
+      "short-writing"
+    ]
   },
   {
     "id": "basketball-clue",
@@ -557,7 +652,7 @@
     "passageType": "literary",
     "missionLabel": "Infer what a team should practice next.",
     "passageTitle": "The Missed Passes",
-    "passageText": "The Tigers had many turnovers in the first quarter of the game. Several passes were rushed, and players dribbled into crowded spaces. During timeout, Coach Lee drew simple passing lanes on the whiteboard. He asked players to call a teammate's name before each pass. In the second half, the Tigers lifted their eyes and moved the ball faster. They also spaced out better so receivers had room. Turnovers dropped, and the score stayed close through the final minute. Even though the Tigers lost by one point, they finished with much stronger teamwork. After the game, players agreed to practice communication drills first at the next practice. They understood that clear calls and quick decisions could change future results.",
+    "passageText": "The Tigers had many turnovers in the first quarter of the game. Several passes were rushed, and players dribbled into crowded spaces. During timeout, Coach Lee drew simple passing lanes on the whiteboard. He asked players to call a teammate's name before each pass. In the second half, the Tigers lifted their eyes and moved the ball faster. They also spaced out better so receivers had room. Turnovers dropped, and the score stayed close through the final minute. Even though the Tigers lost by one point, they finished with much stronger teamwork. Communication on each possession made the team more consistent. They knew they had to adjust strategy to solve the challenge as a team.\n\nAfter the game, players agreed to practice communication drills first at the next practice. They understood that clear calls and quick decisions could change future results.",
     "questions": [
       {
         "id": "q1",
@@ -577,7 +672,12 @@
         "prompt": "Use 2-3 sentences to explain which clues lead to your inference."
       }
     ],
-    "skillTags": ["reading-comprehension", "inference", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "inference",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "gym-fair-play",
@@ -586,7 +686,7 @@
     "passageType": "informational",
     "missionLabel": "Summarize rules that support respectful play.",
     "passageTitle": "Rules for Respect",
-    "passageText": "In gym class games, students follow fair-play rules from the first whistle to the last. Teams shake hands before each game to show respect. If a foul happens, players call it honestly instead of arguing. Referee decisions are accepted so the game can continue safely. Coaches remind students to encourage teammates after mistakes. Positive words help players reset and focus on the next play. At halftime, teams check whether everyone feels included. After the game, players shake hands again and thank opponents. These habits keep competition friendly, even when the score is close. Fair play makes sports more fun and safer for everyone involved.",
+    "passageText": "In gym class games, students follow fair-play rules from the first whistle to the last. Teams shake hands before each game to show respect. If a foul happens, players call it honestly instead of arguing. Referee decisions are accepted so the game can continue safely. Coaches remind students to encourage teammates after mistakes. Positive words help players reset and focus on the next play. At halftime, teams check whether everyone feels included. After the game, players shake hands again and thank opponents. They reviewed game film notes to explain why the strategy worked. They knew they had to adjust strategy to solve the challenge as a team.\n\nThese habits keep competition friendly, even when the score is close. Fair play makes sports more fun and safer for everyone involved. By the end, the data showed that preparation matters as much as talent.",
     "questions": [
       {
         "id": "q1",
@@ -606,7 +706,12 @@
         "prompt": "Write two complete sentences about how one fair play rule affects a game."
       }
     ],
-    "skillTags": ["reading-comprehension", "summary", "main-idea", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "summary",
+      "main-idea",
+      "short-writing"
+    ]
   },
   {
     "id": "locker-note",
@@ -615,7 +720,7 @@
     "passageType": "literary",
     "missionLabel": "Solve a school mystery using textual clues.",
     "passageTitle": "A Sticky Note Surprise",
-    "passageText": "Nora opened her locker and found a sticky note that said, \"Check the science shelf.\" She had been searching for her missing ruler all morning. In class, she walked to the shelf and noticed a tiny star sticker on the edge. The sticker pointed toward a stack of old lab notebooks. Nora carefully moved the notebooks and found her ruler tucked behind them. Next to it was a second note that read, \"One more clue near the globe.\" She followed that clue and found a thank-you message for helping clean the lab yesterday. Nora realized the secret helper had turned returning her ruler into a puzzle. She smiled and guessed it was someone who knew she liked mysteries. Instead of feeling frustrated, she felt appreciated and excited.",
+    "passageText": "Nora opened her locker and found a sticky note that said, \"Check the science shelf.\" She had been searching for her missing ruler all morning. In class, she walked to the shelf and noticed a tiny star sticker on the edge. The sticker pointed toward a stack of old lab notebooks. Nora carefully moved the notebooks and found her ruler tucked behind them. Next to it was a second note that read, \"One more clue near the globe.\" She followed that clue and found a thank-you message for helping clean the lab yesterday. Nora realized the secret helper had turned returning her ruler into a puzzle. She smiled and guessed it was someone who knew she liked mysteries. Instead of feeling frustrated, she felt appreciated and excited.\n\nA tiny detail in one note suddenly matched a mark on another card. Instead of guessing, they tested each idea against the evidence. By the end, careful thinking solved what quick guesses could not.",
     "questions": [
       {
         "id": "q1",
@@ -635,7 +740,12 @@
         "prompt": "In two sentences, explain which clues helped Nora solve the mystery."
       }
     ],
-    "skillTags": ["reading-comprehension", "inference", "sequence", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "inference",
+      "sequence",
+      "short-writing"
+    ]
   },
   {
     "id": "cafeteria-clue",
@@ -644,7 +754,7 @@
     "passageType": "literary",
     "missionLabel": "Track clue order in a mystery story.",
     "passageTitle": "Where Did the Tray Go?",
-    "passageText": "After lunch, Ben could not find the class project tray with paint brushes. First, he checked the art table where the tray was usually stored. It was not there, so he asked the lunch monitor for any clues. The monitor remembered seeing two students carry supplies toward the reading corner. Ben walked there and noticed small blue paint smudges on the floor. The smudges formed a path to a low shelf near the window. Behind a stack of magazines, he found the missing tray. He carried it back to the art station and checked that all brushes were still inside. Then he wrote a reminder sign so supplies would be returned to the same place. Following clues in order helped him solve the problem quickly.",
+    "passageText": "After lunch, Ben could not find the class project tray with paint brushes. First, he checked the art table where the tray was usually stored. It was not there, so he asked the lunch monitor for any clues. The monitor remembered seeing two students carry supplies toward the reading corner. Ben walked there and noticed small blue paint smudges on the floor. The smudges formed a path to a low shelf near the window. Behind a stack of magazines, he found the missing tray. He carried it back to the art station and checked that all brushes were still inside.\n\nThen he wrote a reminder sign so supplies would be returned to the same place. Following clues in order helped him solve the problem quickly. By the end, careful thinking solved what quick guesses could not.",
     "questions": [
       {
         "id": "q1",
@@ -664,7 +774,12 @@
         "prompt": "Write 2-3 sentences explaining how following clue order helped Ben."
       }
     ],
-    "skillTags": ["reading-comprehension", "sequence", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "sequence",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "museum-riddle",
@@ -673,7 +788,7 @@
     "passageType": "informational",
     "missionLabel": "Use vocabulary clues to solve a riddle.",
     "passageTitle": "Clue Cards at the Museum",
-    "passageText": "At the history museum, students worked in teams to solve a gallery riddle. Each team received three clue cards and one answer sheet. The first card said, \"I tell time with sand.\" The second card said, \"People used me before digital clocks and watches.\" The third card said, \"Turn me over to start again.\" Students walked through displays and compared objects to the clues. One group first guessed compass, but the clues did not fully match. Then they found an hourglass in a case labeled \"Timekeepers.\" All three clues fit, so they wrote hourglass on their sheet. The activity showed how context clues can help readers understand unfamiliar words and ideas.",
+    "passageText": "At the history museum, students worked in teams to solve a gallery riddle. Each team received three clue cards and one answer sheet. The first card said, \"I tell time with sand.\" The second card said, \"People used me before digital clocks and watches.\" The third card said, \"Turn me over to start again.\" Students walked through displays and compared objects to the clues. One group first guessed compass, but the clues did not fully match. Then they found an hourglass in a case labeled \"Timekeepers.\" All three clues fit, so they wrote hourglass on their sheet. The activity showed how context clues can help readers understand unfamiliar words and ideas. One clue seemed confusing until they placed it in the correct order. The team crossed out two wrong possibilities and focused on one strong lead.\n\nWith the final hint in place, the mystery finally made sense. They spread the clues across the table and looked for a pattern. By the end, the facts pointed clearly toward one supported answer.",
     "questions": [
       {
         "id": "q1",
@@ -693,7 +808,12 @@
         "prompt": "In two complete sentences, explain how context clues helped the students."
       }
     ],
-    "skillTags": ["reading-comprehension", "vocabulary", "inference", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "vocabulary",
+      "inference",
+      "short-writing"
+    ]
   },
   {
     "id": "library-map-mystery",
@@ -702,7 +822,7 @@
     "passageType": "informational",
     "missionLabel": "Find the main idea of a mystery challenge.",
     "passageTitle": "Map of Shelves",
-    "passageText": "The librarian created a scavenger mystery to teach students how shelf maps work. Each team started with a map that showed section letters and number ranges. The first clue directed them to section B, range 400 to 499. There they found a second clue tucked inside a science book. The next clue sent them to section D near the biography shelves. Teams had to read the map carefully so they did not waste time searching random rows. After the third clue, each team located a hidden bookmark with a final code word. Students compared routes and noticed that teams who followed map labels finished faster. By the end, everyone understood that maps save time when searching for information. The mystery game made library skills feel like solving a puzzle.",
+    "passageText": "The librarian created a scavenger mystery to teach students how shelf maps work. Each team started with a map that showed section letters and number ranges. The first clue directed them to section B, range 400 to 499. There they found a second clue tucked inside a science book. The next clue sent them to section D near the biography shelves. Teams had to read the map carefully so they did not waste time searching random rows. After the third clue, each team located a hidden bookmark with a final code word. Students compared routes and noticed that teams who followed map labels finished faster.\n\nBy the end, everyone understood that maps save time when searching for information. The mystery game made library skills feel like solving a puzzle.",
     "questions": [
       {
         "id": "q1",
@@ -722,7 +842,12 @@
         "prompt": "Write two sentences about how the challenge helped students in the library."
       }
     ],
-    "skillTags": ["reading-comprehension", "main-idea", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "main-idea",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "playground-code",
@@ -731,7 +856,7 @@
     "passageType": "literary",
     "missionLabel": "Infer the meaning of a coded playground message.",
     "passageTitle": "Chalk Symbols",
-    "passageText": "On the blacktop, Tia saw chalk symbols beside the hopscotch grid. A circle, a star, and an arrow were drawn in a row. She recognized the shapes from the class code game they played last week. In that game, each symbol stood for one word in a message. Tia copied the symbols into her notebook and matched them to the classroom key. The message translated to \"Check under seat.\" She looked under the nearby bench and found an envelope. Inside was a thank-you card for students who helped clean up recess equipment. Tia realized someone used the code to make the note more fun to discover. She decided to leave a coded reply for the helpers the next day.",
+    "passageText": "On the blacktop, Tia saw chalk symbols beside the hopscotch grid. A circle, a star, and an arrow were drawn in a row. She recognized the shapes from the class code game they played last week. In that game, each symbol stood for one word in a message. Tia copied the symbols into her notebook and matched them to the classroom key. The message translated to \"Check under seat.\" She looked under the nearby bench and found an envelope. Inside was a thank-you card for students who helped clean up recess equipment. Tia realized someone used the code to make the note more fun to discover. They knew they had to solve the mystery by checking each clue carefully.\n\nShe decided to leave a coded reply for the helpers the next day. A tiny detail in one note suddenly matched a mark on another card. By the end, careful thinking solved what quick guesses could not.",
     "questions": [
       {
         "id": "q1",
@@ -751,7 +876,12 @@
         "prompt": "Explain in 2-3 sentences how Tia used prior knowledge to solve the code."
       }
     ],
-    "skillTags": ["reading-comprehension", "inference", "vocabulary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "inference",
+      "vocabulary",
+      "short-writing"
+    ]
   },
   {
     "id": "paper-bridge",
@@ -760,7 +890,7 @@
     "passageType": "informational",
     "missionLabel": "Read a problem-solving sequence and summarize results.",
     "passageTitle": "Design, Test, Improve",
-    "passageText": "The class built paper bridges to hold toy blocks during engineering lab. First, teams folded copy paper into different shapes, like tubes and triangles. They predicted which shape would hold the most weight. Next, each bridge was tested with one block at a time. Some bridges bent quickly, while others stayed strong. Teams recorded results in a table after every test round. Then, they revised weaker designs by adding support folds under the center. A second test showed that most revised bridges held more blocks. Students compared before-and-after results to explain what changed. They learned that good solutions often come from testing, revising, and testing again.",
+    "passageText": "The class built paper bridges to hold toy blocks during engineering lab. First, teams folded copy paper into different shapes, like tubes and triangles. They predicted which shape would hold the most weight. Next, each bridge was tested with one block at a time. Some bridges bent quickly, while others stayed strong. Teams recorded results in a table after every test round. Then, they revised weaker designs by adding support folds under the center. A second test showed that most revised bridges held more blocks. They knew they had to solve the puzzle step by step.\n\nStudents compared before-and-after results to explain what changed. They learned that good solutions often come from testing, revising, and testing again.",
     "questions": [
       {
         "id": "q1",
@@ -780,7 +910,12 @@
         "prompt": "Write two complete sentences about why revising designs was important."
       }
     ],
-    "skillTags": ["reading-comprehension", "sequence", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "sequence",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "pattern-path",
@@ -789,7 +924,7 @@
     "passageType": "literary",
     "missionLabel": "Infer the next step from a repeating pattern.",
     "passageTitle": "Tiles in the Hall",
-    "passageText": "During a math walk, Eli noticed floor tiles repeating blue, blue, green in the hallway. He paused and checked the pattern across two full rows. To avoid guessing, he wrote the sequence in his notebook. Then he counted each tile from the water fountain to the classroom door. Near the end of the hall, one tile space was empty for repairs. Eli used the pattern to predict the missing color should be green. His teacher asked him to explain how he knew. Eli showed that every third tile in the sequence was green. Later, the custodian returned with a replacement tile and confirmed Eli's prediction. Eli felt proud because he used a pattern rule instead of random choice.",
+    "passageText": "During a math walk, Eli noticed floor tiles repeating blue, blue, green in the hallway. He paused and checked the pattern across two full rows. To avoid guessing, he wrote the sequence in his notebook. Then he counted each tile from the water fountain to the classroom door. Near the end of the hall, one tile space was empty for repairs. Eli used the pattern to predict the missing color should be green. His teacher asked him to explain how he knew. Eli showed that every third tile in the sequence was green.\n\nLater, the custodian returned with a replacement tile and confirmed Eli's prediction. Eli felt proud because he used a pattern rule instead of random choice. By the end, the answer made sense because each step was checked carefully.",
     "questions": [
       {
         "id": "q1",
@@ -809,7 +944,12 @@
         "prompt": "In 2-3 sentences, explain how Eli used evidence from the pattern."
       }
     ],
-    "skillTags": ["reading-comprehension", "inference", "sequence", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "inference",
+      "sequence",
+      "short-writing"
+    ]
   },
   {
     "id": "logic-lunch-line",
@@ -818,7 +958,7 @@
     "passageType": "informational",
     "missionLabel": "Use details to identify the main idea of a logic puzzle.",
     "passageTitle": "Who Chose Which Fruit?",
-    "passageText": "Students solved a lunch puzzle using clues about fruit choices in the cafeteria. The teacher gave three names and three fruits on the board. The first clue said Mia did not choose apples. The second clue said Jordan chose bananas. The third clue said Theo chose the fruit left over after the first two matches. Students first wrote possible matches in a simple chart. They crossed out choices that could not work after each clue. By the final step, only one option remained for each person. The class checked the chart to make sure all clues still matched. They learned that solving logic puzzles works best when clues are combined carefully.",
+    "passageText": "Students solved a lunch puzzle using clues about fruit choices in the cafeteria. The teacher gave three names and three fruits on the board. The first clue said Mia did not choose apples. The second clue said Jordan chose bananas. The third clue said Theo chose the fruit left over after the first two matches. Students first wrote possible matches in a simple chart. They crossed out choices that could not work after each clue. By the final step, only one option remained for each person.\n\nThe class checked the chart to make sure all clues still matched. They learned that solving logic puzzles works best when clues are combined carefully. The closing check showed the pattern remained stable end to end.",
     "questions": [
       {
         "id": "q1",
@@ -838,7 +978,12 @@
         "prompt": "Write two complete sentences explaining why one clue was not enough by itself."
       }
     ],
-    "skillTags": ["reading-comprehension", "main-idea", "inference", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "main-idea",
+      "inference",
+      "short-writing"
+    ]
   },
   {
     "id": "maze-message",
@@ -847,7 +992,7 @@
     "passageType": "literary",
     "missionLabel": "Sequence clues through a classroom maze activity.",
     "passageTitle": "Left, Right, Forward",
-    "passageText": "In coding club, Rina guided a robot through a tape maze on the floor. She began by studying the map of cones and turns before entering commands. First, she programmed one forward move from the start line. Next, she added a left turn at the yellow cone. Then, she programmed two more forward moves and a right turn. On the first run, the robot stopped one square too early. Rina checked her commands and added one final forward step. The second run reached the goal card near the wall. The card read, \"Great debugging!\" and made the team cheer. Rina explained that debugging means finding and fixing mistakes in a sequence. The maze showed that careful edits can turn a wrong path into a successful one.",
+    "passageText": "In coding club, Rina guided a robot through a tape maze on the floor. She began by studying the map of cones and turns before entering commands. First, she programmed one forward move from the start line. Next, she added a left turn at the yellow cone. Then, she programmed two more forward moves and a right turn. On the first run, the robot stopped one square too early. Rina checked her commands and added one final forward step. The second run reached the goal card near the wall.\n\nThe card read, \"Great debugging!\" and made the team cheer. Rina explained that debugging means finding and fixing mistakes in a sequence. The maze showed that careful edits can turn a wrong path into a successful one. One final verification confirmed the same pattern across all steps. By the end, they understood how each step supported the solution.",
     "questions": [
       {
         "id": "q1",
@@ -867,7 +1012,12 @@
         "prompt": "In two sentences, explain how following the sequence helped Rina reach the message."
       }
     ],
-    "skillTags": ["reading-comprehension", "sequence", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "sequence",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "strategy-station",
@@ -876,7 +1026,7 @@
     "passageType": "informational",
     "missionLabel": "Build vocabulary for problem-solving discussions.",
     "passageTitle": "Plan Before You Solve",
-    "passageText": "At Strategy Station, students learned that a strategy is a plan for solving a problem. They practiced by reading a puzzle, circling key details, and testing one idea at a time. If an idea failed, they revised and tried again. This process helped them solve harder puzzles with confidence.",
+    "passageText": "At Strategy Station, students learned that a strategy is a plan for solving a problem. They practiced by reading a puzzle, circling key details, and testing one idea at a time. If an idea failed, they revised and tried again. This process helped them solve harder puzzles with confidence. They verified every step so the solution would hold under review. The team caught an early assumption and corrected it with new evidence. Their reasoning improved when they explained each deduction out loud. They eliminated options that failed even one clue in the chain.\n\nThe final solution worked because each step matched the clues. The closing check showed the pattern remained stable end to end. By the end, they understood that each correct step strengthened the final solution.",
     "questions": [
       {
         "id": "q1",
@@ -896,7 +1046,12 @@
         "prompt": "Write 2-3 sentences explaining one strategy step and how it helps."
       }
     ],
-    "skillTags": ["reading-comprehension", "vocabulary", "sentence-quality", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "vocabulary",
+      "sentence-quality",
+      "short-writing"
+    ]
   },
   {
     "id": "timeline-tools",
@@ -905,7 +1060,7 @@
     "passageType": "informational",
     "missionLabel": "Read an informational timeline and identify sequence.",
     "passageTitle": "From Stone to Steel",
-    "passageText": "Long ago, people used stone tools for cutting and scraping. Later, people learned to shape bronze tools. After that, stronger iron and steel tools became common. Each new material helped people build homes, cook food, and farm more effectively.",
+    "passageText": "Long ago, people used stone tools for cutting and scraping. Later, people learned to shape bronze tools. After that, stronger iron and steel tools became common. Each new material helped people build homes, cook food, and farm more effectively. They cross-checked diaries, photos, and timelines to confirm the sequence. A primary source gave context that changed how they interpreted the event. They finished with a question about the modern impact of those choices. Their conclusion became stronger after they verified details across multiple records.\n\nA wall timeline helped them place each event in the correct order. One invention stood out because it addressed a long-running problem.",
     "questions": [
       {
         "id": "q1",
@@ -925,7 +1080,12 @@
         "prompt": "In two complete sentences, summarize how tools changed over time."
       }
     ],
-    "skillTags": ["reading-comprehension", "sequence", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "sequence",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "first-library-cart",
@@ -934,7 +1094,7 @@
     "passageType": "literary",
     "missionLabel": "Infer why a school made a new idea for sharing books.",
     "passageTitle": "Books on Wheels",
-    "passageText": "In 1948, a small school had only one shelf of storybooks. Mrs. Green placed books on a rolling cart so each class could borrow them. Students lined up when the cart arrived and traded books each week. The cart made reading available to more children, even without a large library room.",
+    "passageText": "In 1948, a small school had only one shelf of storybooks. Mrs. Green placed books on a rolling cart so each class could borrow them. Students lined up when the cart arrived and traded books each week. The cart made reading available to more children, even without a large library room. Using the timeline on the wall, they sequenced every event. A single invention helped resolve a problem that had lasted a long time. Letters and photographs revealed extra details about daily life in that era.\n\nBy combining sources, they formed a clearer picture of the events. Their final discussion question focused on why those choices still matter now. At the end, they backed their explanation with more than one source. By the end, they understood how the sources supported their conclusion.",
     "questions": [
       {
         "id": "q1",
@@ -954,7 +1114,12 @@
         "prompt": "Use 2-3 sentences to explain which details support your inference."
       }
     ],
-    "skillTags": ["reading-comprehension", "inference", "main-idea", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "inference",
+      "main-idea",
+      "short-writing"
+    ]
   },
   {
     "id": "printing-press-kids",
@@ -963,7 +1128,7 @@
     "passageType": "informational",
     "missionLabel": "Use context to understand vocabulary in history text.",
     "passageTitle": "Many Copies, One Page",
-    "passageText": "Before printing presses, books were copied by hand one page at a time. A printing press uses arranged letters and ink to make many copies faster. This invention helped schools, libraries, and families get more books. More books meant more people could read and learn.",
+    "passageText": "Before printing presses, books were copied by hand one page at a time. A printing press uses arranged letters and ink to make many copies faster. This invention helped schools, libraries, and families get more books. More books meant more people could read and learn. Their final discussion question focused on why those choices still matter now. They connected one local event to a broader historical pattern. They cross-checked diaries, photos, and timelines to confirm the sequence. A primary source gave context that changed how they interpreted the event.\n\nLetters and photographs revealed extra details about daily life in that era. Using multiple sources helped them build a clearer explanation. At the end, they backed their explanation with more than one source. By the end, they understood how the sources supported their conclusion.",
     "questions": [
       {
         "id": "q1",
@@ -983,7 +1148,12 @@
         "prompt": "Write two complete sentences summarizing why printing presses were important."
       }
     ],
-    "skillTags": ["reading-comprehension", "vocabulary", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "vocabulary",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "train-station-story",
@@ -992,7 +1162,7 @@
     "passageType": "literary",
     "missionLabel": "Find the main idea in a historical narrative.",
     "passageTitle": "Tickets and Timetables",
-    "passageText": "Grandpa showed Ava an old train ticket from when he was a child. He explained that people checked paper timetables to know arrival times. At the station, workers called out destinations and helped passengers find the right platform. Ava realized travel used to require more planning and patience.",
+    "passageText": "Grandpa showed Ava an old train ticket from when he was a child. He explained that people checked paper timetables to know arrival times. At the station, workers called out destinations and helped passengers find the right platform. Ava realized travel used to require more planning and patience. They finished with a question about the modern impact of those choices. They connected one local event to a broader historical pattern. The timeline display helped the class order each event accurately. They identified an invention that solved a challenge people had faced for years.\n\nPhotos and written letters provided richer details about everyday life then. Together, the sources gave them a clearer understanding of what happened.",
     "questions": [
       {
         "id": "q1",
@@ -1012,7 +1182,12 @@
         "prompt": "In two sentences, explain how the details support the main idea."
       }
     ],
-    "skillTags": ["reading-comprehension", "main-idea", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "main-idea",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "inventor-notebook",
@@ -1021,7 +1196,7 @@
     "passageType": "informational",
     "missionLabel": "Summarize how inventors improve ideas over time.",
     "passageTitle": "Try, Test, Improve",
-    "passageText": "Many inventors keep notebooks to track ideas and test results. They draw early designs, list materials, and write what did not work. Then they make changes and test again. These notes help inventors remember progress and build better designs.",
+    "passageText": "Many inventors keep notebooks to track ideas and test results. They draw early designs, list materials, and write what did not work. Then they make changes and test again. These notes help inventors remember progress and build better designs. They connected one local event to a broader historical pattern. They cross-checked diaries, photos, and timelines to confirm the sequence. A primary source gave context that changed how they interpreted the event. They compared causes and consequences across different years on the timeline. They knew they had to answer the question using evidence from sources.\n\nThe class closed by asking how those past choices connect to today. Studying primary sources helps people understand what really happened. By the end, the evidence showed how one event shaped what came next.",
     "questions": [
       {
         "id": "q1",
@@ -1041,7 +1216,12 @@
         "prompt": "Write two complete sentences about one reason notebook records are useful."
       }
     ],
-    "skillTags": ["reading-comprehension", "summary", "sequence", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "summary",
+      "sequence",
+      "short-writing"
+    ]
   },
   {
     "id": "storm-watch",
@@ -1050,7 +1230,7 @@
     "passageType": "informational",
     "missionLabel": "Understand weather warning vocabulary and actions.",
     "passageTitle": "What Is a Weather Alert?",
-    "passageText": "A weather alert is a message that warns people about possible dangerous weather. Alerts can mention strong wind, heavy rain, or lightning. Families should check trusted forecasts and prepare supplies. Acting early helps people stay safer during storms.",
+    "passageText": "A weather alert is a message that warns people about possible dangerous weather. Alerts can mention strong wind, heavy rain, or lightning. Families should check trusted forecasts and prepare supplies. Acting early helps people stay safer during storms. They finished by reviewing successful steps for the next situation. They tracked wind speed, cloud movement, and tide timing before deciding. The team used warning signs to choose the safest next action. The group linked each warning sign to the safest response. They knew they had to follow a safety plan as conditions changed.\n\nWhen the wind shifted, they adjusted their route immediately. Their preparation helped the team remain calm under pressure. By the conclusion, they saw how evidence strengthens safety planning. By the end, careful observation helped them understand changing conditions.",
     "questions": [
       {
         "id": "q1",
@@ -1070,7 +1250,12 @@
         "prompt": "In 2-3 sentences, explain one action families can take after an alert."
       }
     ],
-    "skillTags": ["reading-comprehension", "vocabulary", "main-idea", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "vocabulary",
+      "main-idea",
+      "short-writing"
+    ]
   },
   {
     "id": "tide-pool-team",
@@ -1079,7 +1264,7 @@
     "passageType": "literary",
     "missionLabel": "Infer why a team changed plans during an ocean trip.",
     "passageTitle": "Low Tide Surprise",
-    "passageText": "During the class beach trip, the science team planned to observe tide pools at noon. Their guide checked the tide chart and saw low tide came earlier than expected. The group quickly moved their schedule and reached the pools in time. They recorded sea stars, tiny crabs, and seaweed before the water rose again.",
+    "passageText": "During the class beach trip, the science team planned to observe tide pools at noon. Their guide checked the tide chart and saw low tide came earlier than expected. The group quickly moved their schedule and reached the pools in time. They recorded sea stars, tiny crabs, and seaweed before the water rose again. A change in wind direction led them to revise their route. A timing chart helped them predict when conditions would shift. Their safety plan worked because each step matched the weather evidence. They reviewed the sequence to improve response time for next practice.\n\nThe observation helped them understand how weather shapes daily decisions. By the end, they realized that nature follows patterns worth noticing.",
     "questions": [
       {
         "id": "q1",
@@ -1099,7 +1284,12 @@
         "prompt": "Write two complete sentences explaining which clue caused the schedule change."
       }
     ],
-    "skillTags": ["reading-comprehension", "inference", "sequence", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "inference",
+      "sequence",
+      "short-writing"
+    ]
   },
   {
     "id": "water-cycle-steps",
@@ -1108,7 +1298,7 @@
     "passageType": "informational",
     "missionLabel": "Practice sequence and summary with science text.",
     "passageTitle": "From Ocean to Cloud",
-    "passageText": "The water cycle moves water through several stages. First, the sun warms oceans and lakes, causing evaporation. Next, water vapor cools and forms clouds through condensation. Then, precipitation falls as rain or snow. Finally, water collects and the cycle repeats.",
+    "passageText": "The water cycle moves water through several stages. First, the sun warms oceans and lakes, causing evaporation. Next, water vapor cools and forms clouds through condensation. Then, precipitation falls as rain or snow. Finally, water collects and the cycle repeats. They reviewed the sequence to improve response time for next practice. They tracked wind speed, cloud movement, and tide timing before deciding. Good preparation made the stressful moment easier to handle. They knew they had to make safe choices as conditions changed.\n\nTracking conditions over time helps communities prepare for changes. By the end, the data showed that careful observation leads to safer decisions.",
     "questions": [
       {
         "id": "q1",
@@ -1128,7 +1318,12 @@
         "prompt": "In two sentences, summarize how the water cycle repeats."
       }
     ],
-    "skillTags": ["reading-comprehension", "sequence", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "sequence",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "harbor-rescue",
@@ -1137,7 +1332,7 @@
     "passageType": "informational",
     "missionLabel": "Find the main idea of an ocean safety text.",
     "passageTitle": "Safety on the Dock",
-    "passageText": "Harbor teams practice rescue drills to prepare for emergencies. They check life jackets, radios, and rope lines before each drill. Team members take turns calling signals and guiding boats. Practice helps everyone respond calmly when real problems happen.",
+    "passageText": "Harbor teams practice rescue drills to prepare for emergencies. They check life jackets, radios, and rope lines before each drill. Team members take turns calling signals and guiding boats. Practice helps everyone respond calmly when real problems happen. They reviewed the sequence to improve response time for next practice. They tracked wind speed, cloud movement, and tide timing before deciding. The team used warning signs to choose the safest next action. A timing chart helped them predict when conditions would shift.\n\nTracking conditions over time helps communities prepare for changes. By the end, the data showed that careful observation leads to safer decisions.",
     "questions": [
       {
         "id": "q1",
@@ -1157,7 +1352,12 @@
         "prompt": "Write 2-3 sentences explaining how practice can help in emergencies."
       }
     ],
-    "skillTags": ["reading-comprehension", "main-idea", "sentence-quality", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "main-idea",
+      "sentence-quality",
+      "short-writing"
+    ]
   },
   {
     "id": "rainy-day-plan",
@@ -1166,7 +1366,7 @@
     "passageType": "literary",
     "missionLabel": "Use clues to infer why a class changed outdoor plans.",
     "passageTitle": "Field Day Switch",
-    "passageText": "Field day started with dark clouds over the playground. Ms. Chen checked the radar and saw a line of storms moving in quickly. She moved events to the gym and cafeteria before rain began. Students still played team games and thanked Ms. Chen for planning ahead.",
+    "passageText": "Field day started with dark clouds over the playground. Ms. Chen checked the radar and saw a line of storms moving in quickly. She moved events to the gym and cafeteria before rain began. Students still played team games and thanked Ms. Chen for planning ahead. The group linked each warning sign to the safest response. A change in wind direction led them to revise their route.\n\nTheir preparation helped the team remain calm under pressure. A quick review helped them prepare for a similar challenge later. By the conclusion, they saw how evidence strengthens safety planning. By the end, they understood that nature follows patterns worth noticing.",
     "questions": [
       {
         "id": "q1",
@@ -1186,7 +1386,12 @@
         "prompt": "In two complete sentences, explain which details support your inference."
       }
     ],
-    "skillTags": ["reading-comprehension", "inference", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "inference",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "color-mixing",
@@ -1195,7 +1400,7 @@
     "passageType": "informational",
     "missionLabel": "Use vocabulary and summary in an art lesson.",
     "passageTitle": "Primary and Secondary Colors",
-    "passageText": "In art class, students learned that red, blue, and yellow are primary colors. Mixing two primary colors creates secondary colors such as green, orange, and purple. Students tested combinations on a color wheel chart. The chart helped them remember which colors mix to make new shades.",
+    "passageText": "In art class, students learned that red, blue, and yellow are primary colors. Mixing two primary colors creates secondary colors such as green, orange, and purple. Students tested combinations on a color wheel chart. The chart helped them remember which colors mix to make new shades. They checked whether every creative choice supported the central message. They tested lighting, color contrast, and focal points to sharpen the scene. The group compared brushstrokes and layout choices before choosing a final version. They adjusted color, shape, and texture until the scene felt stronger. Their final edit focused on mood and composition rather than adding more details. They knew they had to revise the work to reach their creative goal.\n\nStudying technique helps artists and audiences appreciate creative choices. By the end, the details showed how craft and intention shape a final piece.",
     "questions": [
       {
         "id": "q1",
@@ -1215,7 +1420,12 @@
         "prompt": "Write two complete sentences summarizing what the color wheel chart taught students."
       }
     ],
-    "skillTags": ["reading-comprehension", "vocabulary", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "vocabulary",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "music-room-clues",
@@ -1224,7 +1434,7 @@
     "passageType": "literary",
     "missionLabel": "Infer the theme of a music performance story.",
     "passageTitle": "One More Rehearsal",
-    "passageText": "The choir sounded uneven during early rehearsal. Mr. Diaz asked each section to listen before singing their next line. Students marked breathing spots and watched his hand signals. By concert night, the song sounded smooth and balanced. The audience clapped loudly after the final note.",
+    "passageText": "The choir sounded uneven during early rehearsal. Mr. Diaz asked each section to listen before singing their next line. Students marked breathing spots and watched his hand signals. By concert night, the song sounded smooth and balanced. The audience clapped loudly after the final note. The group compared brushstrokes and layout choices before choosing a final version. They adjusted color, shape, and texture until the scene felt stronger. Their final edit focused on mood and composition rather than adding more details. They knew they had to revise the work to reach their creative goal.\n\nThe creative process showed that revision leads to stronger work. By the end, the piece reflected care and thoughtful choices.",
     "questions": [
       {
         "id": "q1",
@@ -1244,7 +1454,12 @@
         "prompt": "Use 2-3 sentences to explain which details support this lesson."
       }
     ],
-    "skillTags": ["reading-comprehension", "inference", "main-idea", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "inference",
+      "main-idea",
+      "short-writing"
+    ]
   },
   {
     "id": "mural-sequence",
@@ -1253,7 +1468,7 @@
     "passageType": "informational",
     "missionLabel": "Read process steps for a collaborative mural.",
     "passageTitle": "From Sketch to Wall",
-    "passageText": "The art club painted a hallway mural in four stages. First, they sketched ideas in small boxes. Next, they voted on a final design. Then, they outlined shapes on the wall and painted large color areas. Last, they added details and protective coating.",
+    "passageText": "The art club painted a hallway mural in four stages. First, they sketched ideas in small boxes. Next, they voted on a final design. Then, they outlined shapes on the wall and painted large color areas. Last, they added details and protective coating. They experimented with color, shape, and texture to strengthen the scene. Their final edit focused on mood and composition rather than adding more details. They checked whether every creative choice supported the central message. They knew they had to revise the work to reach their creative goal.\n\nStudying technique helps artists and audiences appreciate creative choices. By the end, the details showed how craft and intention shape a final piece.",
     "questions": [
       {
         "id": "q1",
@@ -1273,7 +1488,12 @@
         "prompt": "In two complete sentences, explain why sequence matters in mural work."
       }
     ],
-    "skillTags": ["reading-comprehension", "sequence", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "sequence",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "theater-costume",
@@ -1282,7 +1502,7 @@
     "passageType": "literary",
     "missionLabel": "Find the main idea about preparation before a play.",
     "passageTitle": "Backstage Plan",
-    "passageText": "Before the school play, Sam organized costumes by scene number. He labeled each box and checked that every hat and scarf was ready. During the show, actors found costumes quickly and entered on time. Sam realized that backstage planning helps performances run smoothly.",
+    "passageText": "Before the school play, Sam organized costumes by scene number. He labeled each box and checked that every hat and scarf was ready. During the show, actors found costumes quickly and entered on time. Sam realized that backstage planning helps performances run smoothly. The group compared brushstrokes and layout choices before choosing a final version. They revised rhythm, imagery, and detail so the audience could picture the moment. Their final edit focused on mood and composition rather than adding more details. They checked whether every creative choice supported the central message.\n\nThey tested combinations of color, shape, and texture to refine the scene. The creative process showed that revision leads to stronger work. By the end, the creative work improved because of thoughtful revision.",
     "questions": [
       {
         "id": "q1",
@@ -1302,7 +1522,12 @@
         "prompt": "Write two sentences describing how Sam's actions affected the performance."
       }
     ],
-    "skillTags": ["reading-comprehension", "main-idea", "sentence-quality", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "main-idea",
+      "sentence-quality",
+      "short-writing"
+    ]
   },
   {
     "id": "poetry-corner",
@@ -1311,7 +1536,7 @@
     "passageType": "informational",
     "missionLabel": "Summarize how word choice changes tone in poems.",
     "passageTitle": "Choosing Strong Words",
-    "passageText": "In Poetry Corner, students replaced plain words with vivid ones. They changed \"walked\" to \"tiptoed\" and \"said\" to \"whispered.\" These choices helped readers imagine the scene more clearly. Strong word choice can make writing more lively and expressive.",
+    "passageText": "In Poetry Corner, students replaced plain words with vivid ones. They changed \"walked\" to \"tiptoed\" and \"said\" to \"whispered.\" These choices helped readers imagine the scene more clearly. Strong word choice can make writing more lively and expressive. They experimented with color, shape, and texture to strengthen the scene. Their final edit focused on mood and composition rather than adding more details. They checked whether every creative choice supported the central message. They tested lighting, color contrast, and focal points to sharpen the scene. The group compared brushstrokes and layout choices before choosing a final version. They knew they had to revise the work to reach their creative goal.\n\nThey compared early drafts with final versions to see how much they improved. Studying technique helps artists and audiences appreciate creative choices.",
     "questions": [
       {
         "id": "q1",
@@ -1331,7 +1556,12 @@
         "prompt": "In 2-3 sentences, explain one example of stronger word choice and its effect."
       }
     ],
-    "skillTags": ["reading-comprehension", "summary", "vocabulary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "summary",
+      "vocabulary",
+      "short-writing"
+    ]
   },
   {
     "id": "team-bench",
@@ -1340,7 +1570,7 @@
     "passageType": "literary",
     "missionLabel": "Infer how classmates solved a friendship problem.",
     "passageTitle": "Room for One More",
-    "passageText": "At recess, Lila noticed Jonah standing alone near the fence. She invited him to sit on the team bench and asked if he wanted to join a game. Jonah nodded but looked unsure. Lila introduced him to two teammates and explained the rules. Soon Jonah was laughing and cheering with the group.",
+    "passageText": "At recess, Lila noticed Jonah standing alone near the fence. She invited him to sit on the team bench and asked if he wanted to join a game. Jonah nodded but looked unsure. Lila introduced him to two teammates and explained the rules. Soon Jonah was laughing and cheering with the group. They focused on honest words, listening, and follow-through to rebuild trust. Their apology mattered more because actions matched what they promised. Friends around them noticed the difference and encouraged them.\n\nThe moment reminded them that trust grows through honest actions. By the end, the friendship felt stronger because of what they shared.",
     "questions": [
       {
         "id": "q1",
@@ -1360,7 +1590,12 @@
         "prompt": "Write two complete sentences explaining which details show kindness."
       }
     ],
-    "skillTags": ["reading-comprehension", "inference", "sentence-quality", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "inference",
+      "sentence-quality",
+      "short-writing"
+    ]
   },
   {
     "id": "classroom-agreement",
@@ -1369,7 +1604,7 @@
     "passageType": "informational",
     "missionLabel": "Find main idea in a text about respectful communication.",
     "passageTitle": "How We Work Together",
-    "passageText": "The class created an agreement for group work. Students listen without interrupting, use respectful words, and ask questions kindly. If disagreements happen, they pause and restate each idea before choosing a solution. These habits help classmates feel heard and valued.",
+    "passageText": "The class created an agreement for group work. Students listen without interrupting, use respectful words, and ask questions kindly. If disagreements happen, they pause and restate each idea before choosing a solution. These habits help classmates feel heard and valued. A thoughtful gesture helped them begin rebuilding trust. Their apology mattered more because actions matched what they promised. They practiced checking in early so small problems did not grow. Each calm conversation made the relationship feel safer and more respectful.\n\nResearch shows that trust and communication strengthen relationships over time. By the end, the evidence supported what many people learn through experience.",
     "questions": [
       {
         "id": "q1",
@@ -1389,7 +1624,12 @@
         "prompt": "In two sentences, explain why one agreement rule can prevent conflict."
       }
     ],
-    "skillTags": ["reading-comprehension", "main-idea", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "main-idea",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "birthday-card-plan",
@@ -1398,7 +1638,7 @@
     "passageType": "literary",
     "missionLabel": "Sequence events in a friendship story.",
     "passageTitle": "A Surprise Card",
-    "passageText": "First, the class wrote short notes for Mateo's birthday card. Next, Ava collected stickers and markers from the supply bin. Then, students signed the card during silent reading time. Last, they surprised Mateo after lunch. Mateo read every message and thanked his classmates.",
+    "passageText": "First, the class wrote short notes for Mateo's birthday card. Next, Ava collected stickers and markers from the supply bin. Then, students signed the card during silent reading time. Last, they surprised Mateo after lunch. Mateo read every message and thanked his classmates. They practiced checking in early so small problems did not grow. Each calm conversation made the relationship feel safer and more respectful. They learned that trust returns when kindness is repeated over time. They knew they had to repair the relationship through honest actions.\n\nThey made space for feelings before deciding on a response. By the end, they understood that trust grows through consistent supportive choices.",
     "questions": [
       {
         "id": "q1",
@@ -1418,7 +1658,12 @@
         "prompt": "Write 2-3 sentences summarizing the sequence of the surprise plan."
       }
     ],
-    "skillTags": ["reading-comprehension", "sequence", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "sequence",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "apology-note",
@@ -1427,7 +1672,7 @@
     "passageType": "literary",
     "missionLabel": "Infer how a written apology repaired a friendship.",
     "passageTitle": "Fixing a Mistake",
-    "passageText": "Rosa accidentally erased Ben's drawing while cleaning the table. She felt upset and wrote a note that said she was sorry and wanted to help redraw the picture. Ben read the note and accepted her apology. They spent recess rebuilding the drawing together.",
+    "passageText": "Rosa accidentally erased Ben's drawing while cleaning the table. She felt upset and wrote a note that said she was sorry and wanted to help redraw the picture. Ben read the note and accepted her apology. They spent recess rebuilding the drawing together. They focused on honest words, listening, and follow-through to rebuild trust. Their apology mattered more because actions matched what they promised. They practiced checking in early so small problems did not grow. Each calm conversation made the relationship feel safer and more respectful. They knew they had to repair trust with steady actions.\n\nThe moment reminded them that trust grows through honest actions. By the end, the friendship felt stronger because of what they shared.",
     "questions": [
       {
         "id": "q1",
@@ -1447,7 +1692,12 @@
         "prompt": "In two complete sentences, explain which clues show the friendship improved."
       }
     ],
-    "skillTags": ["reading-comprehension", "inference", "sentence-quality", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "inference",
+      "sentence-quality",
+      "short-writing"
+    ]
   },
   {
     "id": "club-welcome-guide",
@@ -1456,7 +1706,7 @@
     "passageType": "informational",
     "missionLabel": "Use vocabulary in context about welcoming others.",
     "passageTitle": "Being Inclusive",
-    "passageText": "The robotics club made a welcome guide for new members. The guide explained that inclusive means making sure everyone feels invited and respected. Members greet new students, explain rules clearly, and pair newcomers with a helper. Inclusive habits help clubs grow stronger.",
+    "passageText": "The robotics club made a welcome guide for new members. The guide explained that inclusive means making sure everyone feels invited and respected. Members greet new students, explain rules clearly, and pair newcomers with a helper. Inclusive habits help clubs grow stronger. They focused on honest words, listening, and follow-through to rebuild trust. Their apology mattered more because actions matched what they promised. They practiced checking in early so small problems did not grow. Each calm conversation made the relationship feel safer and more respectful. They knew they had to repair trust with steady actions.\n\nResearch shows that trust and communication strengthen relationships over time. By the end, the evidence supported what many people learn through experience.",
     "questions": [
       {
         "id": "q1",
@@ -1476,7 +1726,12 @@
         "prompt": "Write two complete sentences about one inclusive action from the guide."
       }
     ],
-    "skillTags": ["reading-comprehension", "vocabulary", "main-idea", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "vocabulary",
+      "main-idea",
+      "short-writing"
+    ]
   },
   {
     "id": "design-lab-map",
@@ -1485,7 +1740,7 @@
     "passageType": "informational",
     "missionLabel": "Use clues to navigate a maker-space map.",
     "passageTitle": "Stations and Symbols",
-    "passageText": "The design lab map used symbols for each station: gear for build, bulb for ideas, and check mark for test. Students followed arrows from one station to the next. The map helped teams keep materials organized and complete projects in order.",
+    "passageText": "The design lab map used symbols for each station: gear for build, bulb for ideas, and check mark for test. Students followed arrows from one station to the next. The map helped teams keep materials organized and complete projects in order. The team caught an early assumption and corrected it with new evidence. Their reasoning improved when they explained each deduction out loud. They eliminated options that failed even one clue in the chain. A quick table helped them test each possibility against the evidence. The final solution worked because each step matched the clues.\n\nWhen they explained the steps aloud, the pattern became even clearer. By the end, they understood how each step supported the solution.",
     "questions": [
       {
         "id": "q1",
@@ -1505,7 +1760,12 @@
         "prompt": "In two sentences, explain how the map supported problem solving."
       }
     ],
-    "skillTags": ["reading-comprehension", "summary", "sequence", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "summary",
+      "sequence",
+      "short-writing"
+    ]
   },
   {
     "id": "robot-restart",
@@ -1514,7 +1774,7 @@
     "passageType": "literary",
     "missionLabel": "Infer why a team retried a failed command sequence.",
     "passageTitle": "Debugging Time",
-    "passageText": "The robot spun in circles instead of moving to the finish square. Priya checked the command list and found two turns in a row. She removed one turn and tested again. This time the robot reached the goal. Priya told the team that debugging means finding and fixing errors.",
+    "passageText": "The robot spun in circles instead of moving to the finish square. Priya checked the command list and found two turns in a row. She removed one turn and tested again. This time the robot reached the goal. Priya told the team that debugging means finding and fixing errors. The team caught an early assumption and corrected it with new evidence. Their reasoning improved when they explained each deduction out loud. They eliminated options that failed even one clue in the chain.\n\nBy the end, they understood that each correct step strengthened the final solution. By the end, they understood how each step supported the solution.",
     "questions": [
       {
         "id": "q1",
@@ -1534,7 +1794,12 @@
         "prompt": "Write two complete sentences using evidence from the story to explain how Priya solved the issue."
       }
     ],
-    "skillTags": ["reading-comprehension", "inference", "vocabulary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "inference",
+      "vocabulary",
+      "short-writing"
+    ]
   },
   {
     "id": "city-tree-count",
@@ -1543,7 +1808,7 @@
     "passageType": "informational",
     "missionLabel": "Summarize data collection in a neighborhood project.",
     "passageTitle": "Street by Street",
-    "passageText": "A neighborhood class counted trees to help the city plan shade areas. Students walked one block at a time and recorded tree types on a chart. They noticed some blocks had many trees, while others had few. The report helped community leaders choose where to plant more trees.",
+    "passageText": "A neighborhood class counted trees to help the city plan shade areas. Students walked one block at a time and recorded tree types on a chart. They noticed some blocks had many trees, while others had few. The report helped community leaders choose where to plant more trees. People who passed by noticed the progress and offered extra help. By the end, the group could clearly see how their effort helped others. Neighbors gathered to share ideas and divide the remaining jobs. A quick plan helped everyone understand who would do each task next.\n\nWhen a problem came up, they solved it by listening to one another. Their teamwork made the project run faster than anyone expected.",
     "questions": [
       {
         "id": "q1",
@@ -1563,7 +1828,12 @@
         "prompt": "In two complete sentences, explain how the project could help neighbors."
       }
     ],
-    "skillTags": ["reading-comprehension", "summary", "main-idea", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "summary",
+      "main-idea",
+      "short-writing"
+    ]
   },
   {
     "id": "science-fair-announcer",
@@ -1572,7 +1842,7 @@
     "passageType": "literary",
     "missionLabel": "Infer how communication supports an event.",
     "passageTitle": "Clear Directions",
-    "passageText": "During the science fair, Jordan used a microphone to announce event times. He repeated directions in a calm voice and reminded visitors where to line up. Families moved through exhibits without crowding. Teachers thanked Jordan for helping the fair stay organized.",
+    "passageText": "During the science fair, Jordan used a microphone to announce event times. He repeated directions in a calm voice and reminded visitors where to line up. Families moved through exhibits without crowding. Teachers thanked Jordan for helping the fair stay organized. By the end, the group could clearly see how their effort helped others. Neighbors gathered to share ideas and divide the remaining jobs. A quick plan helped everyone understand who would do each task next. When a problem came up, they solved it by listening to one another.\n\nTheir teamwork made the project run faster than anyone expected. People who passed by noticed the progress and offered extra help. By the end, they understood how teamwork improved the outcome.",
     "questions": [
       {
         "id": "q1",
@@ -1592,7 +1862,12 @@
         "prompt": "Write 2-3 sentences explaining which details show Jordan's impact."
       }
     ],
-    "skillTags": ["reading-comprehension", "inference", "sentence-quality", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "inference",
+      "sentence-quality",
+      "short-writing"
+    ]
   },
   {
     "id": "planetarium-trip",
@@ -1601,7 +1876,7 @@
     "passageType": "informational",
     "missionLabel": "Summarize what students learned from a space show.",
     "passageTitle": "Inside the Dome",
-    "passageText": "At the planetarium, students watched a dome show about constellations. The guide explained that constellations are star patterns people imagine in the sky. Students practiced identifying three patterns from a chart. They left knowing how maps can help find stars at night.",
+    "passageText": "At the planetarium, students watched a dome show about constellations. The guide explained that constellations are star patterns people imagine in the sky. Students practiced identifying three patterns from a chart. They left knowing how maps can help find stars at night. They aligned measurements across tools to avoid a false conclusion. The mission log helped them connect each data point to the final claim. Their conclusion improved after they validated one more measurement. They compared sensor readings and chart data before finalizing the result.\n\nThey compared two measurements to confirm they were reading the numbers correctly. Each new measurement adds to what scientists know about the universe.",
     "questions": [
       {
         "id": "q1",
@@ -1621,7 +1896,12 @@
         "prompt": "In two complete sentences, explain one new idea students learned."
       }
     ],
-    "skillTags": ["reading-comprehension", "summary", "vocabulary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "summary",
+      "vocabulary",
+      "short-writing"
+    ]
   },
   {
     "id": "comet-club-journal",
@@ -1630,7 +1910,7 @@
     "passageType": "literary",
     "missionLabel": "Infer why students tracked observations over time.",
     "passageTitle": "Night Notes",
-    "passageText": "The Comet Club met every Friday to watch the same part of the sky. Students wrote brightness notes and sketch marks in journals. Over several weeks, they saw one object move slightly each night. Their teacher explained they were tracking a comet's path.",
+    "passageText": "The Comet Club met every Friday to watch the same part of the sky. Students wrote brightness notes and sketch marks in journals. Over several weeks, they saw one object move slightly each night. Their teacher explained they were tracking a comet's path. They compared sensor readings and chart data before finalizing the result. A signal check confirmed which interpretation matched the observation. They aligned measurements across tools to avoid a false conclusion. They compared two measurements to confirm they were reading the numbers correctly. Their conclusion improved after they validated one more measurement. They knew they had to confirm the answer with reliable data.\n\nThe discovery changed how they thought about what lay beyond the sky. By the end, the night sky felt like a story waiting to be read.",
     "questions": [
       {
         "id": "q1",
@@ -1650,7 +1930,12 @@
         "prompt": "Write 2-3 sentences explaining what clues helped students identify movement."
       }
     ],
-    "skillTags": ["reading-comprehension", "inference", "sequence", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "inference",
+      "sequence",
+      "short-writing"
+    ]
   },
   {
     "id": "animal-track-trail",
@@ -1659,7 +1944,7 @@
     "passageType": "informational",
     "missionLabel": "Use context clues to understand tracking words.",
     "passageTitle": "Signs on the Ground",
-    "passageText": "Naturalists look for tracks, scat, and nests to learn which animals live nearby. Tracks are footprints left in mud or snow. Scat is animal waste that can show what an animal eats. Reading these signs helps scientists study wildlife without disturbing it.",
+    "passageText": "Naturalists look for tracks, scat, and nests to learn which animals live nearby. Tracks are footprints left in mud or snow. Scat is animal waste that can show what an animal eats. Reading these signs helps scientists study wildlife without disturbing it. A new clue appeared when they looked at the same place from a different angle. They wrote down their observations so they could check them later. One student remembered a class fact that helped explain the change they saw. By working carefully, they connected small details to the bigger pattern.\n\nBefore leaving, they shared one question they still wanted to investigate. The group paused to compare what they noticed in the trees, soil, and sky. By the end, the facts showed how small details connect to larger natural systems.",
     "questions": [
       {
         "id": "q1",
@@ -1679,7 +1964,12 @@
         "prompt": "In two complete sentences, explain one sign scientists use and what it can reveal."
       }
     ],
-    "skillTags": ["reading-comprehension", "vocabulary", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "vocabulary",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "city-rain-garden",
@@ -1688,7 +1978,7 @@
     "passageType": "informational",
     "missionLabel": "Identify the main idea in a local environment text.",
     "passageTitle": "A Garden for Stormwater",
-    "passageText": "A rain garden is a planted area that collects stormwater. Instead of rushing into storm drains, water soaks slowly into soil and roots. This can reduce flooding on nearby streets. Rain gardens also provide habitat for birds and pollinators.",
+    "passageText": "A rain garden is a planted area that collects stormwater. Instead of rushing into storm drains, water soaks slowly into soil and roots. This can reduce flooding on nearby streets. Rain gardens also provide habitat for birds and pollinators. The team used warning signs to choose the safest next action. A timing chart helped them predict when conditions would shift. Their safety plan worked because each step matched the weather evidence. They reviewed the sequence to improve response time for next practice.\n\nTracking conditions over time helps communities prepare for changes. By the end, the data showed that careful observation leads to safer decisions.",
     "questions": [
       {
         "id": "q1",
@@ -1708,7 +1998,12 @@
         "prompt": "Write two sentences explaining one benefit of rain gardens for neighborhoods."
       }
     ],
-    "skillTags": ["reading-comprehension", "main-idea", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "main-idea",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "coach-history-card",
@@ -1717,7 +2012,7 @@
     "passageType": "literary",
     "missionLabel": "Infer how historical examples can motivate teams.",
     "passageTitle": "A Team from Long Ago",
-    "passageText": "Before practice, Coach Allen showed players a card about a team from 1936. The card explained how players trained even when equipment was limited. Coach said effort and teamwork mattered most then and now. The players decided to encourage each other during drills.",
+    "passageText": "Before practice, Coach Allen showed players a card about a team from 1936. The card explained how players trained even when equipment was limited. Coach said effort and teamwork mattered most then and now. The players decided to encourage each other during drills. They cross-checked diaries, photos, and timelines to confirm the sequence. A primary source gave context that changed how they interpreted the event. They compared causes and consequences across different years on the timeline. They finished with a question about the modern impact of those choices.\n\nA wall timeline helped them place each event in the correct order. The past came alive when they connected the details to real people. By the end, the past felt less like a fact and more like a lesson worth remembering.",
     "questions": [
       {
         "id": "q1",
@@ -1737,7 +2032,12 @@
         "prompt": "In two complete sentences, explain which details show the card influenced players."
       }
     ],
-    "skillTags": ["reading-comprehension", "inference", "main-idea", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "inference",
+      "main-idea",
+      "short-writing"
+    ]
   },
   {
     "id": "puppet-show-plan",
@@ -1746,7 +2046,7 @@
     "passageType": "literary",
     "missionLabel": "Sequence preparation steps for a class performance.",
     "passageTitle": "From Script to Stage",
-    "passageText": "First, the class wrote short puppet scripts in groups. Next, they built simple puppets from paper bags and markers. Then, they practiced reading lines clearly behind the stage curtain. Last, they performed for second grade and answered audience questions.",
+    "passageText": "First, the class wrote short puppet scripts in groups. Next, they built simple puppets from paper bags and markers. Then, they practiced reading lines clearly behind the stage curtain. Last, they performed for second grade and answered audience questions. They tested lighting, color contrast, and focal points to sharpen the scene. The group compared brushstrokes and layout choices before choosing a final version. They revised rhythm, imagery, and detail so the audience could picture the moment. They adjusted color, shape, and texture until the scene felt stronger.\n\nThe creative process showed that revision leads to stronger work. By the end, the piece reflected care and thoughtful choices.",
     "questions": [
       {
         "id": "q1",
@@ -1766,7 +2066,12 @@
         "prompt": "Write two sentences summarizing how preparation steps helped the final show."
       }
     ],
-    "skillTags": ["reading-comprehension", "sequence", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "sequence",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "friendship-garden",
@@ -1775,7 +2080,7 @@
     "passageType": "literary",
     "missionLabel": "Identify the main idea in a collaborative story.",
     "passageTitle": "Shared Seeds",
-    "passageText": "Each student brought one seed packet for the class friendship garden. Some brought flowers and others brought vegetables. During planting day, students paired up and shared tools. By working together, they created a garden with many colors and tastes.",
+    "passageText": "Each student brought one seed packet for the class friendship garden. Some brought flowers and others brought vegetables. During planting day, students paired up and shared tools. By working together, they created a garden with many colors and tastes. They practiced checking in early so small problems did not grow. Each calm conversation made the relationship feel safer and more respectful. They learned that trust returns when kindness is repeated over time. They focused on honest words, listening, and follow-through to rebuild trust.\n\nThe moment reminded them that trust grows through honest actions. By the end, the friendship felt stronger because of what they shared.",
     "questions": [
       {
         "id": "q1",
@@ -1795,7 +2100,12 @@
         "prompt": "In two complete sentences, explain how sharing made the project better."
       }
     ],
-    "skillTags": ["reading-comprehension", "main-idea", "sentence-quality", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "main-idea",
+      "sentence-quality",
+      "short-writing"
+    ]
   },
   {
     "id": "relay-friendship",
@@ -1804,7 +2114,7 @@
     "passageType": "informational",
     "missionLabel": "Summarize how small actions spread through a class.",
     "passageTitle": "One Kind Act at a Time",
-    "passageText": "The class tried a kindness relay for one week. Every time someone noticed a kind act, they wrote it on a sticky note and posted it on a wall chart. By Friday, the chart was full of notes about sharing, helping, and encouraging others. Students said the relay made the classroom feel more welcoming.",
+    "passageText": "The class tried a kindness relay for one week. Every time someone noticed a kind act, they wrote it on a sticky note and posted it on a wall chart. By Friday, the chart was full of notes about sharing, helping, and encouraging others. Students said the relay made the classroom feel more welcoming. Each calm conversation made the relationship feel safer and more respectful. They learned that trust returns when kindness is repeated over time. They focused on honest words, listening, and follow-through to rebuild trust. Their apology mattered more because actions matched what they promised.\n\nResearch shows that trust and communication strengthen relationships over time. By the end, the evidence supported what many people learn through experience.",
     "questions": [
       {
         "id": "q1",
@@ -1824,7 +2134,12 @@
         "prompt": "Write two complete sentences describing how the relay affected students."
       }
     ],
-    "skillTags": ["reading-comprehension", "summary", "main-idea", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "summary",
+      "main-idea",
+      "short-writing"
+    ]
   },
   {
     "id": "teamwork-weather-station",
@@ -1833,7 +2148,7 @@
     "passageType": "informational",
     "missionLabel": "Use sequence in a daily weather routine.",
     "passageTitle": "Morning Weather Jobs",
-    "passageText": "Each morning, the weather team follows the same routine. First, one student reads the thermometer. Next, another checks wind direction with a ribbon pole. Then, a third student records cloud type in the class log. Last, the team shares a short forecast with classmates.",
+    "passageText": "Each morning, the weather team follows the same routine. First, one student reads the thermometer. Next, another checks wind direction with a ribbon pole. Then, a third student records cloud type in the class log. Last, the team shares a short forecast with classmates. They connected warning signs to specific safe responses. When the wind shifted, they adjusted their route immediately. Their preparation helped the team remain calm under pressure. They knew they had to make safe choices as conditions changed.\n\nThey finished by reviewing successful steps for the next situation. By the conclusion, they saw how evidence strengthens safety planning. By the end, careful observation helped them understand changing conditions.",
     "questions": [
       {
         "id": "q1",
@@ -1853,7 +2168,12 @@
         "prompt": "In 2-3 sentences, explain how this routine helps classmates."
       }
     ],
-    "skillTags": ["reading-comprehension", "sequence", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "sequence",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "logic-lab-keys",
@@ -1862,7 +2182,7 @@
     "passageType": "informational",
     "missionLabel": "Use key details to infer a final code answer.",
     "passageTitle": "Three Clues, One Lock",
-    "passageText": "In Logic Lab, teams unlocked a box with three clues. The first clue gave the first number, and the second clue removed two wrong options for the middle number. The last clue connected shape names to the final number. Teams that combined all clues opened the box and found challenge cards.",
+    "passageText": "In Logic Lab, teams unlocked a box with three clues. The first clue gave the first number, and the second clue removed two wrong options for the middle number. The last clue connected shape names to the final number. Teams that combined all clues opened the box and found challenge cards. They verified every step so the solution would hold under review. The team caught an early assumption and corrected it with new evidence. Their reasoning improved when they explained each deduction out loud. They eliminated options that failed even one clue in the chain.\n\nThe final solution worked because each step matched the clues. The closing check showed the pattern remained stable end to end. By the end, they understood how each step supported the solution.",
     "questions": [
       {
         "id": "q1",
@@ -1882,7 +2202,12 @@
         "prompt": "Write two complete sentences about how combining clues helped solve the lock."
       }
     ],
-    "skillTags": ["reading-comprehension", "inference", "vocabulary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "inference",
+      "vocabulary",
+      "short-writing"
+    ]
   },
   {
     "id": "history-photo-club",
@@ -1891,7 +2216,7 @@
     "passageType": "informational",
     "missionLabel": "Interpret historical photos using observation notes.",
     "passageTitle": "Then and Now",
-    "passageText": "The History Photo Club compared old and new pictures of the town square. Students noticed older photos had fewer cars and more open street space. New photos showed bike lanes and shaded benches. Observation notes helped students discuss how the town changed over time.",
+    "passageText": "The History Photo Club compared old and new pictures of the town square. Students noticed older photos had fewer cars and more open street space. New photos showed bike lanes and shaded benches. Observation notes helped students discuss how the town changed over time. By combining sources, they formed a clearer picture of the events. Their final discussion question focused on why those choices still matter now. Their conclusion became stronger after they verified details across multiple records. They connected one local event to a broader historical pattern.\n\nA single invention helped resolve a problem that had lasted a long time. Letters and photographs revealed extra details about daily life in that era. At the end, they backed their explanation with more than one source. By the end, they understood how the sources supported their conclusion.",
     "questions": [
       {
         "id": "q1",
@@ -1911,7 +2236,12 @@
         "prompt": "In two complete sentences, describe one change students observed and what it suggests."
       }
     ],
-    "skillTags": ["reading-comprehension", "summary", "inference", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "summary",
+      "inference",
+      "short-writing"
+    ]
   },
   {
     "id": "space-lunch-talk",
@@ -1920,7 +2250,7 @@
     "passageType": "informational",
     "missionLabel": "Practice vocabulary with an astronaut interview.",
     "passageTitle": "Eating in Orbit",
-    "passageText": "An astronaut explained that orbit is a path around Earth. During orbit, meals must be packed carefully so crumbs do not float into equipment. Astronauts choose foods that are easy to open and safe to eat in low gravity. Planning meals is part of staying healthy in space.",
+    "passageText": "An astronaut explained that orbit is a path around Earth. During orbit, meals must be packed carefully so crumbs do not float into equipment. Astronauts choose foods that are easy to open and safe to eat in low gravity. Planning meals is part of staying healthy in space. They compared two measurements to confirm they were reading the numbers correctly. They compared sensor readings and chart data before finalizing the result. A signal check confirmed which interpretation matched the observation. They aligned measurements across tools to avoid a false conclusion.\n\nEach new measurement adds to what scientists know about the universe. By the end, the data supported a clearer picture of how space works.",
     "questions": [
       {
         "id": "q1",
@@ -1940,7 +2270,12 @@
         "prompt": "Write 2-3 sentences explaining one challenge of eating in orbit."
       }
     ],
-    "skillTags": ["reading-comprehension", "vocabulary", "main-idea", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "vocabulary",
+      "main-idea",
+      "short-writing"
+    ]
   },
   {
     "id": "nature-journal-hike",
@@ -1949,7 +2284,7 @@
     "passageType": "literary",
     "missionLabel": "Infer how note-taking supports learning outdoors.",
     "passageTitle": "Leaf Notes",
-    "passageText": "During a weekend hike, Imani carried a small journal. She sketched leaf shapes and wrote where each plant grew best. Later, she compared her notes with a field guide and identified three tree species. Imani said writing details made the hike feel like a science adventure.",
+    "passageText": "During a weekend hike, Imani carried a small journal. She sketched leaf shapes and wrote where each plant grew best. Later, she compared her notes with a field guide and identified three tree species. Imani said writing details made the hike feel like a science adventure. Before leaving, they shared one question they still wanted to investigate. The group paused to compare what they noticed in the trees, soil, and sky. A new clue appeared when they looked at the same place from a different angle. They wrote down their observations so they could check them later.\n\nOne student remembered a class fact that helped explain the change they saw. By working carefully, they connected small details to the bigger pattern. By the end, the experience showed that careful observation reveals surprising connections in nature.",
     "questions": [
       {
         "id": "q1",
@@ -1969,7 +2304,12 @@
         "prompt": "In two complete sentences, explain which details support your inference."
       }
     ],
-    "skillTags": ["reading-comprehension", "inference", "sentence-quality", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "inference",
+      "sentence-quality",
+      "short-writing"
+    ]
   },
   {
     "id": "community-food-drive",
@@ -1978,7 +2318,7 @@
     "passageType": "informational",
     "missionLabel": "Find the main idea in a service project text.",
     "passageTitle": "Collect, Sort, Deliver",
-    "passageText": "The student council organized a food drive for the neighborhood pantry. Classes collected canned goods, sorted items by type, and packed boxes for delivery. Volunteers checked expiration dates before loading donations. The drive supported families and taught students how service projects work.",
+    "passageText": "The student council organized a food drive for the neighborhood pantry. Classes collected canned goods, sorted items by type, and packed boxes for delivery. Volunteers checked expiration dates before loading donations. The drive supported families and taught students how service projects work. Their teamwork made the project run faster than anyone expected. People who passed by noticed the progress and offered extra help. By the end, the group could clearly see how their effort helped others. Neighbors gathered to share ideas and divide the remaining jobs.\n\nA quick plan helped everyone understand who would do each task next. When a problem came up, they solved it by listening to one another.",
     "questions": [
       {
         "id": "q1",
@@ -1998,7 +2338,12 @@
         "prompt": "Write two complete sentences about one step that helped the food drive succeed."
       }
     ],
-    "skillTags": ["reading-comprehension", "main-idea", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "main-idea",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "sports-stretch-guide",
@@ -2007,7 +2352,7 @@
     "passageType": "informational",
     "missionLabel": "Use sequence and vocabulary for warm-up safety.",
     "passageTitle": "Warm Up First",
-    "passageText": "A warm-up prepares muscles for activity and helps prevent injury. First, athletes do light movement like jogging in place. Next, they stretch major muscle groups slowly. Then, they practice sport-specific motions before competition starts. Coaches remind teams that warm-ups should be steady, not rushed.",
+    "passageText": "A warm-up prepares muscles for activity and helps prevent injury. First, athletes do light movement like jogging in place. Next, they stretch major muscle groups slowly. Then, they practice sport-specific motions before competition starts. Coaches remind teams that warm-ups should be steady, not rushed. During the next drill, the team tested the new strategy step by step. A teammate called out reminders so everyone stayed in position. They made one small adjustment that improved timing right away. They reviewed game film notes to explain why the strategy worked. They knew they had to adjust strategy to solve the challenge as a team.\n\nEven after a mistake, the players reset quickly and kept communicating. Their coach praised the way they supported each other under pressure.",
     "questions": [
       {
         "id": "q1",
@@ -2027,7 +2372,12 @@
         "prompt": "In two complete sentences, explain why warm-up sequence matters."
       }
     ],
-    "skillTags": ["reading-comprehension", "sequence", "vocabulary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "sequence",
+      "vocabulary",
+      "short-writing"
+    ]
   },
   {
     "id": "arts-gallery-walk",
@@ -2036,7 +2386,7 @@
     "passageType": "informational",
     "missionLabel": "Summarize how feedback improves artwork.",
     "passageTitle": "Look, Notice, Suggest",
-    "passageText": "During gallery walk, students viewed classmates' artwork and left kind feedback notes. Notes included one positive observation and one suggestion for improvement. Artists read the notes and revised details before final display day. Constructive feedback helped many projects become clearer and stronger.",
+    "passageText": "During gallery walk, students viewed classmates' artwork and left kind feedback notes. Notes included one positive observation and one suggestion for improvement. Artists read the notes and revised details before final display day. Constructive feedback helped many projects become clearer and stronger. They checked whether every creative choice supported the central message. They tested lighting, color contrast, and focal points to sharpen the scene. The group tried new color, shape, and texture choices to improve the scene. They revised rhythm, imagery, and detail so the audience could picture the moment. Their final edit focused on mood and composition rather than adding more details. They knew they had to revise the work to reach their creative goal.\n\nStudying technique helps artists and audiences appreciate creative choices. By the end, the details showed how craft and intention shape a final piece.",
     "questions": [
       {
         "id": "q1",
@@ -2056,7 +2406,12 @@
         "prompt": "Write two complete sentences about why constructive feedback is useful."
       }
     ],
-    "skillTags": ["reading-comprehension", "summary", "sentence-quality", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "summary",
+      "sentence-quality",
+      "short-writing"
+    ]
   },
   {
     "id": "friendship-reading-buddies",
@@ -2065,7 +2420,7 @@
     "passageType": "informational",
     "missionLabel": "Use details to infer benefits of buddy reading.",
     "passageTitle": "Partners in Practice",
-    "passageText": "Third graders met weekly with first-grade reading buddies. Older students read aloud and asked simple questions about each story. Younger students practiced new words and shared favorite parts. Both groups grew more confident because they learned with supportive partners.",
+    "passageText": "Third graders met weekly with first-grade reading buddies. Older students read aloud and asked simple questions about each story. Younger students practiced new words and shared favorite parts. Both groups grew more confident because they learned with supportive partners. A thoughtful gesture helped them begin rebuilding trust. They learned that trust returns when kindness is repeated over time. They focused on honest words, listening, and follow-through to rebuild trust. Their apology mattered more because actions matched what they promised.\n\nResearch shows that trust and communication strengthen relationships over time. By the end, the evidence supported what many people learn through experience.",
     "questions": [
       {
         "id": "q1",
@@ -2085,7 +2440,12 @@
         "prompt": "In 2-3 sentences, explain which details show benefits for both groups."
       }
     ],
-    "skillTags": ["reading-comprehension", "inference", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "inference",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "mystery-lab-door",
@@ -2094,7 +2454,7 @@
     "passageType": "literary",
     "missionLabel": "Use clue words to infer the hidden answer.",
     "passageTitle": "The Number on the Lock",
-    "passageText": "The science lab door display had a three-digit lock puzzle for open house guests. A card read, \"The first number is even, the second is one more than the first, and the third matches the first.\" Maya tried 232 and the box opened. Inside was a note that said, \"Great reasoning!\"",
+    "passageText": "The science lab door display had a three-digit lock puzzle for open house guests. A card read, \"The first number is even, the second is one more than the first, and the third matches the first.\" Maya tried 232 and the box opened. Inside was a note that said, \"Great reasoning!\". They spread the clues across the table and looked for a pattern. A tiny detail in one note suddenly matched a mark on another card. Instead of guessing, they tested each idea against the evidence. One clue seemed confusing until they placed it in the correct order. The team crossed out two wrong possibilities and focused on one strong lead.\n\nWith the final hint in place, the mystery finally made sense. They retraced their steps to prove the answer fit every clue. By the end, they understood why evidence is stronger than quick guesses.",
     "questions": [
       {
         "id": "q1",
@@ -2114,7 +2474,12 @@
         "prompt": "Write two complete sentences explaining how Maya used the clues to choose her answer."
       }
     ],
-    "skillTags": ["reading-comprehension", "inference", "vocabulary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "inference",
+      "vocabulary",
+      "short-writing"
+    ]
   },
   {
     "id": "history-map-room",
@@ -2123,7 +2488,7 @@
     "passageType": "informational",
     "missionLabel": "Interpret map evidence to summarize change over time.",
     "passageTitle": "Old Routes, New Roads",
-    "passageText": "Students compared an old town map to a current one. The older map showed one bridge and two dirt roads near the river. The modern map showed three bridges and many paved streets. These differences suggested that transportation needs grew as the town expanded.",
+    "passageText": "Students compared an old town map to a current one. The older map showed one bridge and two dirt roads near the river. The modern map showed three bridges and many paved streets. These differences suggested that transportation needs grew as the town expanded. Their conclusion became stronger after they verified details across multiple records. They connected one local event to a broader historical pattern. They cross-checked diaries, photos, and timelines to confirm the sequence. A primary source gave context that changed how they interpreted the event. They knew they had to answer the question using evidence from sources.\n\nThe class closed by asking how those past choices connect to today. Studying primary sources helps people understand what really happened. By the end, the evidence showed how one event shaped what came next.",
     "questions": [
       {
         "id": "q1",
@@ -2143,7 +2508,12 @@
         "prompt": "In two complete sentences, summarize one change shown on the maps and what it means."
       }
     ],
-    "skillTags": ["reading-comprehension", "summary", "inference", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "summary",
+      "inference",
+      "short-writing"
+    ]
   },
   {
     "id": "weather-balloon-note",
@@ -2152,7 +2522,7 @@
     "passageType": "literary",
     "missionLabel": "Infer why a weather balloon launch was delayed.",
     "passageTitle": "Waiting for Clear Skies",
-    "passageText": "The weather team planned to launch a small balloon at noon. Ten minutes before launch, they saw gusty winds shaking nearby flags. Mr. Patel said strong gusts could pull the balloon off course, so the team waited. By afternoon, winds calmed and the launch was successful.",
+    "passageText": "The weather team planned to launch a small balloon at noon. Ten minutes before launch, they saw gusty winds shaking nearby flags. Mr. Patel said strong gusts could pull the balloon off course, so the team waited. By afternoon, winds calmed and the launch was successful. Their safety plan worked because each step matched the weather evidence. They reviewed the sequence to improve response time for next practice. They tracked wind speed, cloud movement, and tide timing before deciding.\n\nThe observation helped them understand how weather shapes daily decisions. By the end, they realized that nature follows patterns worth noticing.",
     "questions": [
       {
         "id": "q1",
@@ -2172,7 +2542,12 @@
         "prompt": "Write two complete sentences explaining which clues support the team's decision."
       }
     ],
-    "skillTags": ["reading-comprehension", "inference", "sentence-quality", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "inference",
+      "sentence-quality",
+      "short-writing"
+    ]
   },
   {
     "id": "space-rover-route",
@@ -2181,7 +2556,7 @@
     "passageType": "informational",
     "missionLabel": "Follow sequence instructions for a rover mission.",
     "passageTitle": "Plan the Path",
-    "passageText": "Students programmed a mini rover to cross a model of Mars. First, they measured each section with rulers. Next, they entered forward and turn commands into the tablet. Then, they tested the route and fixed mistakes. Last, they recorded a final successful run.",
+    "passageText": "Students programmed a mini rover to cross a model of Mars. First, they measured each section with rulers. Next, they entered forward and turn commands into the tablet. Then, they tested the route and fixed mistakes. Last, they recorded a final successful run. A signal check confirmed which interpretation matched the observation. They aligned measurements across tools to avoid a false conclusion. The mission log helped them connect each data point to the final claim. They knew they had to confirm the answer with reliable data.\n\nA second instrument check made their evidence more dependable. By the conclusion, each teammate could explain the sequence. They confirmed one more measurement before locking in the answer. By the end, they understood why the final answer fit the data.",
     "questions": [
       {
         "id": "q1",
@@ -2201,7 +2576,12 @@
         "prompt": "In 2-3 sentences, explain why testing and fixing were important before the final run."
       }
     ],
-    "skillTags": ["reading-comprehension", "sequence", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "sequence",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "sports-scoreboard-story",
@@ -2210,7 +2590,7 @@
     "passageType": "literary",
     "missionLabel": "Infer how effort changed the final game result.",
     "passageTitle": "Down by Three",
-    "passageText": "With two minutes left, the Falcons were down by three points. Instead of rushing, they passed carefully and defended as a unit. Mia stole the ball and passed to Devin for a tying shot. In overtime, the Falcons won by playing smart together.",
+    "passageText": "With two minutes left, the Falcons were down by three points. Instead of rushing, they passed carefully and defended as a unit. Mia stole the ball and passed to Devin for a tying shot. In overtime, the Falcons won by playing smart together. Their coach praised the way they supported each other under pressure. When practice ended, the team reflected on what to repeat tomorrow. During the next drill, the team tested the new strategy step by step. A teammate called out reminders so everyone stayed in position. Communication on each possession made the team more consistent. They knew they had to adjust strategy to solve the challenge as a team.\n\nThey made one small adjustment that improved timing right away. Even after a mistake, the players reset quickly and kept communicating.",
     "questions": [
       {
         "id": "q1",
@@ -2230,7 +2610,12 @@
         "prompt": "Write two complete sentences describing the clues that show teamwork led to the win."
       }
     ],
-    "skillTags": ["reading-comprehension", "inference", "main-idea", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "inference",
+      "main-idea",
+      "short-writing"
+    ]
   },
   {
     "id": "arts-light-shadow",
@@ -2239,7 +2624,7 @@
     "passageType": "informational",
     "missionLabel": "Use vocabulary and summary in an art-science crossover text.",
     "passageTitle": "Drawing with Light",
-    "passageText": "Artists in class used desk lamps to study shadows. They learned that contrast means the difference between light and dark areas. By changing lamp angles, students observed how shadow shapes moved. Understanding contrast helped them create more realistic drawings.",
+    "passageText": "Artists in class used desk lamps to study shadows. They learned that contrast means the difference between light and dark areas. By changing lamp angles, students observed how shadow shapes moved. Understanding contrast helped them create more realistic drawings. Their final edit focused on mood and composition rather than adding more details. They checked whether every creative choice supported the central message. They tested lighting, color contrast, and focal points to sharpen the scene. The group tried new color, shape, and texture choices to improve the scene. They revised rhythm, imagery, and detail so the audience could picture the moment. They knew they had to revise the work to reach their creative goal.\n\nStudying technique helps artists and audiences appreciate creative choices. By the end, the details showed how craft and intention shape a final piece.",
     "questions": [
       {
         "id": "q1",
@@ -2259,7 +2644,12 @@
         "prompt": "In two complete sentences, explain how learning contrast improved the students' drawings."
       }
     ],
-    "skillTags": ["reading-comprehension", "vocabulary", "summary", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "vocabulary",
+      "summary",
+      "short-writing"
+    ]
   },
   {
     "id": "friendship-lunch-helper",
@@ -2268,7 +2658,7 @@
     "passageType": "literary",
     "missionLabel": "Infer how support changed a classmate's confidence.",
     "passageTitle": "Tray Time",
-    "passageText": "Nia noticed that Omar was nervous carrying his lunch tray through the crowded line. She offered to walk beside him and hold open the milk cooler door. After a few days, Omar carried his tray confidently and thanked Nia for helping him practice. Their teamwork turned a hard task into a routine.",
+    "passageText": "Nia noticed that Omar was nervous carrying his lunch tray through the crowded line. She offered to walk beside him and hold open the milk cooler door. After a few days, Omar carried his tray confidently and thanked Nia for helping him practice. Their teamwork turned a hard task into a routine. A thoughtful gesture helped them begin rebuilding trust. Their apology mattered more because actions matched what they promised. They practiced checking in early so small problems did not grow. Each calm conversation made the relationship feel safer and more respectful.\n\nThe moment reminded them that trust grows through honest actions. By the end, the friendship felt stronger because of what they shared.",
     "questions": [
       {
         "id": "q1",
@@ -2288,6 +2678,11 @@
         "prompt": "Write two complete sentences explaining which details show Omar's confidence improved."
       }
     ],
-    "skillTags": ["reading-comprehension", "inference", "sentence-quality", "short-writing"]
+    "skillTags": [
+      "reading-comprehension",
+      "inference",
+      "sentence-quality",
+      "short-writing"
+    ]
   }
 ]

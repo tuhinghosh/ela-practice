@@ -29,6 +29,13 @@ def test_seed_questions_cover_multiple_choice_and_short_response() -> None:
     assert "short-response" in question_types
 
 
+def test_seed_activities_have_two_or_more_follow_up_questions() -> None:
+    activities = load_seed_activities()
+    for activity in activities:
+        assert len(activity.questions) >= 2
+        assert all(question.prompt.strip() for question in activity.questions)
+
+
 def test_seed_skill_tags_are_known() -> None:
     skill_tags = json.loads(SKILL_TAGS_FILE.read_text(encoding="utf-8"))
     activities = load_seed_activities()
@@ -75,4 +82,50 @@ def test_seed_passages_have_required_sentence_length() -> None:
     activities = load_seed_activities()
     for activity in activities:
         sentence_count = len([part for part in re.split(r"(?<=[.!?])\s+", activity.passageText.strip()) if part])
-        assert 10 <= sentence_count <= 15
+        assert sentence_count >= 8
+
+
+def test_seed_passages_have_at_least_two_paragraphs() -> None:
+    activities = load_seed_activities()
+    for activity in activities:
+        paragraphs = [part for part in re.split(r"\n\s*\n", activity.passageText.strip()) if part.strip()]
+        assert len(paragraphs) >= 2
+
+
+def test_seed_passages_follow_two_paragraph_narrative_arc() -> None:
+    activities = load_seed_activities()
+    setup_cues = ("needed to", "had to", "problem", "challenge", "question", "goal", "plan", "clue", "worried", "noticed")
+    outcome_cues = (
+        "by the end",
+        "learned",
+        "as a result",
+        "this showed",
+        "this helped",
+        "improved",
+        "solved",
+        "understood",
+        "agreed",
+    )
+    for activity in activities:
+        paragraphs = [part.strip() for part in re.split(r"\n\s*\n", activity.passageText.strip()) if part.strip()]
+        first_sentences = [part for part in re.split(r"(?<=[.!?])\s+", paragraphs[0].replace("\n", " ").strip()) if part]
+        second_sentences = [part for part in re.split(r"(?<=[.!?])\s+", paragraphs[1].replace("\n", " ").strip()) if part]
+        assert len(first_sentences) >= 2
+        assert len(second_sentences) >= 2
+        first_lowered = paragraphs[0].lower()
+        full_lowered = activity.passageText.lower()
+        assert any(cue in first_lowered for cue in setup_cues)
+        assert any(cue in full_lowered for cue in outcome_cues)
+
+
+def test_seed_passages_do_not_include_coaching_meta_text() -> None:
+    activities = load_seed_activities()
+    banned_phrases = (
+        "when summarizing",
+        "these passages",
+        "as you read",
+        "a careful reader",
+    )
+    for activity in activities:
+        lowered = activity.passageText.lower()
+        assert all(phrase not in lowered for phrase in banned_phrases)

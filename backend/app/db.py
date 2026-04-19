@@ -378,6 +378,40 @@ def get_recent_score_history(connection: sqlite3.Connection, child_profile_id: i
     return [float(row["score_percent"]) for row in rows]
 
 
+def compute_historical_skill_summary(
+    connection: sqlite3.Connection, child_profile_id: int, limit: int = 10
+) -> tuple[list[str], list[str]]:
+    """Compute strengths and growth areas from recent session history.
+
+    Aggregates per-skill-tag averages across the last N submitted sessions.
+    Tags with average score >= 75 are strengths; < 75 are growth areas.
+    """
+    rows = connection.execute(
+        """
+        SELECT sc.skill_breakdown_json, sc.score_percent
+        FROM activity_sessions s
+        JOIN scores sc ON sc.session_id = s.id
+        WHERE s.child_profile_id = ? AND s.status = 'submitted'
+        ORDER BY s.submitted_at DESC, s.id DESC
+        LIMIT ?
+        """,
+        (child_profile_id, limit),
+    ).fetchall()
+
+    if not rows:
+        return [], []
+
+    tag_scores: dict[str, list[float]] = {}
+    for row in rows:
+        breakdown = json.loads(row["skill_breakdown_json"]) if row["skill_breakdown_json"] else {}
+        for tag, value in breakdown.items():
+            tag_scores.setdefault(tag, []).append(float(value))
+
+    strengths = sorted(tag for tag, scores in tag_scores.items() if sum(scores) / len(scores) >= 75)
+    growth_areas = sorted(tag for tag, scores in tag_scores.items() if sum(scores) / len(scores) < 75)
+    return strengths, growth_areas
+
+
 def get_recent_writing_feedback(
     connection: sqlite3.Connection, child_profile_id: int, limit: int = 3
 ) -> list[dict[str, str]]:
@@ -471,8 +505,7 @@ def create_submission(
     next_completion = previous_completion + 1
     next_avg = ((previous_avg * previous_completion) + float(scoring_payload["score_percent"])) / next_completion
 
-    strengths = [tag for tag, value in scoring_payload["skill_breakdown"].items() if value >= 75]
-    growth_areas = [tag for tag, value in scoring_payload["skill_breakdown"].items() if value < 75]
+    strengths, growth_areas = compute_historical_skill_summary(connection, child_profile_id)
 
     connection.execute(
         """
