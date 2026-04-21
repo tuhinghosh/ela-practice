@@ -183,3 +183,4 @@ frontend/out/
 backend/data/*.sqlite3
 backend/data/*.sqlite3-*
 
+CLAUDE.md

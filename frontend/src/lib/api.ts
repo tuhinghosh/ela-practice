@@ -20,8 +20,12 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   if (!response.ok) {
     let message = `Request failed (${response.status})`;
     try {
-      const payload = (await response.json()) as { detail?: string; error?: string };
-      message = payload.detail ?? payload.error ?? message;
+      const payload = (await response.json()) as { detail?: string | Array<{ msg: string }>; error?: string };
+      if (Array.isArray(payload.detail)) {
+        message = payload.detail.map((d) => d.msg).join("; ");
+      } else {
+        message = payload.detail ?? payload.error ?? message;
+      }
     } catch {
       // Keep fallback message.
     }
@@ -58,7 +62,7 @@ export type ActivitiesResponse = {
     title: string;
     theme: string;
     difficulty: "easy" | "medium" | "difficult";
-    passage_type: "literary" | "informational";
+    passage_type: "literary" | "informational" | "poetry";
     mission_label: string;
     skill_tags: string[];
   }>;
@@ -69,7 +73,7 @@ export type ActivityDetailResponse = {
   title: string;
   theme: string;
   difficulty: "easy" | "medium" | "difficult";
-  passage_type: "literary" | "informational";
+  passage_type: "literary" | "informational" | "poetry";
   mission_label: string;
   passage_title: string;
   passage_text: string;

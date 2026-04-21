@@ -3,15 +3,17 @@ from backend.app.scoring import score_activity_submission
 
 
 def test_scoring_returns_expected_shape() -> None:
-    activity = get_seed_activity("forest-friends")
+    activity = get_seed_activity("nature-01")
     payload = {
-        "q1": {"answer_choice": "The birds show teamwork while building a nest.", "answer_text": None},
-        "q2": {"answer_choice": None, "answer_text": "The bird came back for the twig because it did not give up."},
+        "q1": {"answer_choice": "The oak tree's roots took the water", "answer_text": None},
+        "q2": {"answer_choice": "Healthy things that help plants grow", "answer_text": None},
+        "q3": {"answer_choice": "Determined", "answer_text": None},
+        "q4": {"answer_choice": None, "answer_text": "Lila did not give up because she tried moving the pot to a sunny spot."},
     }
 
     result = score_activity_submission(activity, payload)
 
-    assert result["max_score"] == 2.0
+    assert result["max_score"] == 4.0
     assert "rubric" in result
     assert "question_feedback" in result
     assert result["score_percent"] >= 0
@@ -19,10 +21,11 @@ def test_scoring_returns_expected_shape() -> None:
 
 
 def test_scoring_is_deterministic_for_same_payload() -> None:
-    activity = get_seed_activity("bees-and-flowers")
+    activity = get_seed_activity("nature-02")
     payload = {
-        "q1": {"answer_choice": "Bees spread pollen from one flower to another.", "answer_text": None},
-        "q2": {"answer_choice": None, "answer_text": "Bees help flowers make seeds and fruit. This helps farms and gardens."},
+        "q1": {"answer_choice": "A baby duck was trapped between rocks", "answer_text": None},
+        "q2": {"answer_choice": "To give the duckling's feet something to grip", "answer_text": None},
+        "q3": {"answer_choice": None, "answer_text": "Marco helped the duckling by placing sticks so it could climb out."},
     }
 
     first = score_activity_submission(activity, payload)

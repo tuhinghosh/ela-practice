@@ -23,6 +23,7 @@ export default function ActivityClient({ activityId }: Props) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [usingFallback, setUsingFallback] = useState(false);
 
   useEffect(() => {
     const run = async () => {
@@ -34,7 +35,8 @@ export default function ActivityClient({ activityId }: Props) {
           window.location.href = "/login";
           return;
         }
-        setError("Could not load live activity data. Showing local preview data.");
+        setError("Could not connect to the server. Please try again later.");
+        setUsingFallback(true);
       }
     };
     void run();
@@ -57,7 +59,15 @@ export default function ActivityClient({ activityId }: Props) {
     .map((paragraph) => paragraph.trim())
     .filter((paragraph) => paragraph.length > 0);
 
+  const allAnswered = resolved.questions.every(
+    (question) => answers[question.id] !== undefined && answers[question.id].trim() !== "",
+  );
+
   const onSubmit = async () => {
+    if (!allAnswered) {
+      setError("Please answer all questions before submitting.");
+      return;
+    }
     setIsSubmitting(true);
     setError("");
     try {
@@ -147,8 +157,8 @@ export default function ActivityClient({ activityId }: Props) {
             )}
           </article>
         ))}
-        <Button type="button" onClick={onSubmit} disabled={isSubmitting}>
-          {isSubmitting ? "Submitting..." : "Submit answers"}
+        <Button type="button" onClick={onSubmit} disabled={isSubmitting || usingFallback || !allAnswered}>
+          {isSubmitting ? "Submitting..." : usingFallback ? "Server unavailable" : "Submit answers"}
         </Button>
       </Card>
     </AppShell>

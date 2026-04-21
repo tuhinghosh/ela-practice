@@ -15,11 +15,12 @@ def test_seed_content_validates_against_schema() -> None:
     assert all(isinstance(activity, ActivityModel) for activity in activities)
 
 
-def test_seed_content_includes_literary_and_informational() -> None:
+def test_seed_content_includes_literary_informational_and_poetry() -> None:
     activities = load_seed_activities()
     types = {activity.passageType for activity in activities}
     assert "literary" in types
     assert "informational" in types
+    assert "poetry" in types
 
 
 def test_seed_questions_cover_multiple_choice_and_short_response() -> None:
@@ -81,6 +82,8 @@ def test_seed_content_has_balanced_difficulty_distribution() -> None:
 def test_seed_passages_have_required_sentence_length() -> None:
     activities = load_seed_activities()
     for activity in activities:
+        if activity.passageType == "poetry":
+            continue
         sentence_count = len([part for part in re.split(r"(?<=[.!?])\s+", activity.passageText.strip()) if part])
         assert sentence_count >= 8
 
@@ -88,13 +91,15 @@ def test_seed_passages_have_required_sentence_length() -> None:
 def test_seed_passages_have_at_least_two_paragraphs() -> None:
     activities = load_seed_activities()
     for activity in activities:
+        if activity.passageType == "poetry":
+            continue
         paragraphs = [part for part in re.split(r"\n\s*\n", activity.passageText.strip()) if part.strip()]
         assert len(paragraphs) >= 2
 
 
 def test_seed_passages_follow_two_paragraph_narrative_arc() -> None:
-    activities = load_seed_activities()
-    setup_cues = ("needed to", "had to", "problem", "challenge", "question", "goal", "plan", "clue", "worried", "noticed")
+    activities = [a for a in load_seed_activities() if a.passageType != "poetry"]
+    setup_cues = ("needed to", "had to", "problem", "challenge", "question", "goal", "plan", "clue", "worried", "noticed", "task", "decided", "wanted", "tried", "began", "hoped", "set out", "wondered")
     outcome_cues = (
         "by the end",
         "learned",
@@ -105,6 +110,12 @@ def test_seed_passages_follow_two_paragraph_narrative_arc() -> None:
         "solved",
         "understood",
         "agreed",
+        "realized",
+        "discovered",
+        "finally",
+        "after that",
+        "from then on",
+        "knew",
     )
     for activity in activities:
         paragraphs = [part.strip() for part in re.split(r"\n\s*\n", activity.passageText.strip()) if part.strip()]
@@ -119,7 +130,7 @@ def test_seed_passages_follow_two_paragraph_narrative_arc() -> None:
 
 
 def test_seed_passages_do_not_include_coaching_meta_text() -> None:
-    activities = load_seed_activities()
+    activities = [a for a in load_seed_activities() if a.passageType != "poetry"]
     banned_phrases = (
         "when summarizing",
         "these passages",

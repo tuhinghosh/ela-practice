@@ -325,7 +325,7 @@ def get_child_profile_for_user(connection: sqlite3.Connection, user_id: int) -> 
 
 def get_reward_state(connection: sqlite3.Connection, user_id: int) -> sqlite3.Row:
     row = connection.execute(
-        "SELECT stars, streak_days, badges_json FROM reward_state WHERE user_id = ?",
+        "SELECT stars, streak_days, badges_json, updated_at FROM reward_state WHERE user_id = ?",
         (user_id,),
     ).fetchone()
     if row is None:
@@ -529,7 +529,22 @@ def create_submission(
     previous_streak = int(reward_row["streak_days"])
     stars_earned = int(round(scoring_payload["score_percent"] / 25))
     stars = previous_stars + stars_earned
-    streak_days = previous_streak + 1
+
+    from datetime import date, datetime
+
+    today = date.today()
+    last_updated = reward_row["updated_at"]
+    if last_updated:
+        last_date = datetime.fromisoformat(last_updated.replace("Z", "+00:00")).date() if "T" in last_updated else datetime.strptime(last_updated, "%Y-%m-%d %H:%M:%S").date()
+        days_gap = (today - last_date).days
+        if days_gap == 0:
+            streak_days = previous_streak
+        elif days_gap == 1:
+            streak_days = previous_streak + 1
+        else:
+            streak_days = 1
+    else:
+        streak_days = 1
     badges = json.loads(reward_row["badges_json"])
     previous_badges = set(badges)
     if next_completion >= 3 and "Three Mission Starter" not in badges:

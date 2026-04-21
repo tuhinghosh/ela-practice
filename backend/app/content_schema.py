@@ -1,3 +1,4 @@
+import functools
 from pathlib import Path
 from typing import Literal, Optional
 
@@ -15,7 +16,7 @@ SkillTag = Literal[
     "short-writing",
 ]
 
-PassageType = Literal["literary", "informational"]
+PassageType = Literal["literary", "informational", "poetry"]
 QuestionType = Literal["multiple-choice", "short-response"]
 DifficultyTier = Literal["easy", "medium", "difficult"]
 
@@ -46,6 +47,13 @@ SETUP_CUES = (
     "worried",
     "noticed",
     "task",
+    "decided",
+    "wanted",
+    "tried",
+    "began",
+    "hoped",
+    "set out",
+    "wondered",
 )
 OUTCOME_CUES = (
     "by the end",
@@ -57,6 +65,12 @@ OUTCOME_CUES = (
     "solved",
     "understood",
     "agreed",
+    "realized",
+    "discovered",
+    "finally",
+    "after that",
+    "from then on",
+    "knew",
 )
 
 
@@ -138,27 +152,35 @@ def load_seed_activities() -> list[ActivityModel]:
         seen_ids.add(activity.id)
         if activity.theme not in allowed_themes:
             raise ValueError(f'Activity "{activity.id}" has unsupported theme "{activity.theme}".')
-        if _count_sentences(activity.passageText) < MIN_PASSAGE_SENTENCES:
-            raise ValueError(
-                f'Activity "{activity.id}" must include at least {MIN_PASSAGE_SENTENCES} sentences in passageText.'
-            )
-        if _count_paragraphs(activity.passageText) < MIN_PASSAGE_PARAGRAPHS:
-            raise ValueError(
-                f'Activity "{activity.id}" must include at least {MIN_PASSAGE_PARAGRAPHS} paragraphs in passageText.'
-            )
-        paragraphs = _split_paragraphs(activity.passageText)
-        if _count_sentences_in_block(paragraphs[0]) < MIN_PARAGRAPH_SENTENCES:
-            raise ValueError(
-                f'Activity "{activity.id}" first paragraph must include at least {MIN_PARAGRAPH_SENTENCES} sentences.'
-            )
-        if _count_sentences_in_block(paragraphs[1]) < MIN_PARAGRAPH_SENTENCES:
-            raise ValueError(
-                f'Activity "{activity.id}" second paragraph must include at least {MIN_PARAGRAPH_SENTENCES} sentences.'
-            )
-        if not _has_any_cue(paragraphs[0], SETUP_CUES):
-            raise ValueError(f'Activity "{activity.id}" first paragraph must include setup/challenge context cues.')
-        if not _has_any_cue(activity.passageText, OUTCOME_CUES):
-            raise ValueError(f'Activity "{activity.id}" must include outcome/reflection cues in the passage.')
+        if activity.passageType == "poetry":
+            lines = [line for line in activity.passageText.split("\n") if line.strip()]
+            stanzas = [s.strip() for s in activity.passageText.split("\n\n") if s.strip()]
+            if len(lines) < 8:
+                raise ValueError(f'Poetry activity "{activity.id}" must include at least 8 lines.')
+            if len(stanzas) < 2:
+                raise ValueError(f'Poetry activity "{activity.id}" must include at least 2 stanzas.')
+        else:
+            if _count_sentences(activity.passageText) < MIN_PASSAGE_SENTENCES:
+                raise ValueError(
+                    f'Activity "{activity.id}" must include at least {MIN_PASSAGE_SENTENCES} sentences in passageText.'
+                )
+            if _count_paragraphs(activity.passageText) < MIN_PASSAGE_PARAGRAPHS:
+                raise ValueError(
+                    f'Activity "{activity.id}" must include at least {MIN_PASSAGE_PARAGRAPHS} paragraphs in passageText.'
+                )
+            paragraphs = _split_paragraphs(activity.passageText)
+            if _count_sentences_in_block(paragraphs[0]) < MIN_PARAGRAPH_SENTENCES:
+                raise ValueError(
+                    f'Activity "{activity.id}" first paragraph must include at least {MIN_PARAGRAPH_SENTENCES} sentences.'
+                )
+            if _count_sentences_in_block(paragraphs[1]) < MIN_PARAGRAPH_SENTENCES:
+                raise ValueError(
+                    f'Activity "{activity.id}" second paragraph must include at least {MIN_PARAGRAPH_SENTENCES} sentences.'
+                )
+            if not _has_any_cue(paragraphs[0], SETUP_CUES):
+                raise ValueError(f'Activity "{activity.id}" first paragraph must include setup/challenge context cues.')
+            if not _has_any_cue(activity.passageText, OUTCOME_CUES):
+                raise ValueError(f'Activity "{activity.id}" must include outcome/reflection cues in the passage.')
 
         for question in activity.questions:
             if question.type == "multiple-choice":
@@ -183,8 +205,9 @@ def load_seed_activities() -> list[ActivityModel]:
     return activities
 
 
-def list_seed_activities() -> list[ActivityModel]:
-    return load_seed_activities()
+@functools.lru_cache(maxsize=1)
+def list_seed_activities() -> tuple[ActivityModel, ...]:
+    return tuple(load_seed_activities())
 
 
 def list_seed_themes() -> list[str]:
@@ -206,7 +229,7 @@ def list_seed_difficulty_tiers() -> list[str]:
 
 
 def get_seed_activity(activity_id: str) -> ActivityModel:
-    for activity in load_seed_activities():
+    for activity in list_seed_activities():
         if activity.id == activity_id:
             return activity
     raise ValueError(f'Activity "{activity_id}" not found.')

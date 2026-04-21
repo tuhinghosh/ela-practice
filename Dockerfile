@@ -26,6 +26,9 @@ COPY backend/ /app/backend/
 COPY frontend/src/content/ /app/backend/content/
 COPY --from=frontend-build /app/frontend/out /app/backend/static
 
+RUN useradd -m appuser && mkdir -p /app/backend/data && chown -R appuser:appuser /app/backend/data
+USER appuser
+
 EXPOSE 8000
 
 CMD ["uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "8000"]

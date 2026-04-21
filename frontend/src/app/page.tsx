@@ -110,7 +110,7 @@ export default function Home() {
             : selectedActivity.skillTags,
       }
     : {
-        activityId: "forest-friends",
+        activityId: "nature-01",
         difficulty: "easy" as const,
         missionLabel: "Choose an activity to start your reading quest.",
         skillTags: [],

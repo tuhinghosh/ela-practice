@@ -23,6 +23,13 @@ const SETUP_CUES = [
   "worried",
   "noticed",
   "task",
+  "decided",
+  "wanted",
+  "tried",
+  "began",
+  "hoped",
+  "set out",
+  "wondered",
 ] as const;
 const OUTCOME_CUES = [
   "by the end",
@@ -34,6 +41,12 @@ const OUTCOME_CUES = [
   "solved",
   "understood",
   "agreed",
+  "realized",
+  "discovered",
+  "finally",
+  "after that",
+  "from then on",
+  "knew",
 ] as const;
 
 export type QuestionType = "multiple-choice" | "short-response";
@@ -50,7 +63,7 @@ export type Activity = {
   title: string;
   theme: ActivityTheme;
   difficulty: DifficultyTier;
-  passageType: "literary" | "informational";
+  passageType: "literary" | "informational" | "poetry";
   missionLabel: string;
   passageTitle: string;
   passageText: string;
@@ -146,7 +159,7 @@ function parseActivity(value: unknown): Activity {
   if (!isNonEmptyString(theme) || !activityThemes.includes(theme as ActivityTheme)) {
     throw new Error(`Activity "${id}" has invalid or unsupported theme.`);
   }
-  if (passageType !== "literary" && passageType !== "informational") {
+  if (passageType !== "literary" && passageType !== "informational" && passageType !== "poetry") {
     throw new Error(`Activity "${id}" has invalid passageType.`);
   }
   if (difficulty !== undefined && (!isNonEmptyString(difficulty) || !difficultyTiers.includes(difficulty as DifficultyTier))) {
@@ -155,24 +168,35 @@ function parseActivity(value: unknown): Activity {
   if (!isNonEmptyString(missionLabel)) throw new Error(`Activity "${id}" is missing missionLabel.`);
   if (!isNonEmptyString(passageTitle)) throw new Error(`Activity "${id}" is missing passageTitle.`);
   if (!isNonEmptyString(passageText)) throw new Error(`Activity "${id}" is missing passageText.`);
-  if (sentenceCount(passageText) < MIN_PASSAGE_SENTENCES) {
-    throw new Error(`Activity "${id}" must include at least ${MIN_PASSAGE_SENTENCES} sentences in passageText.`);
-  }
-  if (paragraphCount(passageText) < MIN_PASSAGE_PARAGRAPHS) {
-    throw new Error(`Activity "${id}" must include at least ${MIN_PASSAGE_PARAGRAPHS} paragraphs in passageText.`);
-  }
-  const paragraphs = splitParagraphs(passageText);
-  if (sentenceCount(paragraphs[0] ?? "") < MIN_PARAGRAPH_SENTENCES) {
-    throw new Error(`Activity "${id}" first paragraph must include at least ${MIN_PARAGRAPH_SENTENCES} sentences.`);
-  }
-  if (sentenceCount(paragraphs[1] ?? "") < MIN_PARAGRAPH_SENTENCES) {
-    throw new Error(`Activity "${id}" second paragraph must include at least ${MIN_PARAGRAPH_SENTENCES} sentences.`);
-  }
-  if (!hasAnyCue(paragraphs[0] ?? "", SETUP_CUES)) {
-    throw new Error(`Activity "${id}" first paragraph must include setup/challenge context cues.`);
-  }
-  if (!hasAnyCue(passageText, OUTCOME_CUES)) {
-    throw new Error(`Activity "${id}" must include outcome/reflection cues in the passage.`);
+  if (passageType === "poetry") {
+    const lines = passageText.split("\n").filter((line) => line.trim().length > 0);
+    const stanzas = passageText.split("\n\n").filter((s) => s.trim().length > 0);
+    if (lines.length < 8) {
+      throw new Error(`Poetry activity "${id}" must include at least 8 lines.`);
+    }
+    if (stanzas.length < 2) {
+      throw new Error(`Poetry activity "${id}" must include at least 2 stanzas.`);
+    }
+  } else {
+    if (sentenceCount(passageText) < MIN_PASSAGE_SENTENCES) {
+      throw new Error(`Activity "${id}" must include at least ${MIN_PASSAGE_SENTENCES} sentences in passageText.`);
+    }
+    if (paragraphCount(passageText) < MIN_PASSAGE_PARAGRAPHS) {
+      throw new Error(`Activity "${id}" must include at least ${MIN_PASSAGE_PARAGRAPHS} paragraphs in passageText.`);
+    }
+    const paragraphs = splitParagraphs(passageText);
+    if (sentenceCount(paragraphs[0] ?? "") < MIN_PARAGRAPH_SENTENCES) {
+      throw new Error(`Activity "${id}" first paragraph must include at least ${MIN_PARAGRAPH_SENTENCES} sentences.`);
+    }
+    if (sentenceCount(paragraphs[1] ?? "") < MIN_PARAGRAPH_SENTENCES) {
+      throw new Error(`Activity "${id}" second paragraph must include at least ${MIN_PARAGRAPH_SENTENCES} sentences.`);
+    }
+    if (!hasAnyCue(paragraphs[0] ?? "", SETUP_CUES)) {
+      throw new Error(`Activity "${id}" first paragraph must include setup/challenge context cues.`);
+    }
+    if (!hasAnyCue(passageText, OUTCOME_CUES)) {
+      throw new Error(`Activity "${id}" must include outcome/reflection cues in the passage.`);
+    }
   }
   if (!Array.isArray(questionsRaw) || questionsRaw.length < 2) {
     throw new Error(`Activity "${id}" must include at least two questions.`);

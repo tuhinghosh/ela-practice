@@ -71,3 +71,25 @@ async def test_invalid_session_cookie_is_not_authenticated() -> None:
 
     assert response.status_code == 200
     assert response.json()["authenticated"] is False
+
+
+@pytest.mark.asyncio
+async def test_path_traversal_is_blocked(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    static_dir = tmp_path / "static"
+    _write_static_files(static_dir)
+    monkeypatch.setattr(main, "STATIC_DIR", static_dir)
+
+    secret_file = tmp_path / "secret.txt"
+    secret_file.write_text("sensitive data", encoding="utf-8")
+
+    transport = ASGITransport(app=main.app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        login = await client.post("/api/auth/login", json={"username": "user", "password": "password"})
+        assert login.status_code == 200
+
+        traversal = await client.get("/../secret.txt")
+        assert b"sensitive data" not in traversal.content
+
+        traversal2 = await client.get("/..%2F..%2Fetc/passwd")
+        assert traversal2.status_code in (200, 302)
+        assert b"root:" not in traversal2.content

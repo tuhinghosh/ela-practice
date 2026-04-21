@@ -399,11 +399,14 @@ def get_parent_progress(username: str = Depends(_require_authenticated_username)
 
 
 @app.get("/api/sessions/{session_id}")
-def get_session_result(session_id: str, _: str = Depends(_require_authenticated_username)) -> JSONResponse:
+def get_session_result(session_id: str, username: str = Depends(_require_authenticated_username)) -> JSONResponse:
     with get_connection() as connection:
+        user = get_user_by_username(connection, username)
         session = fetch_session_result_by_uuid(connection, session_id)
     if session is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Session "{session_id}" not found.')
+    if int(session["user_id"]) != int(user["id"]):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Session not found.")
 
     metadata = json.loads(session["metadata_json"]) if session["metadata_json"] else {}
     reward_snapshot = metadata.get("reward_snapshot", {})
@@ -560,22 +563,26 @@ def _is_public_route(path: str) -> bool:
 
 def _resolve_static_file(request_path: str) -> Path:
     clean_path = request_path.strip("/")
+    static_root = STATIC_DIR.resolve()
     if not clean_path:
-        return STATIC_DIR / "index.html"
+        return static_root / "index.html"
 
-    direct_target = STATIC_DIR / clean_path
+    direct_target = (STATIC_DIR / clean_path).resolve()
+    if not str(direct_target).startswith(str(static_root)):
+        return static_root / "index.html"
+
     if direct_target.is_file():
         return direct_target
 
-    nested_index = direct_target / "index.html"
-    if nested_index.is_file():
+    nested_index = (direct_target / "index.html").resolve()
+    if str(nested_index).startswith(str(static_root)) and nested_index.is_file():
         return nested_index
 
-    html_target = STATIC_DIR / f"{clean_path}.html"
-    if html_target.is_file():
+    html_target = (STATIC_DIR / f"{clean_path}.html").resolve()
+    if str(html_target).startswith(str(static_root)) and html_target.is_file():
         return html_target
 
-    return STATIC_DIR / "index.html"
+    return static_root / "index.html"
 
 
 @app.get("/{path:path}", include_in_schema=False)

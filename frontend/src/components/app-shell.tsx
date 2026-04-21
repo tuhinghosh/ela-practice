@@ -14,7 +14,7 @@ type ShellProps = {
 
 const navItems = [
   { href: "/", label: "Mission Home" },
-  { href: "/activity/forest-friends", label: "Activity" },
+  { href: "/activity/nature-01", label: "Activity" },
   { href: "/results/session-001", label: "Results" },
   { href: "/parent/progress", label: "Parent View" },
 ];

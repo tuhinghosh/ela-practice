@@ -92,11 +92,13 @@ def client(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> TestClient:
         login = test_client.post("/api/auth/login", json={"username": "user", "password": "password"})
         assert login.status_code == 200
         submit = test_client.post(
-            "/api/activities/forest-friends/submit",
+            "/api/activities/nature-01/submit",
             json={
                 "responses": [
-                    {"question_id": "q1", "answer_choice": "The birds show teamwork while building a nest."},
-                    {"question_id": "q2", "answer_text": "The bird came back for the twig because it kept trying."},
+                    {"question_id": "q1", "answer_choice": "The oak tree's roots took the water"},
+                    {"question_id": "q2", "answer_choice": "Healthy things that help plants grow"},
+                    {"question_id": "q3", "answer_choice": "Determined"},
+                    {"question_id": "q4", "answer_text": "Lila did not give up because she tried moving the pot to a sunny spot."},
                 ]
             },
         )

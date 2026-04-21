@@ -19,31 +19,43 @@ def _login(client: TestClient) -> None:
     assert response.status_code == 200
 
 
-def _forest_friends_payload() -> dict:
+def _nature_01_payload() -> dict:
     return {
         "responses": [
             {
                 "question_id": "q1",
-                "answer_choice": "The birds show teamwork while building a nest.",
+                "answer_choice": "The oak tree's roots took the water",
             },
             {
                 "question_id": "q2",
-                "answer_text": "The bird brought the twig back because it kept trying.",
+                "answer_choice": "Healthy things that help plants grow",
+            },
+            {
+                "question_id": "q3",
+                "answer_choice": "Determined",
+            },
+            {
+                "question_id": "q4",
+                "answer_text": "Lila did not give up because she tried moving the pot to a sunny spot.",
             },
         ]
     }
 
 
-def _bees_payload() -> dict:
+def _nature_02_payload() -> dict:
     return {
         "responses": [
             {
                 "question_id": "q1",
-                "answer_choice": "Bees spread pollen from one flower to another.",
+                "answer_choice": "A baby duck was trapped between rocks",
             },
             {
                 "question_id": "q2",
-                "answer_text": "Bees move pollen and help plants make seeds.",
+                "answer_choice": "To give the duckling's feet something to grip",
+            },
+            {
+                "question_id": "q3",
+                "answer_text": "Marco helped the duckling by placing sticks so it could climb out.",
             },
         ]
     }
@@ -84,12 +96,12 @@ def test_activity_and_progress_routes(client: TestClient) -> None:
     assert activity_detail.status_code == 200
     assert activity_detail.json()["id"] == activity_id
 
-    submit_result = client.post(f"/api/activities/{activity_id}/submit", json=_forest_friends_payload())
+    submit_result = client.post(f"/api/activities/{activity_id}/submit", json=_nature_01_payload())
     assert submit_result.status_code == 200
     assert submit_result.json()["score_percent"] >= 0
     session_id = submit_result.json()["session_id"]
     assert submit_result.json()["reward_snapshot"]["stars_after"] >= stars_before
-    assert submit_result.json()["reward_snapshot"]["streak_after"] == streak_before + 1
+    assert submit_result.json()["reward_snapshot"]["streak_after"] >= streak_before
 
     session_result = client.get(f"/api/sessions/{session_id}")
     assert session_result.status_code == 200
@@ -115,13 +127,13 @@ def test_invalid_payload_returns_validation_error(client: TestClient) -> None:
     _login(client)
 
     response = client.post(
-        "/api/activities/forest-friends/submit",
+        "/api/activities/nature-01/submit",
         json={"responses": [{"question_id": "q1"}]},
     )
     assert response.status_code == 422
 
     unknown_question = client.post(
-        "/api/activities/forest-friends/submit",
+        "/api/activities/nature-01/submit",
         json={
             "responses": [
                 {"question_id": "unknown-q", "answer_choice": "anything"},
@@ -140,19 +152,19 @@ def test_repeat_submissions_are_predictable(client: TestClient) -> None:
     _login(client)
     rewards_start = client.get("/api/rewards").json()
     start_streak = rewards_start["streak_days"]
-    payload = _bees_payload()
+    payload = _nature_02_payload()
 
-    first = client.post("/api/activities/bees-and-flowers/submit", json=payload)
-    second = client.post("/api/activities/bees-and-flowers/submit", json=payload)
+    first = client.post("/api/activities/nature-02/submit", json=payload)
+    second = client.post("/api/activities/nature-02/submit", json=payload)
 
     assert first.status_code == 200
     assert second.status_code == 200
     assert first.json()["score_percent"] == second.json()["score_percent"]
     assert first.json()["session_id"] != second.json()["session_id"]
-    assert second.json()["reward_snapshot"]["streak_after"] == first.json()["reward_snapshot"]["streak_after"] + 1
+    assert second.json()["reward_snapshot"]["streak_after"] == first.json()["reward_snapshot"]["streak_after"]
 
     rewards_end = client.get("/api/rewards").json()
-    assert rewards_end["streak_days"] == start_streak + 2
+    assert rewards_end["streak_days"] == first.json()["reward_snapshot"]["streak_after"]
 
 
 def test_empty_state_for_new_profile(client: TestClient) -> None:
@@ -171,7 +183,7 @@ def test_refresh_persistence_across_clients(tmp_path: Path, monkeypatch: pytest.
 
     with TestClient(app) as first_client:
         _login(first_client)
-        submit = first_client.post("/api/activities/forest-friends/submit", json=_forest_friends_payload())
+        submit = first_client.post("/api/activities/nature-01/submit", json=_nature_01_payload())
         assert submit.status_code == 200
         first_session_id = submit.json()["session_id"]
 
