@@ -5,12 +5,19 @@ import { useEffect, useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { Button, ButtonLink } from "@/components/button";
 import { Card } from "@/components/card";
+import { Icon } from "@/components/icon";
 import { Split, Stack, StatGrid } from "@/components/layout";
 import { Tag } from "@/components/tag";
 import { ApiError, type ActivitiesResponse, type DashboardResponse, getDashboard, listActivities } from "@/lib/api";
 import { activities as fallbackActivities, recentSessions, rewardSnapshot } from "@/lib/mock-data";
 
 import styles from "./screens.module.css";
+
+const DIFFICULTY_META: Record<"easy" | "medium" | "difficult", { label: string; color: string }> = {
+  easy: { label: "Easy", color: "var(--success)" },
+  medium: { label: "Medium", color: "var(--warning)" },
+  difficult: { label: "Difficult", color: "var(--danger)" },
+};
 
 export default function Home() {
   const [dashboard, setDashboard] = useState<DashboardResponse | null>(null);
@@ -100,6 +107,8 @@ export default function Home() {
     ? {
         activityId: selectedActivity.id,
         difficulty: selectedActivity.difficulty,
+        title: selectedActivity.title,
+        theme: selectedActivity.theme,
         missionLabel:
           selectedActivity.id === suggestedActivityId
             ? `Coach quest unlocked: ${selectedActivity.title}`
@@ -112,6 +121,8 @@ export default function Home() {
     : {
         activityId: "nature-01",
         difficulty: "easy" as const,
+        title: "Choose your adventure",
+        theme: "nature",
         missionLabel: "Choose an activity to start your reading quest.",
         skillTags: [],
       };
@@ -133,136 +144,222 @@ export default function Home() {
       }))
     : recentSessions;
 
+  const missionDifficulty = DIFFICULTY_META[mission.difficulty] ?? DIFFICULTY_META.easy;
+
   return (
     <AppShell
       title="Welcome back, Reader!"
       subtitle="Your reading adventure is ready. Read closely, share your ideas, and collect stars."
+      heroIcon="rocket"
     >
       <Stack>
         {error ? (
           <p role="alert" className={styles.error}>
+            <Icon name="message-circle" size={16} />
             {error}
           </p>
         ) : null}
-        <Card>
-          <h2>Today&apos;s mission</h2>
-          <p className={styles.difficultyLevel}>Difficulty level: {mission.difficulty.toUpperCase()}</p>
-          <p className={styles.muted}>{mission.missionLabel}</p>
-          <div>
-            <label className={styles.label} htmlFor="theme-filter">
-              Theme
-            </label>
-            <select
-              id="theme-filter"
-              className={styles.input}
-              value={selectedTheme}
-              onChange={(event) => {
-                setSelectedTheme(event.target.value);
-                setUserSelectedActivityId(null);
-              }}
+
+        <Card className={styles.missionCard}>
+          <div className={styles.missionTopRow}>
+            <div className={styles.missionHeading}>
+              <span className={styles.cardEyebrow}>
+                <Icon name="target" size={12} />
+                Today&apos;s mission
+              </span>
+              <h2 className={styles.missionTitle}>{mission.title}</h2>
+              <p className={styles.muted}>{mission.missionLabel}</p>
+            </div>
+            <span
+              className={styles.difficultyPill}
+              style={{ ["--pill-color" as string]: missionDifficulty.color }}
             >
-              <option value="all">All themes</option>
-              {themeOptions.map((theme) => (
-                <option key={theme} value={theme}>
-                  {theme}
-                </option>
+              <span className={styles.difficultyDot} aria-hidden="true" />
+              {missionDifficulty.label}
+            </span>
+          </div>
+
+          <div className={styles.filterRow}>
+            <div className={styles.filterGroup}>
+              <label className={styles.label} htmlFor="theme-filter">
+                <Icon name="compass" size={14} />
+                Theme
+              </label>
+              <select
+                id="theme-filter"
+                className={styles.input}
+                value={selectedTheme}
+                onChange={(event) => {
+                  setSelectedTheme(event.target.value);
+                  setUserSelectedActivityId(null);
+                }}
+              >
+                <option value="all">All themes</option>
+                {themeOptions.map((theme) => (
+                  <option key={theme} value={theme}>
+                    {theme}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className={styles.filterGroup}>
+              <label className={styles.label} htmlFor="difficulty-filter">
+                <Icon name="filter" size={14} />
+                Difficulty
+              </label>
+              <select
+                id="difficulty-filter"
+                className={styles.input}
+                value={selectedDifficulty}
+                onChange={(event) => {
+                  setSelectedDifficulty(event.target.value as "all" | "easy" | "medium" | "difficult");
+                  setUserSelectedActivityId(null);
+                }}
+              >
+                <option value="all">All levels</option>
+                {difficultyOptions.map((difficulty) => (
+                  <option key={difficulty} value={difficulty}>
+                    {difficulty}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {mission.skillTags.length > 0 ? (
+            <div className={styles.chipRow}>
+              {mission.skillTags.map((skill) => (
+                <Tag key={skill}>{skill}</Tag>
               ))}
-            </select>
-          </div>
-          <div>
-            <label className={styles.label} htmlFor="difficulty-filter">
-              Difficulty
-            </label>
-            <select
-              id="difficulty-filter"
-              className={styles.input}
-              value={selectedDifficulty}
-              onChange={(event) => {
-                setSelectedDifficulty(event.target.value as "all" | "easy" | "medium" | "difficult");
-                setUserSelectedActivityId(null);
-              }}
-            >
-              <option value="all">All levels</option>
-              {difficultyOptions.map((difficulty) => (
-                <option key={difficulty} value={difficulty}>
-                  {difficulty}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className={styles.chipRow}>
-            {mission.skillTags.map((skill) => (
-              <Tag key={skill}>{skill}</Tag>
-            ))}
-          </div>
+            </div>
+          ) : null}
+
           <ButtonLink href={`/activity/${mission.activityId}`}>
+            <Icon name="play" size={16} />
             Start mission
           </ButtonLink>
         </Card>
 
         <Split>
-          <Card as="article">
-            <h3>Reward tracker</h3>
+          <Card as="article" className={styles.cardWithHeader}>
+            <div className={styles.cardHeader}>
+              <span className={styles.cardIcon} style={{ ["--icon-color" as string]: "var(--warning)" }}>
+                <Icon name="trophy" size={18} />
+              </span>
+              <h3>Reward tracker</h3>
+            </div>
             <StatGrid>
               <div className={styles.stat}>
-                <span className={styles.statLabel}>Stars</span>
+                <span className={styles.statTopRow}>
+                  <Icon name="star" size={14} />
+                  <span className={styles.statLabel}>Stars</span>
+                </span>
                 <p className={styles.statValue}>{rewards.stars}</p>
               </div>
               <div className={styles.stat}>
-                <span className={styles.statLabel}>Points</span>
+                <span className={styles.statTopRow}>
+                  <Icon name="sparkles" size={14} />
+                  <span className={styles.statLabel}>Points</span>
+                </span>
                 <p className={styles.statValue}>{points}</p>
               </div>
               <div className={styles.stat}>
-                <span className={styles.statLabel}>Streak</span>
-                <p className={styles.statValue}>{rewards.streakDays} days</p>
+                <span className={styles.statTopRow}>
+                  <Icon name="flame" size={14} />
+                  <span className={styles.statLabel}>Streak</span>
+                </span>
+                <p className={styles.statValue}>{rewards.streakDays}d</p>
               </div>
             </StatGrid>
-            <div className={styles.chipRow}>
-              {rewards.badges.map((badge) => (
-                <Tag key={badge}>{badge}</Tag>
-              ))}
-            </div>
+            {rewards.badges.length > 0 ? (
+              <div className={styles.chipRow}>
+                {rewards.badges.map((badge) => (
+                  <Tag key={badge}>
+                    <Icon name="award" size={11} />
+                    {badge}
+                  </Tag>
+                ))}
+              </div>
+            ) : null}
           </Card>
 
-          <Card as="article">
-            <h3>Recent practice</h3>
-            <ul className={styles.list}>
-              {recent.length === 0 ? <li>No sessions yet. Start today&apos;s quest to begin your streak.</li> : null}
+          <Card as="article" className={styles.cardWithHeader}>
+            <div className={styles.cardHeader}>
+              <span className={styles.cardIcon} style={{ ["--icon-color" as string]: "var(--success)" }}>
+                <Icon name="check-circle" size={18} />
+              </span>
+              <h3>Recent practice</h3>
+            </div>
+            <ul className={styles.sessionList}>
+              {recent.length === 0 ? (
+                <li className={styles.emptyHint}>
+                  No sessions yet. Start today&apos;s quest to begin your streak.
+                </li>
+              ) : null}
               {recent.map((session) => (
-                <li key={session.id}>
-                  {session.activityTitle} - {session.scoreLabel}
+                <li key={session.id} className={styles.sessionItem}>
+                  <span className={styles.sessionTitle}>{session.activityTitle}</span>
+                  <span className={styles.sessionScore}>{session.scoreLabel}</span>
                 </li>
               ))}
             </ul>
           </Card>
 
-          <Card as="article">
-            <h3>Available activities</h3>
+          <Card as="article" className={styles.cardWithHeader}>
+            <div className={styles.cardHeader}>
+              <span className={styles.cardIcon} style={{ ["--icon-color" as string]: "var(--brand)" }}>
+                <Icon name="book" size={18} />
+              </span>
+              <h3>Available activities</h3>
+            </div>
             <ul className={styles.activityList}>
-              {availableActivities.length === 0 ? <li>No activities available yet.</li> : null}
-              {availableActivities.map((item) => (
-                <li key={item.id} className={styles.activityItem}>
-                  <div>
-                    <strong>{item.title}</strong>
-                    <div className={styles.muted}>Theme: {item.theme}</div>
-                    <p className={styles.difficultyLevel}>Difficulty: {item.difficulty.toUpperCase()}</p>
-                    {selectedActivityId === item.id ? <span className={styles.muted}> (Current mission)</span> : null}
-                  </div>
-                  <div className={styles.activityActions}>
-                    <Button
-                      type="button"
-                      tone="ghost"
-                      className={styles.inlineAction}
-                      onClick={() => setUserSelectedActivityId(item.id)}
-                    >
-                      Set mission
-                    </Button>
-                    <ButtonLink href={`/activity/${item.id}`} tone="secondary" className={styles.inlineAction}>
-                      Start now
-                    </ButtonLink>
-                  </div>
-                </li>
-              ))}
+              {availableActivities.length === 0 ? (
+                <li className={styles.emptyHint}>No activities available yet.</li>
+              ) : null}
+              {availableActivities.map((item) => {
+                const meta = DIFFICULTY_META[item.difficulty];
+                const isCurrent = selectedActivityId === item.id;
+                return (
+                  <li
+                    key={item.id}
+                    className={`${styles.activityItem} ${isCurrent ? styles.activityItemActive : ""}`}
+                  >
+                    <div className={styles.activityInfo}>
+                      <div className={styles.activityTitleRow}>
+                        <strong>{item.title}</strong>
+                        {isCurrent ? <span className={styles.activeBadge}>Current</span> : null}
+                      </div>
+                      <div className={styles.activityMeta}>
+                        <span>
+                          <Icon name="compass" size={12} />
+                          {item.theme}
+                        </span>
+                        <span
+                          className={styles.metaPill}
+                          style={{ ["--pill-color" as string]: meta.color }}
+                        >
+                          <span className={styles.difficultyDot} aria-hidden="true" />
+                          {meta.label}
+                        </span>
+                      </div>
+                    </div>
+                    <div className={styles.activityActions}>
+                      <Button
+                        type="button"
+                        tone="ghost"
+                        className={styles.inlineAction}
+                        onClick={() => setUserSelectedActivityId(item.id)}
+                      >
+                        Set mission
+                      </Button>
+                      <ButtonLink href={`/activity/${item.id}`} tone="secondary" className={styles.inlineAction}>
+                        Start now
+                        <Icon name="arrow-right" size={14} />
+                      </ButtonLink>
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           </Card>
         </Split>

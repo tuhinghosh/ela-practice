@@ -7,7 +7,8 @@ import { AICoachPanel } from "@/components/ai-coach-panel";
 import { AppShell } from "@/components/app-shell";
 import { ButtonLink } from "@/components/button";
 import { Card } from "@/components/card";
-import { Split, StatGrid } from "@/components/layout";
+import { Icon } from "@/components/icon";
+import { Split } from "@/components/layout";
 import { ApiError, getAICoachFeedback, getSessionResult, type AICoachResponse, type SessionResultResponse } from "@/lib/api";
 import { coachSample, recentSessions } from "@/lib/mock-data";
 
@@ -35,6 +36,37 @@ function normalizeCoachPayload(payload: AICoachResponse): AICoachResponse {
     hint: payload.hint ? cleanText(payload.hint, "") : payload.hint,
     writing_feedback: payload.writing_feedback ? cleanText(payload.writing_feedback, "") : payload.writing_feedback,
   };
+}
+
+function ScoreRing({ percent }: { percent: number }) {
+  const radius = 42;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (percent / 100) * circumference;
+  return (
+    <div className={styles.scoreCircle}>
+      <svg width="96" height="96" viewBox="0 0 96 96" aria-hidden="true">
+        <defs>
+          <linearGradient id="scoreGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#5b6bff" />
+            <stop offset="100%" stopColor="#8b5cf6" />
+          </linearGradient>
+        </defs>
+        <circle cx="48" cy="48" r={radius} stroke="#e2e6f5" strokeWidth="8" fill="none" />
+        <circle
+          cx="48"
+          cy="48"
+          r={radius}
+          stroke="url(#scoreGrad)"
+          strokeWidth="8"
+          fill="none"
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          strokeLinecap="round"
+        />
+      </svg>
+      <span className={styles.scoreCircleValue}>{Math.round(percent)}%</span>
+    </div>
+  );
 }
 
 export default function ResultsClient({ initialSessionId }: Props) {
@@ -103,6 +135,7 @@ export default function ResultsClient({ initialSessionId }: Props) {
   const resolved = result
     ? {
         activityTitle: result.activity_title,
+        scorePercent: result.score_percent,
         scoreLabel: `${Math.round(result.score_percent)}%`,
         skillLabel: Object.keys(result.skill_breakdown)[0] ?? "reading-comprehension",
         sessionId: result.session_id,
@@ -111,6 +144,7 @@ export default function ResultsClient({ initialSessionId }: Props) {
       }
     : {
         activityTitle: fallback.activityTitle,
+        scorePercent: parseInt(fallback.scoreLabel, 10) || 0,
         scoreLabel: fallback.scoreLabel,
         skillLabel: fallback.skill,
         sessionId: fallback.id,
@@ -122,49 +156,92 @@ export default function ResultsClient({ initialSessionId }: Props) {
     <AppShell
       title={`Results: ${resolved.activityTitle}`}
       subtitle="You finished this quest. Celebrate your progress and ask the coach one focused follow-up question."
+      eyebrow="Quest complete"
+      heroIcon="trophy"
     >
       {error ? (
         <p role="alert" className={styles.error}>
+          <Icon name="message-circle" size={16} />
           {error} Your progress is still saved.
         </p>
       ) : null}
       <Split>
         <Card>
-          <h2>Score snapshot</h2>
+          <div className={styles.cardHeader}>
+            <span className={styles.cardIcon} style={{ ["--icon-color" as string]: "var(--brand)" }}>
+              <Icon name="target" size={18} />
+            </span>
+            <h2>Score snapshot</h2>
+          </div>
           <p className={styles.muted}>Session ID: {resolved.sessionId}</p>
-          <StatGrid>
-            <div className={styles.stat}>
-              <span className={styles.statLabel}>Score</span>
-              <p className={styles.statValue}>{resolved.scoreLabel}</p>
+          <div className={styles.scoreCircleWrap}>
+            <ScoreRing percent={resolved.scorePercent} />
+            <div className={styles.scoreMeta}>
+              <span className={styles.scoreFocus}>
+                <Icon name="target" size={14} />
+                {resolved.skillLabel}
+              </span>
+              <p className={styles.muted}>Your focus skill for this quest.</p>
             </div>
-            <div className={styles.stat}>
-              <span className={styles.statLabel}>Focus skill</span>
-              <p className={styles.statValue}>{resolved.skillLabel}</p>
-            </div>
-          </StatGrid>
+          </div>
           {resolved.rubric ? (
-            <ul className={styles.list}>
-              <li>Completion: {resolved.rubric.completion}</li>
-              <li>Relevance: {resolved.rubric.relevance}</li>
-              <li>Sentence completeness: {resolved.rubric.sentence_completeness}</li>
+            <ul className={styles.rubricList}>
+              <li className={styles.rubricRow}>
+                <span className={styles.rubricLabel}>
+                  <Icon name="check-circle" size={14} />
+                  Completion
+                </span>
+                <span className={styles.rubricValue}>{resolved.rubric.completion}</span>
+              </li>
+              <li className={styles.rubricRow}>
+                <span className={styles.rubricLabel}>
+                  <Icon name="target" size={14} />
+                  Relevance
+                </span>
+                <span className={styles.rubricValue}>{resolved.rubric.relevance}</span>
+              </li>
+              <li className={styles.rubricRow}>
+                <span className={styles.rubricLabel}>
+                  <Icon name="pencil" size={14} />
+                  Sentence completeness
+                </span>
+                <span className={styles.rubricValue}>{resolved.rubric.sentence_completeness}</span>
+              </li>
             </ul>
           ) : null}
         </Card>
 
         <Card>
-          <h2>Quest celebration</h2>
+          <div className={styles.cardHeader}>
+            <span className={styles.cardIcon} style={{ ["--icon-color" as string]: "var(--warning)" }}>
+              <Icon name="trophy" size={18} />
+            </span>
+            <h2>Quest celebration</h2>
+          </div>
           {resolved.rewardSnapshot ? (
             <>
-              <p className={styles.muted}>
-                Awesome work! You earned <strong>+{resolved.rewardSnapshot.stars_earned} stars</strong> and{" "}
-                <strong>+{resolved.rewardSnapshot.points_earned} points</strong>.
-              </p>
-              <p className={styles.muted}>
-                Streak: {resolved.rewardSnapshot.streak_after} day(s), Total points:{" "}
-                {resolved.rewardSnapshot.total_points}
-              </p>
+              <div className={styles.rewardCallout}>
+                <span className={styles.rewardIcon} aria-hidden="true">
+                  <Icon name="star" size={20} />
+                </span>
+                <div>
+                  <p>
+                    Awesome work! You earned <strong>+{resolved.rewardSnapshot.stars_earned} stars</strong> and{" "}
+                    <strong>+{resolved.rewardSnapshot.points_earned} points</strong>.
+                  </p>
+                  <p>
+                    Streak: {resolved.rewardSnapshot.streak_after} day(s), Total points:{" "}
+                    {resolved.rewardSnapshot.total_points}
+                  </p>
+                </div>
+              </div>
               {resolved.rewardSnapshot.new_badges.length > 0 ? (
-                <p className={styles.muted}>New badge unlocked: {resolved.rewardSnapshot.new_badges.join(", ")}.</p>
+                <p className={styles.muted}>
+                  <span className={styles.badgePop}>
+                    <Icon name="award" size={12} />
+                    New badge unlocked: {resolved.rewardSnapshot.new_badges.join(", ")}.
+                  </span>
+                </p>
               ) : null}
             </>
           ) : (
@@ -175,9 +252,12 @@ export default function ResultsClient({ initialSessionId }: Props) {
             {coach?.message_to_child ?? coachSample.celebration}
           </p>
           {coach?.celebration ? (
-            <p className={styles.muted}><strong>{coach.celebration}</strong></p>
+            <p className={styles.muted}>
+              <strong>{coach.celebration}</strong>
+            </p>
           ) : null}
           <ButtonLink href="/" tone="secondary">
+            <Icon name="home" size={16} />
             Back to mission home
           </ButtonLink>
         </Card>

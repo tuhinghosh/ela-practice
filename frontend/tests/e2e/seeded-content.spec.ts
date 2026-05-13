@@ -7,8 +7,8 @@ test("all seeded activities render passage and question types", async ({ page })
 
   for (const activity of activities.slice(0, 10)) {
     await page.goto(`/activity/${activity.id}`);
-    await expect(page.getByRole("heading", { name: activity.title })).toBeVisible();
-    await expect(page.getByRole("heading", { name: activity.passageTitle })).toBeVisible();
+    await expect(page.getByRole("heading", { name: activity.title, level: 1 })).toBeVisible();
+    await expect(page.getByRole("heading", { name: activity.passageTitle, level: 2 })).toBeVisible();
 
     const multipleChoiceQuestion = activity.questions.find((question) => question.type === "multiple-choice");
     if (multipleChoiceQuestion) {

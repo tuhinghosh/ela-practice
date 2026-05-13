@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import { Icon } from "@/components/icon";
+
 import styles from "./logout-button.module.css";
 
 export function LogoutButton() {
@@ -20,8 +22,9 @@ export function LogoutButton() {
   };
 
   return (
-    <button type="button" onClick={onLogout} className={styles.button} disabled={isLoading}>
-      {isLoading ? "Logging out..." : "Logout"}
+    <button type="button" onClick={onLogout} className={styles.button} disabled={isLoading} aria-label="Logout">
+      <Icon name="logout" size={16} />
+      <span>{isLoading ? "Logging out..." : "Logout"}</span>
     </button>
   );
 }

@@ -1,17 +1,30 @@
 .button {
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  border-radius: 999px;
-  padding: 8px 13px;
-  background: rgba(255, 255, 255, 0.18);
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  padding: 7px 13px;
+  background: transparent;
+  color: var(--foreground-soft);
+  font-weight: 600;
+  font-size: 0.86rem;
   cursor: pointer;
-  transition: transform 120ms ease, background 140ms ease, box-shadow 140ms ease;
+  transition: color 140ms ease, background 140ms ease, border-color 140ms ease;
 }
 
 .button:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: translateY(-1px);
-  box-shadow: 0 8px 14px rgba(14, 24, 71, 0.22);
+  color: var(--danger);
+  background: var(--danger-soft);
+  border-color: #fecaca;
+}
+
+.button:focus-visible {
+  outline: 3px solid rgba(239, 68, 68, 0.3);
+  outline-offset: 2px;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: wait;
 }

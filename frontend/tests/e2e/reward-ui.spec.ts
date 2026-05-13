@@ -1,13 +1,16 @@
 import { expect, test } from "@playwright/test";
+const ACTIVITY_ID = "nature-01";
+const ACTIVITY_TITLE = "The Seed That Wouldn't Grow";
+const SESSION_ID = "session-live-001";
 
 test("results screen shows updated reward celebration after submit", async ({ page }) => {
-  await page.route("**/api/activities/forest-friends", async (route) => {
+  await page.route(`**/api/activities/${ACTIVITY_ID}`, async (route) => {
     await route.fulfill({
       status: 200,
       contentType: "application/json",
       body: JSON.stringify({
-        id: "forest-friends",
-        title: "Forest Friends",
+        id: ACTIVITY_ID,
+        title: ACTIVITY_TITLE,
         passage_type: "literary",
         mission_label: "Today's quest",
         passage_title: "A Visit to Pine Hill",
@@ -33,13 +36,13 @@ test("results screen shows updated reward celebration after submit", async ({ pa
     });
   });
 
-  await page.route("**/api/activities/forest-friends/submit", async (route) => {
+  await page.route(`**/api/activities/${ACTIVITY_ID}/submit`, async (route) => {
     await route.fulfill({
       status: 200,
       contentType: "application/json",
       body: JSON.stringify({
-        session_id: "session-live-001",
-        activity_id: "forest-friends",
+        session_id: SESSION_ID,
+        activity_id: ACTIVITY_ID,
         total_score: 1.8,
         max_score: 2,
         score_percent: 90,
@@ -66,14 +69,14 @@ test("results screen shows updated reward celebration after submit", async ({ pa
     });
   });
 
-  await page.route("**/api/sessions/session-live-001", async (route) => {
+  await page.route(`**/api/sessions/${SESSION_ID}`, async (route) => {
     await route.fulfill({
       status: 200,
       contentType: "application/json",
       body: JSON.stringify({
-        session_id: "session-live-001",
-        activity_id: "forest-friends",
-        activity_title: "Forest Friends",
+        session_id: SESSION_ID,
+        activity_id: ACTIVITY_ID,
+        activity_title: ACTIVITY_TITLE,
         submitted_at: "2026-04-09T00:00:00Z",
         total_score: 1.8,
         max_score: 2,
@@ -101,7 +104,7 @@ test("results screen shows updated reward celebration after submit", async ({ pa
     });
   });
 
-  await page.goto("/activity/forest-friends");
+  await page.goto(`/activity/${ACTIVITY_ID}`);
   await page.getByLabel("The birds show teamwork while building a nest.").click();
   await page.getByLabel("Short response input").fill("The bird came back because it did not give up.");
   await page.getByRole("button", { name: "Submit answers" }).click();

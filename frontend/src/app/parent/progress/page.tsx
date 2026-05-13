@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { AppShell } from "@/components/app-shell";
 import { Card } from "@/components/card";
+import { Icon } from "@/components/icon";
 import { Split, StatGrid } from "@/components/layout";
 import { ApiError, getParentProgress, type ParentProgressResponse } from "@/lib/api";
 import { parentProgressHighlights, recentSessions } from "@/lib/mock-data";
@@ -48,50 +49,95 @@ export default function ParentProgressPage() {
     <AppShell
       title="Parent progress snapshot"
       subtitle="Simple, practical trend view for recent reading and writing sessions."
+      eyebrow="Parent view"
+      heroIcon="trending-up"
     >
       {error ? (
         <p role="alert" className={styles.error}>
+          <Icon name="message-circle" size={16} />
           {error}
         </p>
       ) : null}
       <Split>
-        <Card as="article">
-          <h2>Overview</h2>
+        <Card as="article" className={styles.cardWithHeader}>
+          <div className={styles.cardHeader}>
+            <span className={styles.cardIcon} style={{ ["--icon-color" as string]: "var(--brand)" }}>
+              <Icon name="trending-up" size={18} />
+            </span>
+            <h2>Overview</h2>
+          </div>
           <StatGrid>
             <div className={styles.stat}>
-              <span className={styles.statLabel}>Completed activities</span>
+              <span className={styles.statTopRow}>
+                <Icon name="check-circle" size={14} />
+                <span className={styles.statLabel}>Completed activities</span>
+              </span>
               <p className={styles.statValue}>{totalActivities}</p>
             </div>
             <div className={styles.stat}>
-              <span className={styles.statLabel}>Strongest area</span>
+              <span className={styles.statTopRow}>
+                <Icon name="award" size={14} />
+                <span className={styles.statLabel}>Strongest area</span>
+              </span>
               <p className={styles.statValue}>{strongest}</p>
             </div>
             <div className={styles.stat}>
-              <span className={styles.statLabel}>Trend</span>
-              <p className={styles.statValue}>{trend}</p>
+              <span className={styles.statTopRow}>
+                <Icon name="trending-up" size={14} />
+                <span className={styles.statLabel}>Trend</span>
+              </span>
+              <p className={styles.statValue}>
+                <span className={styles.trendPill}>
+                  <Icon name="trending-up" size={12} />
+                  {trend}
+                </span>
+              </p>
             </div>
           </StatGrid>
-          <p className={styles.muted}>Growth area: {growth}</p>
+          <p className={styles.muted}>
+            Growth area: <strong>{growth}</strong>
+          </p>
         </Card>
 
-        <Card as="article">
-          <h2>Recent sessions</h2>
-          <ul className={styles.list}>
-            {recent.length === 0 ? <li>No completed sessions yet.</li> : null}
+        <Card as="article" className={styles.cardWithHeader}>
+          <div className={styles.cardHeader}>
+            <span className={styles.cardIcon} style={{ ["--icon-color" as string]: "var(--success)" }}>
+              <Icon name="clipboard-list" size={18} />
+            </span>
+            <h2>Recent sessions</h2>
+          </div>
+          <ul className={styles.sessionList}>
+            {recent.length === 0 ? (
+              <li className={styles.emptyHint}>No completed sessions yet.</li>
+            ) : null}
             {recent.map((session) => (
-              <li key={session.id}>
-                {session.activityTitle} - {session.scoreLabel} ({session.skill})
+              <li key={session.id} className={styles.sessionItem}>
+                <span className={styles.sessionTitle}>
+                  {session.activityTitle} ({session.skill})
+                </span>
+                <span className={styles.sessionScore}>{session.scoreLabel}</span>
               </li>
             ))}
           </ul>
         </Card>
-        <Card as="article">
-          <h2>Writing feedback highlights</h2>
-          <ul className={styles.list}>
-            {writingFeedback.length === 0 ? <li>No writing feedback yet.</li> : null}
+        <Card as="article" className={styles.cardWithHeader}>
+          <div className={styles.cardHeader}>
+            <span className={styles.cardIcon} style={{ ["--icon-color" as string]: "var(--accent)" }}>
+              <Icon name="pencil" size={18} />
+            </span>
+            <h2>Writing feedback highlights</h2>
+          </div>
+          <ul className={styles.feedbackList}>
+            {writingFeedback.length === 0 ? (
+              <li className={styles.emptyHint}>No writing feedback yet.</li>
+            ) : null}
             {writingFeedback.map((item, index) => (
-              <li key={`${item.activity_title}-${index}`}>
-                {item.activity_title}: {item.summary}
+              <li key={`${item.activity_title}-${index}`} className={styles.feedbackItem}>
+                <p className={styles.feedbackTitle}>
+                  <Icon name="book" size={14} />
+                  {item.activity_title}
+                </p>
+                <p className={styles.feedbackSummary}>{item.summary}</p>
               </li>
             ))}
           </ul>
