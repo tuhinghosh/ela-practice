@@ -8,7 +8,7 @@ import httpx
 logger = logging.getLogger(__name__)
 
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
-DEFAULT_MODEL = "openai/gpt-oss-120b"
+DEFAULT_MODEL = "anthropic/claude-sonnet-4"
 
 
 class MissingOpenRouterKeyError(RuntimeError):
@@ -44,7 +44,7 @@ def run_openrouter_chat(
     messages: List[Dict[str, str]],
     *,
     temperature: float = 0.0,
-    timeout_s: float = 20.0,
+    timeout_s: float = 30.0,
     model: Optional[str] = None,
     response_format: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:

@@ -1,0 +1,173 @@
+/* Coach panel header */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.icon {
+  font-size: 1.6rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.15rem;
+  color: #1b2a62;
+}
+
+/* Feedback area */
+.feedbackArea {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+/* Child's question bubble */
+.questionBubble {
+  border-radius: 14px;
+  background: #eef3ff;
+  border: 1px solid #d4e0ff;
+  padding: 10px 14px;
+  font-size: 0.92rem;
+  color: #2b3768;
+}
+
+.bubbleLabel {
+  font-weight: 700;
+  color: #4a5a9a;
+}
+
+/* Main feedback card */
+.feedbackCard {
+  border-radius: 14px;
+  background: linear-gradient(135deg, #f0f4ff 0%, #faf8ff 100%);
+  border: 1px solid #d8e3ff;
+  padding: 16px;
+}
+
+.feedbackText {
+  margin: 0;
+  color: #1b2a62;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+/* Tip card (lightbulb) */
+.tipCard {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  border-radius: 14px;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  padding: 14px;
+}
+
+.tipIcon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Writing feedback card (pencil) */
+.writingCard {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  border-radius: 14px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  padding: 14px;
+}
+
+.writingIcon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Shared card label + text */
+.cardLabel {
+  display: block;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #4a5a80;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.cardText {
+  margin: 0;
+  color: #1b2a62;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+/* Loading state */
+.loading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 18px 0;
+}
+
+.loadingDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #9f39ff;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.loadingDot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loadingDot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.loadingText {
+  margin-left: 6px;
+  color: #596292;
+  font-size: 0.92rem;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+/* Ask section */
+.askSection {
+  border-top: 1px solid #e5ecff;
+  padding-top: 14px;
+  margin-top: 4px;
+}
+
+.askLabel {
+  display: block;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #2b3c76;
+  margin-bottom: 8px;
+}
+
+.askInput {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid #c7d5ff;
+  padding: 10px 12px;
+  font-size: 1rem;
+  background: #ffffff;
+  resize: vertical;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.askInput:focus {
+  border-color: #7d68ff;
+  box-shadow: 0 0 0 3px rgba(125, 104, 255, 0.18);
+  outline: none;
+}

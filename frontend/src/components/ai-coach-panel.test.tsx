@@ -29,12 +29,12 @@ describe("AICoachPanel", () => {
       />,
     );
 
-    expect(screen.getByText('Asked: "How can I improve?"')).toBeInTheDocument();
+    expect(screen.getByText(/You asked:/)).toBeInTheDocument();
     expect(screen.getByText("Great work!")).toBeInTheDocument();
-    expect(screen.getByText("Quest complete!")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Try coach suggestion" })).toBeInTheDocument();
+    expect(screen.getByText(/Use clue words/)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Try the next challenge" })).toBeInTheDocument();
 
-    fireEvent.change(screen.getByLabelText("Ask the coach about this activity"), {
+    fireEvent.change(screen.getByLabelText("Ask the coach a question about this activity"), {
       target: { value: "Another question" },
     });
     fireEvent.click(screen.getByRole("button", { name: "Ask coach" }));

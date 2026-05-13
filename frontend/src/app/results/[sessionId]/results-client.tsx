@@ -170,12 +170,13 @@ export default function ResultsClient({ initialSessionId }: Props) {
           ) : (
             <p className={styles.muted}>Great effort. Keep your reading adventure streak going!</p>
           )}
-          <h3>Coach feedback (post-submission)</h3>
+          <h3>Coach feedback</h3>
           <p className={styles.muted}>
-            {coach?.message_to_child ?? coach?.celebration ?? coachSample.celebration}
+            {coach?.message_to_child ?? coachSample.celebration}
           </p>
-          <p className={styles.muted}>{coach?.explanation ?? coachSample.explanation}</p>
-          <p className={styles.muted}>{coach?.hint ?? coachSample.nextStepSuggestion}</p>
+          {coach?.celebration ? (
+            <p className={styles.muted}><strong>{coach.celebration}</strong></p>
+          ) : null}
           <ButtonLink href="/" tone="secondary">
             Back to mission home
           </ButtonLink>

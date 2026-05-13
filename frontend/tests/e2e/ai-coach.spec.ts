@@ -132,10 +132,10 @@ test("ai coach panel supports asking limited post-submission questions", async (
   await page.getByLabel("Short response input").fill("The bird came back because it did not give up.");
   await page.getByRole("button", { name: "Submit answers" }).click();
 
-  await expect(page.getByRole("heading", { name: "AI Coach Corner" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Try coach suggestion" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Reading Coach" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Try the next challenge" })).toBeVisible();
 
-  await page.getByLabel("Ask the coach about this activity").fill("How can I improve my evidence sentence?");
+  await page.getByLabel("Ask the coach a question about this activity").fill("How can I improve my evidence sentence?");
   await page.getByRole("button", { name: "Ask coach" }).click();
   await expect.poll(() => coachCalls).toBeGreaterThan(1);
 });

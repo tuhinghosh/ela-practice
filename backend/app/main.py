@@ -34,6 +34,7 @@ from backend.app.db import (
     get_recent_sessions,
     get_recent_writing_feedback,
     get_reward_state,
+    get_session_responses,
     get_user_by_username,
     insert_chat_message,
 )
@@ -488,9 +489,30 @@ def ai_coach_feedback(
         if int(session["user_id"]) != int(user["id"]):
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Session not found.")
         latest_snapshot = get_latest_progress_snapshot(connection, int(user["id"]), int(child["id"]))
+        child_responses = get_session_responses(connection, int(session["id"]))
+
+    activity = get_seed_activity(session["activity_id"])
+    question_map = {q.id: q for q in activity.questions}
+    questions_with_answers = []
+    for resp in child_responses:
+        q = question_map.get(resp["question_id"])
+        entry: dict = {
+            "question_id": resp["question_id"],
+            "question_type": resp["question_type"],
+            "prompt": q.prompt if q else "",
+        }
+        if resp["question_type"] == "multiple-choice":
+            entry["child_answer"] = resp["answer_choice"] or ""
+            entry["correct_answer"] = q.correctChoice if q else ""
+            entry["is_correct"] = entry["child_answer"] == entry["correct_answer"]
+        else:
+            entry["child_answer"] = resp["answer_text"] or ""
+        questions_with_answers.append(entry)
 
     context = {
         "activity_title": session["activity_title"],
+        "passage_text": activity.passageText,
+        "questions_with_answers": questions_with_answers,
         "score_percent": session["score_percent"],
         "rubric": json.loads(session["rubric_json"]),
         "skill_breakdown": json.loads(session["skill_breakdown_json"]),

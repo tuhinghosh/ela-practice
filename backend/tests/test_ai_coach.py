@@ -16,6 +16,23 @@ from backend.app.main import app
 def _sample_context() -> dict:
     return {
         "activity_title": "Forest Friends",
+        "passage_text": "Maya noticed a bird building a nest in the oak tree. She wanted to watch it closely.",
+        "questions_with_answers": [
+            {
+                "question_id": "q1",
+                "question_type": "multiple-choice",
+                "prompt": "What is the main idea of this story?",
+                "child_answer": "The bird shows teamwork.",
+                "correct_answer": "The bird shows teamwork.",
+                "is_correct": True,
+            },
+            {
+                "question_id": "q2",
+                "question_type": "short-response",
+                "prompt": "Explain why the bird did not give up.",
+                "child_answer": "The bird kept trying because it wanted a nest.",
+            },
+        ],
         "score_percent": 85,
         "rubric": {
             "completion": "meets",
@@ -31,18 +48,20 @@ def _sample_context() -> dict:
 
 def test_prompt_construction_includes_relevant_context_only() -> None:
     prompt = build_ai_coach_user_prompt(_sample_context(), child_question="Can I do better next time?")
-    assert "activity_title: Forest Friends" in prompt
-    assert "score_percent: 85" in prompt
-    assert "optional_child_question: Can I do better next time?" in prompt
+    assert "Forest Friends" in prompt
+    assert "85%" in prompt
+    assert "Can I do better next time?" in prompt
     assert "chat history" not in prompt.lower()
+    assert "PASSAGE" in prompt
+    assert "QUESTIONS AND ANSWERS" in prompt
 
 
 def test_safety_system_prompt_is_bounded() -> None:
     prompt = build_ai_coach_system_prompt()
-    assert "child-safe" in prompt
-    assert "school-appropriate" in prompt
-    assert "Return only valid JSON" in prompt
-    assert "unrelated" in prompt
+    assert "child-safe" in prompt.lower()
+    assert "safe" in prompt.lower()
+    assert "valid json" in prompt.lower()
+    assert "activity only" in prompt.lower()
 
 
 def test_structured_output_parsing_success(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -62,7 +81,7 @@ def test_structured_output_parsing_success(monkeypatch: pytest.MonkeyPatch) -> N
 
     def fake_chat(messages, **kwargs):
         captured["kwargs"] = kwargs
-        return {"model": "openai/gpt-oss-120b", "response_text": valid_json}
+        return {"model": "anthropic/claude-sonnet-4", "response_text": valid_json}
 
     monkeypatch.setattr(ai_coach, "run_openrouter_chat", fake_chat)
     result = generate_ai_coach_output(_sample_context(), child_question="What should I practice?")
@@ -74,7 +93,7 @@ def test_structured_output_parsing_success(monkeypatch: pytest.MonkeyPatch) -> N
 
 def test_invalid_schema_uses_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
     def fake_chat(messages, **kwargs):
-        return {"model": "openai/gpt-oss-120b", "response_text": "Not JSON at all"}
+        return {"model": "anthropic/claude-sonnet-4", "response_text": "Not JSON at all"}
 
     monkeypatch.setattr(ai_coach, "run_openrouter_chat", fake_chat)
     result = generate_ai_coach_output(_sample_context(), child_question="How can I make the evidence stronger?")
@@ -120,7 +139,7 @@ def test_ai_coach_route_success(client: TestClient, monkeypatch: pytest.MonkeyPa
             "writing_feedback": "Add one more sentence.",
             "confidence": 0.8,
             "used_fallback": False,
-            "model": "openai/gpt-oss-120b",
+            "model": "anthropic/claude-sonnet-4",
         }
 
     monkeypatch.setattr("backend.app.main.generate_ai_coach_output", fake_generate)

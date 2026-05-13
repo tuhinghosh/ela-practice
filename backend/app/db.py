@@ -606,6 +606,20 @@ def fetch_session_result_by_uuid(connection: sqlite3.Connection, session_uuid: s
     ).fetchone()
 
 
+def get_session_responses(connection: sqlite3.Connection, session_id: int) -> list[sqlite3.Row]:
+    return list(
+        connection.execute(
+            """
+            SELECT question_id, question_type, answer_text, answer_choice
+            FROM responses
+            WHERE session_id = ?
+            ORDER BY id
+            """,
+            (session_id,),
+        ).fetchall()
+    )
+
+
 def insert_chat_message(
     connection: sqlite3.Connection,
     *,

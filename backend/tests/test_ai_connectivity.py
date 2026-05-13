@@ -32,7 +32,7 @@ def test_connectivity_succeeds_when_key_present(monkeypatch: pytest.MonkeyPatch)
     result = run_openrouter_connectivity_check(prompt="2+2")
 
     assert result["response_text"] == "4"
-    assert result["model"] == "openai/gpt-oss-120b"
+    assert result["model"] == "anthropic/claude-sonnet-4"
 
 
 def test_missing_key_fails_cleanly(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -69,7 +69,7 @@ def client(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> TestClient:
 def test_connectivity_route_success(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
     def fake_check(prompt: str) -> dict:
         assert prompt == "2+2"
-        return {"model": "openai/gpt-oss-120b", "prompt": prompt, "response_text": "4"}
+        return {"model": "anthropic/claude-sonnet-4", "prompt": prompt, "response_text": "4"}
 
     monkeypatch.setattr("backend.app.main.run_openrouter_connectivity_check", fake_check)
     response = client.post("/api/ai/connectivity-check", json={"prompt": "2+2"})
