@@ -7,6 +7,7 @@ from typing import Any, Dict, Optional
 
 from backend.app.auth import hash_password
 from backend.app.config import get_settings
+from backend.app.migrations import run_migrations
 
 
 APP_ROOT = Path(__file__).resolve().parent.parent
@@ -135,27 +136,6 @@ def create_schema(connection: sqlite3.Connection) -> None:
     connection.commit()
 
 
-def _column_exists(connection: sqlite3.Connection, table: str, column: str) -> bool:
-    rows = connection.execute(f"PRAGMA table_info({table})").fetchall()
-    return any(row["name"] == column for row in rows)
-
-
-def apply_migrations(connection: sqlite3.Connection) -> None:
-    """In-place migrations for SQLite databases created before a schema change.
-
-    Only additive ALTER TABLE statements live here so the migration is safe to
-    re-run. New behavior should land here AND in ``create_schema`` so fresh DBs
-    skip the migration step entirely.
-    """
-    if not _column_exists(connection, "users", "password_hash"):
-        connection.execute("ALTER TABLE users ADD COLUMN password_hash TEXT")
-    if not _column_exists(connection, "users", "role"):
-        connection.execute(
-            "ALTER TABLE users ADD COLUMN role TEXT NOT NULL DEFAULT 'parent'"
-        )
-    connection.commit()
-
-
 def seed_core_records(connection: sqlite3.Connection) -> dict[str, int]:
     settings = get_settings()
     username = settings.bootstrap_username
@@ -203,7 +183,7 @@ def ensure_database(db_path: Optional[Path] = None) -> Path:
     target = db_path or get_database_path()
     with get_connection(target) as connection:
         create_schema(connection)
-        apply_migrations(connection)
+        run_migrations(connection)
         seed_core_records(connection)
     return target
 

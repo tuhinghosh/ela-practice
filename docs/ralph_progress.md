@@ -2,6 +2,89 @@
 
 Tracks each loop iteration against `docs/RALPH_BRIEF.md`. Newest first.
 
+## Iteration 3 — P0-C: versioned migrations + online backup + deployment doc
+
+**Scope chosen.** P0-C is the last P0 item: persistent SQLite with
+migrations and backups. This iteration ships the structural pieces
+(versioned migration runner, online backup helper + script, deployment
+docs) so future schema changes have a single, testable code path and ops
+has a documented backup story. `DATABASE_PATH` was already configurable
+(verified) and the existing start scripts already mount a Docker volume —
+we now document both.
+
+**Changes.**
+- `backend/app/migrations.py` (new) — versioned, append-only runner.
+  `Migration(id, name, apply)` entries live in `MIGRATIONS`; `run_migrations`
+  applies any whose ids are missing from the `schema_migrations` table and
+  records them. Migration 1 (`add_user_auth_columns`) wraps the column-add
+  logic introduced in iteration 2; it is idempotent via column-presence
+  checks so DBs already migrated by iter 2's ad-hoc code path converge
+  cleanly when iter 3 ships.
+- `backend/app/db.py` — `ensure_database()` now calls `run_migrations()`
+  instead of the prior `apply_migrations()`; the inline function is gone.
+- `backend/app/backup.py` (new) — `backup_database(target, source=None,
+  overwrite=False)` using `sqlite3.Connection.backup` (safe under concurrent
+  writes). Module is also CLI-invokable:
+  `python3 -m backend.app.backup <target> [--source PATH] [--overwrite]`.
+- `scripts/backup-db.sh` (new, executable) — thin wrapper that defaults
+  target to `backups/ela-<UTC>.sqlite3` and shells out to the Python module.
+  Smoke-tested end-to-end against a freshly seeded DB; copy is byte-for-byte
+  identical and identifies as `SQLite 3.x database` via `file`.
+- `docs/DEPLOYMENT.md` (new) — covers DB location + `DATABASE_PATH`
+  override, Docker volume mount (with example `docker run`), migration
+  policy (append-only, never edit shipped migrations), backup usage,
+  restore procedure, and an example cron entry.
+- `backend/tests/test_migrations.py` (new) — 4 cases: fresh schema records
+  all migration ids; rerun is a no-op (returns empty list); legacy-schema
+  DB (pre-iter-2 shape) is brought up to date; full smoke test from
+  non-existent file to usable seeded DB with `schema_migrations` populated.
+- `backend/tests/test_backup.py` (new) — 5 cases: backup produces readable
+  copy preserving seed + custom row; refuses overwrite by default; honors
+  `overwrite=True` (including when target previously held non-SQLite
+  bytes); rejects missing source; rejects same source/target path.
+
+**Tests run.**
+- `python3 -m pytest backend/tests -q` → 75 passed (9 new this iteration,
+  all 66 prior still green).
+- Manual CLI smoke: `python3 -m backend.app.backup` and
+  `scripts/backup-db.sh` both write a valid SQLite file.
+
+**Assumptions / scope decisions.**
+- Migrations are append-only; future schema work writes new
+  `Migration(id=N+1, ...)` entries rather than editing prior ones. Tests
+  assert the contract by iterating over `MIGRATIONS`.
+- A versioned migration runner is overkill for a family MVP today but is
+  the smallest change that lets P1 (per-skill history schema changes,
+  child-role accounts, etc.) ship without ad-hoc ALTERs scattered through
+  `db.py`.
+- The shell script depends on `python3` being on PATH; intentional — the
+  app already requires Python at runtime, and using the sqlite3 binary
+  would mean two divergent backup code paths.
+
+**Definition of done check.**
+- App still starts locally: yes (no behavior changes; `ensure_database`
+  contract unchanged, migration runner is a no-op on already-migrated DBs).
+- Tests pass: 75/75.
+- No secrets committed.
+- No hardcoded credentials introduced.
+- Data model changes are migration-safe (this iteration's whole point).
+- User-facing behavior preserved.
+- `ralph_progress.md` updated; commit forthcoming.
+
+**P0 status.** With this iteration, the P0 deployment-safety foundation
+is structurally complete: env-driven config + secret guard (iter 1),
+hashed-credential login + role column + tenant isolation (iter 2),
+versioned migrations + online backup + deployment doc (iter 3).
+Remaining P0-B sub-items still open: CSRF for state-changing routes and
+login rate limiting.
+
+**Recommended next task.** P0-B follow-up: login rate limiting. It is
+small, self-contained (one endpoint), and reduces the risk surface of the
+new credential lookup. After that, CSRF for state-changing routes. Then
+move to P1 (streak logic + progress tracking).
+
+---
+
 ## Iteration 2 — P0-A (partial): password hashing, role column, bootstrap from env
 
 **Scope chosen.** P0-A asked for real local user management. This iteration
