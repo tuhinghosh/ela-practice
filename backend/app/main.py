@@ -1,4 +1,3 @@
-import os
 import json
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -16,6 +15,7 @@ from backend.app.ai_client import (
     run_openrouter_connectivity_check,
 )
 from backend.app.ai_coach import generate_ai_coach_output
+from backend.app.config import get_settings
 from backend.app.content_schema import (
     get_seed_activity,
     list_seed_activities,
@@ -43,7 +43,7 @@ from backend.app.scoring import score_activity_submission
 
 APP_ROOT = Path(__file__).resolve().parent.parent
 STATIC_DIR = APP_ROOT / "static"
-SESSION_SECRET = os.environ.get("SESSION_SECRET", "ela-dev-session-secret")
+settings = get_settings()
 
 
 @asynccontextmanager
@@ -55,10 +55,10 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 app = FastAPI(title="ELA MVP API", lifespan=lifespan)
 app.add_middleware(
     SessionMiddleware,
-    secret_key=SESSION_SECRET,
-    session_cookie="ela_session",
-    same_site="lax",
-    https_only=False,
+    secret_key=settings.session_secret,
+    session_cookie=settings.session_cookie_name,
+    same_site=settings.session_cookie_samesite,
+    https_only=settings.session_cookie_secure,
 )
 
 PROTECTED_ROUTE_PREFIXES = ("", "activity", "results", "parent")
