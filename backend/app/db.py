@@ -334,6 +334,20 @@ def get_user_by_username(connection: sqlite3.Connection, username: str) -> sqlit
     return row
 
 
+def update_user_password(
+    connection: sqlite3.Connection, username: str, new_password_hash: str
+) -> None:
+    """Replace the stored password hash for ``username``. Raises ``ValueError``
+    if no row was updated (caller passed an unknown username)."""
+    cursor = connection.execute(
+        "UPDATE users SET password_hash = ? WHERE username = ?",
+        (new_password_hash, username),
+    )
+    if cursor.rowcount == 0:
+        raise ValueError(f'Unknown user "{username}".')
+    connection.commit()
+
+
 def get_child_profile_for_user(connection: sqlite3.Connection, user_id: int) -> sqlite3.Row:
     row = connection.execute(
         "SELECT id, display_name, grade_level FROM child_profiles WHERE user_id = ?",

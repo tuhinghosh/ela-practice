@@ -2,6 +2,113 @@
 
 Tracks each loop iteration against `docs/RALPH_BRIEF.md`. Newest first.
 
+## Iteration 11 — Follow-up #2: in-app password rotation
+
+**Scope chosen.** First of the post-brief follow-ups identified at the end
+of iteration 10. Today the bootstrap password baked into the DB on first
+run can only be changed by editing the row directly — `ELA_BOOTSTRAP_*`
+env vars only seed empty databases. That makes credential rotation a
+manual DB surgery task, which is a real security gap for a family app
+that may run for years on the same instance.
+
+**Changes.**
+- `backend/app/db.py` — adds `update_user_password(connection, username,
+  new_password_hash)`. Single `UPDATE`; raises `ValueError` if no row
+  matches.
+- `backend/app/main.py` — new `POST /api/auth/password` endpoint:
+  - Requires an authenticated session (depends on
+    `_require_authenticated_username`).
+  - Pydantic enforces `current_password` non-empty and
+    `new_password` 8–256 characters.
+  - Rejects `new == current` with 422.
+  - Verifies the current password via the existing `verify_password`
+    helper and registers a failure with the per-IP `login_limiter` on
+    mismatch so brute-force is throttled the same way login is.
+  - On success: hashes via `hash_password`, calls
+    `update_user_password`, clears the IP's failure counter so the
+    parent isn't punished for a typo they just corrected, returns
+    `{"status": "ok"}`.
+  - CSRF middleware covers the endpoint automatically — it's a POST
+    under `/api/` and is not in the login exemption.
+- `frontend/src/lib/api.ts` — adds `changePassword(currentPassword,
+  newPassword)`.
+- `frontend/src/components/password-change-form.tsx` (new) — small
+  controlled-input form with three password fields (current / new /
+  confirm), client-side validation (`>= 8 chars`, `new !== current`,
+  `new === confirm`), and friendly status messages for the 401 / 429 /
+  422 error paths.
+- `frontend/src/app/parent/progress/page.tsx` — renders the form inside
+  a new "Account password" card on the parent progress page.
+- `frontend/src/app/screens.module.css` — minimal styles for the form
+  fields, button, success message, and error message.
+- `backend/tests/test_password_change.py` (new) — 6 cases:
+  - happy path: change succeeds, new password logs in, old does not
+  - wrong current password returns 401 and original password still works
+  - new password under 8 chars rejected with 422
+  - new equal to current rejected with 422
+  - unauthenticated request returns 401
+  - 11 wrong-current attempts from the same IP trip the rate limiter
+    (429 with Retry-After), confirming password change shares the
+    login-attempt budget
+- `frontend/src/components/password-change-form.test.tsx` (new) — 5
+  cases: success path calls the API and surfaces `role="status"`,
+  client-side length check blocks API call, mismatch check blocks API
+  call, 401 from API renders `role="alert"` with "incorrect", 429 from
+  API renders a wait-and-retry message.
+- `docs/DEPLOYMENT.md` — new "Rotating the parent password" section
+  explains the in-app flow, CSRF + rate-limit coverage, and the
+  intentional lack of an out-of-band recovery path.
+
+**Tests run.**
+- `python3 -m pytest backend/tests -q` → 162 passed (6 new; all 156
+  prior still green).
+- `npm run test:unit` → 18 passed (5 new in
+  `password-change-form.test.tsx`; all 13 prior still green).
+- `npm run lint` → clean.
+
+**Assumptions / scope decisions.**
+- Password complexity is one rule: `>= 8 chars`. Stricter rules
+  (digits, mixed case, dictionary check) are out of scope for an MVP
+  used by one family. Pydantic enforces the length at the request
+  boundary; the form enforces it client-side for snappy feedback.
+- Reuses `login_limiter`. Considered a dedicated limiter for password
+  change but the threat model is identical — an attacker brute-forcing
+  the current password from the parent's IP. Sharing the budget caps
+  combined attempts (10 / minute / IP) instead of letting an attacker
+  spend 10 on login + 10 on change.
+- No out-of-band recovery. Family-scale, no email infrastructure.
+  Documented in `DEPLOYMENT.md`.
+- The endpoint clears the IP's failure counter on success. This
+  prevents the "I fat-fingered three times, then got it right, then
+  someone else nearby on the same IP failed and I got locked out"
+  scenario.
+
+**Definition of done check.**
+- App still starts locally: yes (additive endpoint; no schema or
+  contract changes elsewhere).
+- Backend tests pass: 162/162. Frontend tests pass: 18/18. Lint clean.
+- No secrets or hardcoded credentials.
+- Data model changes: none.
+- User-facing behavior: an existing parent who never opens the form
+  sees no change. Parents who do can rotate their password without DB
+  access.
+
+**Follow-up status.** Of the five follow-ups identified after iter 10:
+1. README security-posture summary — open
+2. ✅ In-app password change — this iteration
+3. SQLite-persisted AI quota — open
+4. Hot content reload endpoint — open
+5. Per-user child-account login — open
+
+**Recommended next task.** Item 3 (SQLite-persisted AI quota). Today
+the in-memory counter resets on every container rebuild, which makes
+the cost cap effectively useless during a deploy storm. Moving the
+counter to a small SQLite table (`ai_call_log` with `user_id`,
+`called_at`) keeps it ops-grade for a single-container deployment
+without adding any new dependency.
+
+---
+
 ## Iteration 10 — P2-G: canonical content store, manifest, validation CLI
 
 **Scope chosen.** Closes the last backlog item. The seed content was

@@ -6,6 +6,7 @@ import { AppShell } from "@/components/app-shell";
 import { Card } from "@/components/card";
 import { Icon } from "@/components/icon";
 import { Split, StatGrid } from "@/components/layout";
+import { PasswordChangeForm } from "@/components/password-change-form";
 import { ApiError, getParentProgress, type ParentProgressResponse } from "@/lib/api";
 import { parentProgressHighlights, recentSessions } from "@/lib/mock-data";
 
@@ -211,6 +212,19 @@ export default function ParentProgressPage() {
               })}
             </ul>
           )}
+        </Card>
+
+        <Card as="article" className={styles.cardWithHeader}>
+          <div className={styles.cardHeader}>
+            <span className={styles.cardIcon} style={{ ["--icon-color" as string]: "var(--brand)" }}>
+              <Icon name="user" size={18} />
+            </span>
+            <h2>Account password</h2>
+          </div>
+          <p className={styles.muted}>
+            Rotate the parent account password. Min 8 characters.
+          </p>
+          <PasswordChangeForm />
         </Card>
 
         <Card as="article" className={styles.cardWithHeader}>

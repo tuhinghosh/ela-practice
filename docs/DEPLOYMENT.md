@@ -153,6 +153,26 @@ Requests` with a `reset_at` timestamp in the body. Set to `0` to
 disable. The counter is in-memory and resets on process restart — fine
 for a single-container deployment; revisit if scaling out.
 
+## Rotating the parent password
+
+The bootstrap credential set via `ELA_BOOTSTRAP_USERNAME` /
+`ELA_BOOTSTRAP_PASSWORD` is only used the very first time the app sees
+an empty database — once `users.password_hash` exists, changing the env
+var does **not** update the stored row.
+
+Rotate the password from the running app:
+
+1. Sign in as the parent.
+2. Open `/parent/progress` and use the "Account password" card.
+3. Enter the current password and a new one (at least 8 characters);
+   the form posts to `POST /api/auth/password`.
+
+The endpoint is CSRF-guarded, requires an authenticated session, and
+shares the per-IP login rate limiter — too many wrong current-password
+attempts will return `429 Too Many Requests`. There is no out-of-band
+recovery path: lose both the current password and direct DB access and
+you'll have to drop the user row and let the bootstrap re-seed.
+
 ## Content workflow
 
 The canonical activity / theme / skill-tag data lives in

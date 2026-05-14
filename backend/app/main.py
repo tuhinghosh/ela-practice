@@ -16,7 +16,7 @@ from backend.app.ai_client import (
 )
 from backend.app.ai_coach import generate_ai_coach_output
 from backend.app.ai_quota import DailyAICallQuota
-from backend.app.auth import verify_password
+from backend.app.auth import hash_password, verify_password
 from backend.app.config import get_settings
 from backend.app.csrf import CSRFOriginMiddleware
 from backend.app.logging_config import configure_logging
@@ -45,6 +45,7 @@ from backend.app.db import (
     get_session_responses,
     get_user_by_username,
     insert_chat_message,
+    update_user_password,
 )
 from backend.app.scoring import score_activity_submission
 
@@ -87,6 +88,11 @@ PUBLIC_ROUTE_PREFIXES = ("login", "_next", "favicon.ico")
 class LoginRequest(BaseModel):
     username: str
     password: str
+
+
+class PasswordChangeRequest(BaseModel):
+    current_password: str = Field(min_length=1)
+    new_password: str = Field(min_length=8, max_length=256)
 
 
 class SubmissionAnswer(BaseModel):
@@ -221,6 +227,43 @@ def login(payload: LoginRequest, request: Request) -> JSONResponse:
 def logout(request: Request) -> JSONResponse:
     request.session.clear()
     return JSONResponse({"authenticated": False})
+
+
+@app.post("/api/auth/password")
+def change_password(
+    payload: PasswordChangeRequest,
+    request: Request,
+    username: str = Depends(_require_authenticated_username),
+) -> JSONResponse:
+    if payload.new_password == payload.current_password:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="New password must differ from current password.",
+        )
+
+    rate_key = _client_ip(request)
+    gate = login_limiter.check(rate_key)
+    if not gate.allowed:
+        return JSONResponse(
+            {"error": "Too many failed attempts. Please wait and try again."},
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            headers={"Retry-After": str(max(1, int(gate.retry_after_seconds)))},
+        )
+
+    with get_connection() as connection:
+        user_row = get_user_by_username(connection, username)
+        stored_hash = user_row["password_hash"] if "password_hash" in user_row.keys() else None
+        if not stored_hash or not verify_password(payload.current_password, stored_hash):
+            login_limiter.register_failure(rate_key)
+            return JSONResponse(
+                {"error": "Current password is incorrect."},
+                status_code=status.HTTP_401_UNAUTHORIZED,
+            )
+        new_hash = hash_password(payload.new_password)
+        update_user_password(connection, username, new_hash)
+
+    login_limiter.clear(rate_key)
+    return JSONResponse({"status": "ok"})
 
 
 @app.get("/api/dashboard")

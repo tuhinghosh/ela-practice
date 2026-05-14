@@ -251,3 +251,16 @@ export async function getAICoachFeedback(
     }),
   });
 }
+
+export async function changePassword(
+  currentPassword: string,
+  newPassword: string,
+): Promise<{ status: string }> {
+  return request<{ status: string }>("/api/auth/password", {
+    method: "POST",
+    body: JSON.stringify({
+      current_password: currentPassword,
+      new_password: newPassword,
+    }),
+  });
+}

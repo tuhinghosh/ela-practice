@@ -746,3 +746,53 @@
   font-size: 0.86rem;
   margin-bottom: 14px;
 }
+
+/* Password change */
+.passwordForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.passwordField {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.88rem;
+  color: var(--foreground-soft);
+}
+
+.passwordField input {
+  padding: 8px 10px;
+  border: 1px solid var(--border-soft, #d6dcff);
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.passwordButton {
+  align-self: flex-start;
+  padding: 8px 14px;
+  background: var(--brand);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.passwordButton[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.passwordSuccess {
+  margin: 0;
+  color: var(--success, #1b8a4e);
+  font-size: 0.86rem;
+}
+
+.passwordError {
+  margin: 0;
+  color: var(--danger, #b3261e);
+  font-size: 0.86rem;
+}
