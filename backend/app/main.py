@@ -34,6 +34,7 @@ from backend.app.db import (
     get_child_profile_for_user,
     get_connection,
     get_latest_progress_snapshot,
+    get_recent_responses_with_activity,
     get_recent_score_history,
     get_recent_sessions,
     get_recent_writing_feedback,
@@ -402,7 +403,11 @@ def get_parent_progress(username: str = Depends(_require_authenticated_username)
             int(child["id"]),
             tz=settings.learning_day_timezone,
         )
+        recent_response_rows = get_recent_responses_with_activity(
+            connection, int(child["id"]), limit=8
+        )
     practice_next = recommend_practice_next(skill_windows)
+    recent_questions = _hydrate_recent_questions(recent_response_rows)
 
     if len(score_history) < 2:
         trend = "starting"
@@ -451,8 +456,49 @@ def get_parent_progress(username: str = Depends(_require_authenticated_username)
             "writing_feedback_summaries": writing_feedback,
             "skill_history": skill_windows,
             "practice_next": practice_next,
+            "recent_questions": recent_questions,
         }
     )
+
+
+def _hydrate_recent_questions(rows: List[Dict]) -> List[Dict]:
+    """Join recent-response DB rows with seeded activity metadata.
+
+    Multiple-choice answers are surfaced because the choice is from a known
+    list. Short-response answers intentionally do NOT include the verbatim
+    text — that mirrors the existing writing_feedback_summaries shape and
+    keeps child free text out of any logged/serialized place beyond the row
+    itself.
+    """
+    output: List[Dict] = []
+    for row in rows:
+        try:
+            activity = get_seed_activity(row["activity_id"])
+        except ValueError:
+            continue
+        question = next((q for q in activity.questions if q.id == row["question_id"]), None)
+        if question is None:
+            continue
+        entry: Dict = {
+            "session_id": row["session_uuid"],
+            "activity_id": row["activity_id"],
+            "activity_title": row["activity_title"],
+            "question_id": row["question_id"],
+            "question_type": row["question_type"],
+            "prompt": question.prompt,
+            "skill_tags": activity.skillTags,
+            "submitted_at": row["submitted_at"],
+        }
+        if row["question_type"] == "multiple-choice":
+            entry["child_answer"] = row["answer_choice"] or ""
+            entry["correct_answer"] = question.correctChoice or ""
+            entry["is_correct"] = entry["child_answer"] == entry["correct_answer"]
+        else:
+            entry["child_answer"] = None
+            entry["correct_answer"] = None
+            entry["is_correct"] = None
+        output.append(entry)
+    return output
 
 
 @app.get("/api/sessions/{session_id}")

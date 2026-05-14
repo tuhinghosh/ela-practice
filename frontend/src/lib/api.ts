@@ -143,6 +143,19 @@ export type ParentProgressResponse = {
     Record<string, { attempts: number; avg_score: number }>
   >;
   practice_next?: Array<{ skill: string; avg_score: number; attempts: number }>;
+  recent_questions?: Array<{
+    session_id: string;
+    activity_id: string;
+    activity_title: string;
+    question_id: string;
+    question_type: "multiple-choice" | "short-response";
+    prompt: string;
+    skill_tags: string[];
+    submitted_at: string | null;
+    child_answer: string | null;
+    correct_answer: string | null;
+    is_correct: boolean | null;
+  }>;
 };
 
 export type SessionResultResponse = {

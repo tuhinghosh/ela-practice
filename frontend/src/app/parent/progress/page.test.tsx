@@ -30,6 +30,47 @@ const baseProgress: api.ParentProgressResponse = {
     { skill: "summary", avg_score: 55, attempts: 4 },
     { skill: "sentence-quality", avg_score: 70, attempts: 3 },
   ],
+  recent_questions: [
+    {
+      session_id: "s-1",
+      activity_id: "nature-01",
+      activity_title: "Lila and the Oak",
+      question_id: "q1",
+      question_type: "multiple-choice",
+      prompt: "What happened to Lila's plant?",
+      skill_tags: ["reading-comprehension"],
+      submitted_at: "2026-05-14T10:00:00Z",
+      child_answer: "Roots took the water",
+      correct_answer: "Roots took the water",
+      is_correct: true,
+    },
+    {
+      session_id: "s-1",
+      activity_id: "nature-01",
+      activity_title: "Lila and the Oak",
+      question_id: "q2",
+      question_type: "multiple-choice",
+      prompt: "Which word fits?",
+      skill_tags: ["vocabulary"],
+      submitted_at: "2026-05-14T10:01:00Z",
+      child_answer: "wrong choice",
+      correct_answer: "correct choice",
+      is_correct: false,
+    },
+    {
+      session_id: "s-1",
+      activity_id: "nature-01",
+      activity_title: "Lila and the Oak",
+      question_id: "q4",
+      question_type: "short-response",
+      prompt: "Explain why Lila kept trying.",
+      skill_tags: ["short-writing"],
+      submitted_at: "2026-05-14T10:02:00Z",
+      child_answer: null,
+      correct_answer: null,
+      is_correct: null,
+    },
+  ],
 };
 
 describe("ParentProgressPage", () => {
@@ -72,6 +113,7 @@ describe("ParentProgressPage", () => {
       ...baseProgress,
       practice_next: [],
       skill_history: { "7_day": {}, "30_day": {}, all_time: {} },
+      recent_questions: [],
     });
 
     render(<ParentProgressPage />);
@@ -85,5 +127,25 @@ describe("ParentProgressPage", () => {
 
     const breakdownCard = cardForHeading("Last 30 days by skill");
     expect(breakdownCard).toHaveTextContent("No skill data in the last 30 days yet.");
+
+    const recentCard = cardForHeading("Recent questions");
+    expect(recentCard).toHaveTextContent("No recent questions yet.");
+  });
+
+  it("renders recent questions with correctness badges and skill chips", async () => {
+    render(<ParentProgressPage />);
+
+    await waitFor(() => {
+      expect(screen.getByRole("heading", { name: "Recent questions" })).toBeInTheDocument();
+    });
+
+    const card = cardForHeading("Recent questions");
+    expect(card).toHaveTextContent("Lila and the Oak · Correct");
+    expect(card).toHaveTextContent("Lila and the Oak · Needs review");
+    expect(card).toHaveTextContent("Lila and the Oak · Written response");
+    expect(card).toHaveTextContent("Skills: short-writing");
+    // Question prompts (not child answers) are shown so parents know what was asked.
+    expect(card).toHaveTextContent("What happened to Lila's plant?");
+    expect(card).toHaveTextContent("Explain why Lila kept trying.");
   });
 });

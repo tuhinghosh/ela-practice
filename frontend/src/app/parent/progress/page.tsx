@@ -40,6 +40,7 @@ export default function ParentProgressPage() {
   const thirtyDayEntries = Object.entries(thirtyDay)
     .map(([skill, stats]) => ({ skill, attempts: stats.attempts, avg: stats.avg_score }))
     .sort((a, b) => a.avg - b.avg);
+  const recentQuestions = progress?.recent_questions ?? [];
   const recent = progress
     ? progress.recent_sessions.map((session) => ({
         id: session.session_id,
@@ -170,6 +171,44 @@ export default function ParentProgressPage() {
                   </span>
                 </li>
               ))}
+            </ul>
+          )}
+        </Card>
+
+        <Card as="article" className={styles.cardWithHeader}>
+          <div className={styles.cardHeader}>
+            <span className={styles.cardIcon} style={{ ["--icon-color" as string]: "var(--success)" }}>
+              <Icon name="clipboard-list" size={18} />
+            </span>
+            <h2>Recent questions</h2>
+          </div>
+          {recentQuestions.length === 0 ? (
+            <p className={styles.muted}>No recent questions yet.</p>
+          ) : (
+            <ul className={styles.feedbackList}>
+              {recentQuestions.slice(0, 6).map((question) => {
+                const badge =
+                  question.is_correct === true
+                    ? "Correct"
+                    : question.is_correct === false
+                    ? "Needs review"
+                    : "Written response";
+                return (
+                  <li
+                    key={`${question.session_id}-${question.question_id}`}
+                    className={styles.feedbackItem}
+                  >
+                    <p className={styles.feedbackTitle}>
+                      <Icon name="book" size={14} />
+                      {question.activity_title} · {badge}
+                    </p>
+                    <p className={styles.feedbackSummary}>{question.prompt}</p>
+                    {question.skill_tags.length > 0 ? (
+                      <p className={styles.muted}>Skills: {question.skill_tags.join(", ")}</p>
+                    ) : null}
+                  </li>
+                );
+              })}
             </ul>
           )}
         </Card>

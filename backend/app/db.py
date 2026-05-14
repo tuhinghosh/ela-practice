@@ -620,6 +620,39 @@ def fetch_session_result_by_uuid(connection: sqlite3.Connection, session_uuid: s
     ).fetchone()
 
 
+def get_recent_responses_with_activity(
+    connection: sqlite3.Connection,
+    child_profile_id: int,
+    limit: int = 8,
+) -> list[sqlite3.Row]:
+    """Return the most recently submitted responses across all sessions for a
+    child, joined with their parent activity row. Ordered newest-first; ties
+    within a session broken by ``responses.id`` so question order is stable.
+    Callers hydrate question prompt + correct answer + skill tags from the
+    seeded activity content separately."""
+    return list(
+        connection.execute(
+            """
+            SELECT r.question_id,
+                   r.question_type,
+                   r.answer_choice,
+                   r.answer_text,
+                   s.activity_id,
+                   s.activity_title,
+                   s.session_uuid,
+                   s.submitted_at
+            FROM responses r
+            JOIN activity_sessions s ON s.id = r.session_id
+            WHERE s.child_profile_id = ?
+              AND s.status = 'submitted'
+            ORDER BY s.submitted_at DESC, r.id DESC
+            LIMIT ?
+            """,
+            (child_profile_id, limit),
+        ).fetchall()
+    )
+
+
 def get_session_responses(connection: sqlite3.Connection, session_id: int) -> list[sqlite3.Row]:
     return list(
         connection.execute(

@@ -2,6 +2,98 @@
 
 Tracks each loop iteration against `docs/RALPH_BRIEF.md`. Newest first.
 
+## Iteration 8 — P1-E (finish): recent question history for parent view
+
+**Scope chosen.** Closes the last open P1-E sub-item — "Surface recent
+question history". The 7/30/all-time windowed averages from iter 7 tell
+parents *what* skill needs work; this slice tells them *which concrete
+questions* to revisit together with the child.
+
+**Privacy decision.** Short-response answers contain free-text from a
+child and are intentionally NOT echoed back through the API. Multiple-
+choice answers are surfaced (the child picked from a known closed list,
+so there is no leak). The brief's rule "Do not log child free-text
+responses" is about logging, but it implies caution everywhere — this
+slice errs on the side of withholding even for the parent UI, matching
+how `writing_feedback_summaries` already works (rubric only, no text).
+
+**Changes.**
+- `backend/app/db.py` — `get_recent_responses_with_activity(connection,
+  child_profile_id, limit=8)` joins `responses` → `activity_sessions`
+  newest-first with ties broken by `responses.id` for a stable order
+  within a session. Pure DB layer; activity content is hydrated in the
+  endpoint, not in the DB module, so the seeded content registry stays
+  out of `db.py`.
+- `backend/app/main.py` — new `_hydrate_recent_questions(rows)` looks
+  each row's activity up via `get_seed_activity`, matches the question,
+  and produces:
+  - MC entries: `child_answer`, `correct_answer`, `is_correct=True/False`
+  - Short-response entries: `child_answer=None`, `correct_answer=None`,
+    `is_correct=None`
+  Activities or questions that no longer exist in the content set are
+  skipped defensively. `/api/progress/parent` now returns
+  `recent_questions` alongside the iter-7 fields.
+- `frontend/src/lib/api.ts` — `ParentProgressResponse.recent_questions`
+  typed to match.
+- `frontend/src/app/parent/progress/page.tsx` — new "Recent questions"
+  card showing the activity title, a "Correct" / "Needs review" /
+  "Written response" badge, the question prompt, and a "Skills: ..."
+  chip line. Capped at six entries. Friendly empty state when nothing
+  has been submitted yet.
+- `backend/tests/test_skill_progress.py` — 2 new integration cases:
+  - Submit `nature-01` (with one intentionally wrong MC pick + one
+    short-response) and assert `recent_questions` contains all four
+    questions with the right correctness flags, that the wrong MC
+    pick is flagged `is_correct=False`, that the short-response entry
+    has `child_answer=None` (no verbatim text leak), and that prompts
+    + skill tags are populated.
+  - With no submissions, `recent_questions` is `[]`.
+- `frontend/src/app/parent/progress/page.test.tsx` — 1 new case asserting
+  the card renders the three badge variants ("Correct" / "Needs review"
+  / "Written response"), the skill-tag chip line, and the question
+  prompts. The existing empty-state case now also asserts the recent-
+  questions empty copy.
+
+**Tests run.**
+- `python3 -m pytest backend/tests -q` → 130 passed (2 new; all 128
+  prior still green).
+- `npm run test:unit` → 13 passed (1 new; all 12 prior still green).
+- `npm run lint` → clean.
+
+**Assumptions / scope decisions.**
+- Limit defaults to 8 rows from the DB; UI caps at 6 visible. The
+  asymmetry is deliberate — we pull a few extra in case the activity
+  registry has dropped any in flight, so the UI still has six to show.
+- Defensively skipping unknown activity_ids means a content-set change
+  never breaks the parent dashboard. The dropped entry is invisible
+  rather than producing an error row, matching the principle of "never
+  block waiting on a content edit".
+- Recent-question history reads via `get_seed_activity` per row. With
+  the in-memory registry that's effectively O(1) per row; no need for a
+  bulk fetch helper.
+
+**Definition of done check.**
+- App still starts locally: yes (additive endpoint field; no schema
+  changes).
+- Backend tests pass: 130/130. Frontend unit tests pass: 13/13. Lint
+  clean.
+- No secrets or hardcoded credentials.
+- Data model changes: none.
+- User-facing behavior preserved (existing parent fields unchanged) and
+  a new visible card added.
+
+**P1 status.** P1-D done (iter 6). P1-E done (iter 7 + iter 8). All P0
+and P1 items now have meaningful coverage.
+
+**Recommended next task.** P2-F observability. The brief asks for
+structured logging, `/health` + `/ready`, basic request/error logging
+without child response text, AI call cost/latency logs, and a per-
+session/day AI call cap. `/api/health` already exists in a minimal
+form; the rest is one self-contained slice that meaningfully improves
+operability for a parent-on-a-home-server deployment.
+
+---
+
 ## Iteration 7 — P1-E (partial): per-skill windowed stats + "practice next"
 
 **Scope chosen.** First half of P1-E. The brief asks for per-skill

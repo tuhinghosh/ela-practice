@@ -174,6 +174,73 @@ def test_recommend_practice_next_respects_ceiling() -> None:
     assert [r["skill"] for r in recs] == ["summary"]
 
 
+def test_parent_progress_recent_questions_includes_mc_correctness_no_text(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # Use the autouse-fixture DB so the seed user + content registry are in
+    # the same place the TestClient lifespan-created DB will live.
+    with TestClient(app) as client:
+        assert client.post(
+            "/api/auth/login", json={"username": "user", "password": "password"}
+        ).status_code == 200
+
+        submit = client.post(
+            "/api/activities/nature-01/submit",
+            json={
+                "responses": [
+                    {"question_id": "q1", "answer_choice": "The oak tree's roots took the water"},
+                    {"question_id": "q2", "answer_choice": "wrong on purpose"},
+                    {"question_id": "q3", "answer_choice": "Determined"},
+                    {
+                        "question_id": "q4",
+                        "answer_text": "A short response that should not be echoed back.",
+                    },
+                ]
+            },
+        )
+        assert submit.status_code == 200
+
+        response = client.get("/api/progress/parent")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert "recent_questions" in body
+    recent = body["recent_questions"]
+    assert len(recent) >= 4
+
+    by_qid = {entry["question_id"]: entry for entry in recent if entry["activity_id"] == "nature-01"}
+    assert {"q1", "q2", "q3", "q4"}.issubset(by_qid.keys())
+
+    mc_entry = by_qid["q1"]
+    assert mc_entry["question_type"] == "multiple-choice"
+    assert mc_entry["is_correct"] is True
+    assert mc_entry["child_answer"] == "The oak tree's roots took the water"
+    assert mc_entry["correct_answer"] == "The oak tree's roots took the water"
+    assert mc_entry["activity_title"]
+    assert mc_entry["prompt"]
+    assert isinstance(mc_entry["skill_tags"], list) and mc_entry["skill_tags"]
+
+    wrong_mc = by_qid["q2"]
+    assert wrong_mc["is_correct"] is False
+
+    short = by_qid["q4"]
+    assert short["question_type"] == "short-response"
+    assert short["is_correct"] is None
+    assert short["child_answer"] is None  # verbatim free-text is intentionally not echoed
+    assert short["correct_answer"] is None
+
+
+def test_parent_progress_recent_questions_empty_when_no_submissions() -> None:
+    with TestClient(app) as client:
+        assert client.post(
+            "/api/auth/login", json={"username": "user", "password": "password"}
+        ).status_code == 200
+        response = client.get("/api/progress/parent")
+
+    assert response.status_code == 200
+    assert response.json()["recent_questions"] == []
+
+
 def test_parent_progress_endpoint_exposes_skill_history_and_practice_next(
     seeded_child,
     monkeypatch: pytest.MonkeyPatch,
