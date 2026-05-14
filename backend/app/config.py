@@ -10,6 +10,7 @@ import logging
 import os
 from dataclasses import dataclass
 from typing import Literal, Mapping, Optional
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +39,7 @@ class Settings:
     login_rate_limit_max_attempts: int
     login_rate_limit_window_seconds: int
     csrf_allowed_origins: tuple[str, ...]
+    learning_day_timezone: ZoneInfo
 
     @property
     def is_prod(self) -> bool:
@@ -175,6 +177,14 @@ def load_settings(env: Optional[Mapping[str, str]] = None) -> Settings:
         if entry.strip()
     )
 
+    tz_name = (source.get("LEARNING_DAY_TIMEZONE") or "UTC").strip()
+    try:
+        learning_day_timezone = ZoneInfo(tz_name)
+    except ZoneInfoNotFoundError as exc:
+        raise ConfigError(
+            f"LEARNING_DAY_TIMEZONE={tz_name!r} is not a recognized IANA timezone."
+        ) from exc
+
     return Settings(
         env=app_env,
         session_secret=session_secret,
@@ -186,6 +196,7 @@ def load_settings(env: Optional[Mapping[str, str]] = None) -> Settings:
         login_rate_limit_max_attempts=max_attempts,
         login_rate_limit_window_seconds=window_seconds,
         csrf_allowed_origins=csrf_allowed_origins,
+        learning_day_timezone=learning_day_timezone,
     )
 
 

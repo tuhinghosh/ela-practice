@@ -2,6 +2,98 @@
 
 Tracks each loop iteration against `docs/RALPH_BRIEF.md`. Newest first.
 
+## Iteration 6 — P1-D: streak derived from activity history with explicit timezone
+
+**Scope chosen.** First P1 item now that all P0 sub-items have meaningful
+coverage. The brief asks for streak based on completed-activity dates (not
+generic `updated_at`) with explicit timezone handling, plus tests for
+same-day / consecutive / skipped / TZ cases. This is a self-contained
+slice that strictly improves correctness with no new dependencies.
+
+**Bug being fixed.** The old logic in `create_submission` derived streak
+from the gap between `date.today()` (system local) and
+`reward_state.updated_at` (UTC, updated on every write). Three problems:
+(1) wrong source of truth — the update timestamp could refer to a stars
+or badge change rather than the last *learning activity*; (2) silent
+timezone mixing between system-local `today` and UTC `updated_at`; (3)
+the row's `updated_at` is also set by initial reward-state seeding before
+any activity exists, so the first submission could mis-count a same-day
+"gap".
+
+**Changes.**
+- `backend/app/streak.py` (new) — pure `compute_streak(distinct_days_desc,
+  today)` plus `get_distinct_learning_days(connection, child_id, tz)` and
+  `compute_streak_for_child(connection, child_id, *, tz, today=None)`.
+  Definition of a learning day: any calendar day, in the configured TZ,
+  with at least one submitted session. Streak is alive if the latest
+  learning day is today OR yesterday (so a child who studied yesterday
+  still sees their streak today before doing today's lesson).
+  `_parse_sqlite_utc_timestamp` handles both `'YYYY-MM-DD HH:MM:SS'` and
+  ISO-8601 forms with `Z` or explicit offsets.
+- `backend/app/config.py` — adds `Settings.learning_day_timezone`
+  (`ZoneInfo`), parsed from `LEARNING_DAY_TIMEZONE` env var. Invalid
+  zones fail fast at startup with `ConfigError`. Defaults to `UTC`.
+- `backend/app/db.py` — `create_submission` now calls
+  `compute_streak_for_child` against the child's full submission history
+  (the just-inserted session is included), using the configured TZ. The
+  ad-hoc `date.today() - last_updated` math is gone.
+- `backend/tests/test_streak.py` (new) — 18 cases:
+  - 7 pure-math cases: empty, today-only, yesterday-only, two-days-ago=0,
+    five consecutive, gap breaks the run, yesterday-anchored history.
+  - 3 timestamp parsing cases: default form, ISO with `Z`, ISO with
+    `+05:30` offset.
+  - DB-level: same-day submissions de-dup, three consecutive days→3,
+    skipped middle day→2, UTC and US/Pacific each compute correctly for a
+    timestamp that lives in the prior PT day vs same UTC day.
+  - Integration: two real `create_submission` calls on the same day both
+    return `streak_after=1`.
+  - Config: default UTC, invalid zone raises `ConfigError`, valid IANA
+    name accepted.
+- `.env.example` — documents `LEARNING_DAY_TIMEZONE`.
+
+**Tests run.**
+- `python3 -m pytest backend/tests -q` → 122 passed (18 new in
+  `test_streak.py`; all 104 from prior iterations still green). The
+  existing `test_repeat_submissions_are_predictable` test in
+  `test_api_routes.py` continues to pass because the new logic preserves
+  the same-day-no-increment property.
+
+**Assumptions / scope decisions.**
+- One global timezone, not per-user. For a family MVP the parent picks
+  the household's TZ via env; a per-user setting is overkill until
+  multi-family arrives.
+- Streak is recomputed from history on every submit (cheap — distinct
+  dates over a child's full session history is a few-hundred-row scan at
+  worst for an MVP). No need for an incremental cache beyond the
+  `reward_state.streak_days` mirror that the dashboard already reads.
+- The "alive yesterday" rule keeps streak visible until the day after
+  it's broken — matches how Duolingo / Khan Academy and similar apps
+  behave, and reduces false "you broke your streak" panic.
+
+**Definition of done check.**
+- App still starts locally: yes (no breaking API changes; the only
+  observable shift is that streak values are now correct).
+- Tests pass: 122/122.
+- No secrets or hardcoded credentials introduced.
+- Data model changes: none — the existing `streak_days` column in
+  `reward_state` stays as the cached value; only the source it is
+  computed from changed.
+- User-facing behavior preserved for happy paths (same-day no-increment,
+  consecutive-day +1); the fix is a correctness improvement, not a
+  regression risk for normal usage.
+
+**P1 status.** P1-D done. P1-E (improve progress tracking — per-skill
+performance over time, 7/30/all-time windows, parent-facing "what to
+practice next") still open.
+
+**Recommended next task.** P1-E. Today the parent progress view shows
+average-score / strengths / growth-areas but those snapshots are
+single-point-in-time. The time-windowed summaries and a simple
+"practice this next" pointer would meaningfully improve the parent UX
+without needing AI involvement.
+
+---
+
 ## Iteration 5 — P0-B (follow-up): CSRF Origin check on state-changing routes
 
 **Scope chosen.** Closes the last open P0-B sub-item. Picked the

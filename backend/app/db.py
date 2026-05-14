@@ -8,6 +8,7 @@ from typing import Any, Dict, Optional
 from backend.app.auth import hash_password
 from backend.app.config import get_settings
 from backend.app.migrations import run_migrations
+from backend.app.streak import compute_streak_for_child
 
 
 APP_ROOT = Path(__file__).resolve().parent.parent
@@ -550,21 +551,14 @@ def create_submission(
     stars_earned = int(round(scoring_payload["score_percent"] / 25))
     stars = previous_stars + stars_earned
 
-    from datetime import date, datetime
-
-    today = date.today()
-    last_updated = reward_row["updated_at"]
-    if last_updated:
-        last_date = datetime.fromisoformat(last_updated.replace("Z", "+00:00")).date() if "T" in last_updated else datetime.strptime(last_updated, "%Y-%m-%d %H:%M:%S").date()
-        days_gap = (today - last_date).days
-        if days_gap == 0:
-            streak_days = previous_streak
-        elif days_gap == 1:
-            streak_days = previous_streak + 1
-        else:
-            streak_days = 1
-    else:
-        streak_days = 1
+    # Derive the post-submission streak from the durable activity history
+    # (this submission has already been inserted above) rather than from
+    # reward_state.updated_at, which is the wrong source of truth.
+    streak_days = compute_streak_for_child(
+        connection,
+        child_profile_id,
+        tz=get_settings().learning_day_timezone,
+    )
     badges = json.loads(reward_row["badges_json"])
     previous_badges = set(badges)
     if next_completion >= 3 and "Three Mission Starter" not in badges:
