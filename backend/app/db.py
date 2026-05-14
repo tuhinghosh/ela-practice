@@ -5,6 +5,9 @@ import uuid
 from pathlib import Path
 from typing import Any, Dict, Optional
 
+from backend.app.auth import hash_password
+from backend.app.config import get_settings
+
 
 APP_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = APP_ROOT / "data"
@@ -33,6 +36,8 @@ def create_schema(connection: sqlite3.Connection) -> None:
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT NOT NULL UNIQUE,
+            password_hash TEXT,
+            role TEXT NOT NULL DEFAULT 'parent' CHECK(role IN ('parent', 'child')),
             created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
         );
 
@@ -130,12 +135,46 @@ def create_schema(connection: sqlite3.Connection) -> None:
     connection.commit()
 
 
+def _column_exists(connection: sqlite3.Connection, table: str, column: str) -> bool:
+    rows = connection.execute(f"PRAGMA table_info({table})").fetchall()
+    return any(row["name"] == column for row in rows)
+
+
+def apply_migrations(connection: sqlite3.Connection) -> None:
+    """In-place migrations for SQLite databases created before a schema change.
+
+    Only additive ALTER TABLE statements live here so the migration is safe to
+    re-run. New behavior should land here AND in ``create_schema`` so fresh DBs
+    skip the migration step entirely.
+    """
+    if not _column_exists(connection, "users", "password_hash"):
+        connection.execute("ALTER TABLE users ADD COLUMN password_hash TEXT")
+    if not _column_exists(connection, "users", "role"):
+        connection.execute(
+            "ALTER TABLE users ADD COLUMN role TEXT NOT NULL DEFAULT 'parent'"
+        )
+    connection.commit()
+
+
 def seed_core_records(connection: sqlite3.Connection) -> dict[str, int]:
+    settings = get_settings()
+    username = settings.bootstrap_username
+    password_hash = hash_password(settings.bootstrap_password)
+
     connection.execute(
-        "INSERT OR IGNORE INTO users (username) VALUES (?)",
-        ("user",),
+        "INSERT OR IGNORE INTO users (username, password_hash, role) VALUES (?, ?, 'parent')",
+        (username, password_hash),
     )
-    user_id = connection.execute("SELECT id FROM users WHERE username = ?", ("user",)).fetchone()["id"]
+    # Backfill password_hash/role for legacy rows that pre-date the auth columns.
+    connection.execute(
+        "UPDATE users SET password_hash = ? WHERE username = ? AND password_hash IS NULL",
+        (password_hash, username),
+    )
+    connection.execute(
+        "UPDATE users SET role = 'parent' WHERE username = ? AND (role IS NULL OR role = '')",
+        (username,),
+    )
+    user_id = connection.execute("SELECT id FROM users WHERE username = ?", (username,)).fetchone()["id"]
 
     connection.execute(
         """
@@ -164,6 +203,7 @@ def ensure_database(db_path: Optional[Path] = None) -> Path:
     target = db_path or get_database_path()
     with get_connection(target) as connection:
         create_schema(connection)
+        apply_migrations(connection)
         seed_core_records(connection)
     return target
 
@@ -305,7 +345,7 @@ def fetch_parent_progress_projection(connection: sqlite3.Connection, child_profi
 
 def get_user_by_username(connection: sqlite3.Connection, username: str) -> sqlite3.Row:
     row = connection.execute(
-        "SELECT id, username FROM users WHERE username = ?",
+        "SELECT id, username, password_hash, role FROM users WHERE username = ?",
         (username,),
     ).fetchone()
     if row is None:

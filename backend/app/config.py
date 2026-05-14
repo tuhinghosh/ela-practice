@@ -18,6 +18,8 @@ SameSite = Literal["lax", "strict", "none"]
 
 DEV_SESSION_SECRET = "ela-dev-session-secret"
 DEFAULT_SESSION_COOKIE_NAME = "ela_session"
+DEV_BOOTSTRAP_USERNAME = "user"
+DEV_BOOTSTRAP_PASSWORD = "password"
 
 
 class ConfigError(RuntimeError):
@@ -31,6 +33,8 @@ class Settings:
     session_cookie_name: str
     session_cookie_secure: bool
     session_cookie_samesite: SameSite
+    bootstrap_username: str
+    bootstrap_password: str
 
     @property
     def is_prod(self) -> bool:
@@ -118,12 +122,35 @@ def load_settings(env: Optional[Mapping[str, str]] = None) -> Settings:
             "SESSION_COOKIE_SAMESITE=none requires SESSION_COOKIE_SECURE=true."
         )
 
+    bootstrap_username = source.get("ELA_BOOTSTRAP_USERNAME", "").strip()
+    bootstrap_password = source.get("ELA_BOOTSTRAP_PASSWORD", "")
+    if app_env == "prod":
+        if not bootstrap_username:
+            raise ConfigError(
+                "ELA_BOOTSTRAP_USERNAME is required when ELA_ENV=prod."
+            )
+        if not bootstrap_password:
+            raise ConfigError(
+                "ELA_BOOTSTRAP_PASSWORD is required when ELA_ENV=prod."
+            )
+        if bootstrap_password == DEV_BOOTSTRAP_PASSWORD:
+            raise ConfigError(
+                "ELA_BOOTSTRAP_PASSWORD must not use the built-in dev placeholder in prod."
+            )
+    else:
+        if not bootstrap_username:
+            bootstrap_username = DEV_BOOTSTRAP_USERNAME
+        if not bootstrap_password:
+            bootstrap_password = DEV_BOOTSTRAP_PASSWORD
+
     return Settings(
         env=app_env,
         session_secret=session_secret,
         session_cookie_name=cookie_name,
         session_cookie_secure=cookie_secure,
         session_cookie_samesite=cookie_samesite,
+        bootstrap_username=bootstrap_username,
+        bootstrap_password=bootstrap_password,
     )
 
 

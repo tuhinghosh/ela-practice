@@ -15,6 +15,7 @@ from backend.app.ai_client import (
     run_openrouter_connectivity_check,
 )
 from backend.app.ai_coach import generate_ai_coach_output
+from backend.app.auth import verify_password
 from backend.app.config import get_settings
 from backend.app.content_schema import (
     get_seed_activity,
@@ -98,10 +99,12 @@ def health() -> JSONResponse:
 def auth_session(request: Request) -> JSONResponse:
     is_authenticated = bool(request.session.get("authenticated"))
     username = request.session.get("username")
+    role = request.session.get("role")
     return JSONResponse(
         {
             "authenticated": is_authenticated,
             "username": username if is_authenticated else None,
+            "role": role if is_authenticated else None,
         }
     )
 
@@ -116,15 +119,30 @@ def _require_authenticated_username(request: Request) -> str:
 
 @app.post("/api/auth/login")
 def login(payload: LoginRequest, request: Request) -> JSONResponse:
-    if payload.username != "user" or payload.password != "password":
-        return JSONResponse(
-            {"error": "Invalid credentials"},
-            status_code=status.HTTP_401_UNAUTHORIZED,
-        )
+    invalid = JSONResponse(
+        {"error": "Invalid credentials"},
+        status_code=status.HTTP_401_UNAUTHORIZED,
+    )
+    try:
+        with get_connection() as connection:
+            user_row = get_user_by_username(connection, payload.username)
+    except ValueError:
+        return invalid
+
+    stored_hash = user_row["password_hash"] if "password_hash" in user_row.keys() else None
+    if not stored_hash or not verify_password(payload.password, stored_hash):
+        return invalid
 
     request.session["authenticated"] = True
-    request.session["username"] = payload.username
-    return JSONResponse({"authenticated": True, "username": payload.username})
+    request.session["username"] = user_row["username"]
+    request.session["role"] = user_row["role"]
+    return JSONResponse(
+        {
+            "authenticated": True,
+            "username": user_row["username"],
+            "role": user_row["role"],
+        }
+    )
 
 
 @app.post("/api/auth/logout")

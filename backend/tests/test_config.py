@@ -39,10 +39,16 @@ def test_prod_rejects_dev_placeholder_secret() -> None:
         load_settings(env={"ELA_ENV": "prod", "SESSION_SECRET": DEV_SESSION_SECRET})
 
 
+_PROD_ENV = {
+    "ELA_ENV": "prod",
+    "SESSION_SECRET": "a-strong-random-value",
+    "ELA_BOOTSTRAP_USERNAME": "admin",
+    "ELA_BOOTSTRAP_PASSWORD": "a-very-secure-bootstrap-password",
+}
+
+
 def test_prod_defaults_to_secure_cookies() -> None:
-    settings = load_settings(
-        env={"ELA_ENV": "prod", "SESSION_SECRET": "a-strong-random-value"},
-    )
+    settings = load_settings(env=_PROD_ENV)
 
     assert settings.env == "prod"
     assert settings.is_prod is True
@@ -53,8 +59,7 @@ def test_prod_defaults_to_secure_cookies() -> None:
 def test_cookie_secure_can_be_overridden() -> None:
     settings = load_settings(
         env={
-            "ELA_ENV": "prod",
-            "SESSION_SECRET": "a-strong-random-value",
+            **_PROD_ENV,
             "SESSION_COOKIE_SECURE": "false",
             "SESSION_COOKIE_SAMESITE": "strict",
         },
@@ -68,8 +73,7 @@ def test_samesite_none_requires_secure_cookie() -> None:
     with pytest.raises(ConfigError, match="SAMESITE=none requires"):
         load_settings(
             env={
-                "ELA_ENV": "prod",
-                "SESSION_SECRET": "a-strong-random-value",
+                **_PROD_ENV,
                 "SESSION_COOKIE_SECURE": "false",
                 "SESSION_COOKIE_SAMESITE": "none",
             },
