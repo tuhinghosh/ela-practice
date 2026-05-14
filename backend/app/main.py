@@ -17,6 +17,7 @@ from backend.app.ai_client import (
 from backend.app.ai_coach import generate_ai_coach_output
 from backend.app.auth import verify_password
 from backend.app.config import get_settings
+from backend.app.rate_limit import SlidingWindowLimiter
 from backend.app.content_schema import (
     get_seed_activity,
     list_seed_activities,
@@ -45,6 +46,10 @@ from backend.app.scoring import score_activity_submission
 APP_ROOT = Path(__file__).resolve().parent.parent
 STATIC_DIR = APP_ROOT / "static"
 settings = get_settings()
+login_limiter = SlidingWindowLimiter(
+    max_attempts=settings.login_rate_limit_max_attempts,
+    window_seconds=settings.login_rate_limit_window_seconds,
+)
 
 
 @asynccontextmanager
@@ -117,22 +122,41 @@ def _require_authenticated_username(request: Request) -> str:
     return str(username)
 
 
+def _client_ip(request: Request) -> str:
+    if request.client and request.client.host:
+        return request.client.host
+    return "unknown"
+
+
 @app.post("/api/auth/login")
 def login(payload: LoginRequest, request: Request) -> JSONResponse:
+    rate_key = _client_ip(request)
+    gate = login_limiter.check(rate_key)
+    if not gate.allowed:
+        return JSONResponse(
+            {"error": "Too many login attempts. Please wait and try again."},
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            headers={"Retry-After": str(max(1, int(gate.retry_after_seconds)))},
+        )
+
     invalid = JSONResponse(
         {"error": "Invalid credentials"},
         status_code=status.HTTP_401_UNAUTHORIZED,
     )
+
     try:
         with get_connection() as connection:
             user_row = get_user_by_username(connection, payload.username)
     except ValueError:
+        login_limiter.register_failure(rate_key)
         return invalid
 
     stored_hash = user_row["password_hash"] if "password_hash" in user_row.keys() else None
     if not stored_hash or not verify_password(payload.password, stored_hash):
+        login_limiter.register_failure(rate_key)
         return invalid
 
+    login_limiter.clear(rate_key)
     request.session["authenticated"] = True
     request.session["username"] = user_row["username"]
     request.session["role"] = user_row["role"]

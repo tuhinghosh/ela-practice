@@ -20,3 +20,14 @@ def isolated_database(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
 
     ensure_database()
     return db_path
+
+
+@pytest.fixture(autouse=True)
+def reset_login_limiter() -> None:
+    """Login limiter is module-level; clear it between tests so failed-login
+    cases in one test don't poison the bucket for another."""
+    from backend.app.main import login_limiter
+
+    login_limiter.reset()
+    yield
+    login_limiter.reset()

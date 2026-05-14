@@ -35,6 +35,8 @@ class Settings:
     session_cookie_samesite: SameSite
     bootstrap_username: str
     bootstrap_password: str
+    login_rate_limit_max_attempts: int
+    login_rate_limit_window_seconds: int
 
     @property
     def is_prod(self) -> bool:
@@ -67,6 +69,18 @@ def _parse_env(raw: Optional[str]) -> Environment:
     if lowered in ("prod", "production"):
         return "prod"
     raise ConfigError(f"Invalid ELA_ENV={raw!r}; expected dev or prod.")
+
+
+def _parse_non_negative_int(raw: Optional[str], *, default: int, field_name: str) -> int:
+    if raw is None or raw == "":
+        return default
+    try:
+        value = int(raw.strip())
+    except ValueError as exc:
+        raise ConfigError(f"{field_name} must be an integer; got {raw!r}.") from exc
+    if value < 0:
+        raise ConfigError(f"{field_name} must be >= 0; got {value}.")
+    return value
 
 
 def _parse_samesite(raw: Optional[str]) -> SameSite:
@@ -143,6 +157,17 @@ def load_settings(env: Optional[Mapping[str, str]] = None) -> Settings:
         if not bootstrap_password:
             bootstrap_password = DEV_BOOTSTRAP_PASSWORD
 
+    max_attempts = _parse_non_negative_int(
+        source.get("LOGIN_RATE_LIMIT_MAX_ATTEMPTS"),
+        default=10,
+        field_name="LOGIN_RATE_LIMIT_MAX_ATTEMPTS",
+    )
+    window_seconds = _parse_non_negative_int(
+        source.get("LOGIN_RATE_LIMIT_WINDOW_SECONDS"),
+        default=60,
+        field_name="LOGIN_RATE_LIMIT_WINDOW_SECONDS",
+    )
+
     return Settings(
         env=app_env,
         session_secret=session_secret,
@@ -151,6 +176,8 @@ def load_settings(env: Optional[Mapping[str, str]] = None) -> Settings:
         session_cookie_samesite=cookie_samesite,
         bootstrap_username=bootstrap_username,
         bootstrap_password=bootstrap_password,
+        login_rate_limit_max_attempts=max_attempts,
+        login_rate_limit_window_seconds=window_seconds,
     )
 
 

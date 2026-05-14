@@ -2,6 +2,87 @@
 
 Tracks each loop iteration against `docs/RALPH_BRIEF.md`. Newest first.
 
+## Iteration 4 — P0-B (follow-up): per-IP login rate limiting
+
+**Scope chosen.** P0-B's outstanding sub-items are CSRF and login rate
+limiting. Rate limiting is the smaller, more contained slice and directly
+reduces the brute-force surface that the new hashed-credential login from
+iter 2 created — picking it first follows the brief's "smallest safe
+implementation" rule. CSRF stays deferred to a later iteration.
+
+**Changes.**
+- `backend/app/rate_limit.py` (new) — `SlidingWindowLimiter` with a per-key
+  deque of failure timestamps. `check(key)` is the gate (prune, then block
+  if `len(bucket) >= max_attempts`); `register_failure(key)` records one
+  attempt without returning allow/deny so the endpoint logic stays a
+  single check-at-entry. `clear(key)` releases a key on successful login
+  so a fat-fingering user does not get locked out. Time source injectable
+  for tests. Thread-safe via `threading.Lock` (sync FastAPI handlers can
+  run in the threadpool).
+- `backend/app/config.py` — adds `login_rate_limit_max_attempts` (default
+  10) and `login_rate_limit_window_seconds` (default 60). Setting either
+  to `0` disables the limiter. New `_parse_non_negative_int` helper
+  validates ints; rejects non-numeric and negative values with `ConfigError`.
+- `backend/app/main.py` — module-level `login_limiter` constructed from
+  settings at import. `/api/auth/login` keys on `request.client.host`:
+  - `check()` at entry → 429 + `Retry-After` if blocked.
+  - On 401 path (unknown user OR wrong password), `register_failure()`.
+  - On 200 path, `login_limiter.clear(key)`.
+  - Constant-time-ish: the credential check still runs to completion on
+    failure (no early exit on unknown user changes timing meaningfully
+    here because the limiter triggers before timing differences matter).
+- `backend/tests/conftest.py` — adds `reset_login_limiter` autouse fixture
+  so the module-level limiter's state does not leak across tests.
+- `backend/tests/test_rate_limit.py` (new) — 15 cases:
+  - unit: accumulate-then-block, check is non-recording, clear releases,
+    window expiry releases (via injected clock), separate keys
+    independent, `max_attempts=0` and `window_seconds=0` both disable,
+    negative ctor args rejected
+  - config: env vars parsed, defaults set, non-integer rejected, negative
+    rejected
+  - integration via TestClient: 11th request returns 429 + `Retry-After`,
+    successful login resets the budget, conftest reset works between tests
+- `.env.example` — documents the two new env vars (commented; defaults
+  shown).
+
+**Tests run.**
+- `python3 -m pytest backend/tests -q` → 90 passed (15 new in
+  `test_rate_limit.py`; all 75 from prior iterations still green).
+
+**Assumptions / scope decisions.**
+- Per-IP only, not per-(IP,username). For a home server behind one IP
+  this is enough; per-username would lock out legitimate users when an
+  attacker probes a known account, and per-pair lets an attacker enumerate
+  users without ever hitting any single pair's cap. Per-IP is the safest
+  default at this scale; revisit if the app is ever exposed behind a CDN
+  or shared NAT.
+- State is in-process and lives in memory: it does not survive process
+  restart and is not shared across uvicorn workers. Acceptable for the
+  single-container MVP; documented in the module docstring.
+- The limiter never returns `allowed=False` from `register_failure` — the
+  endpoint gates only on `check()`. This avoids the off-by-one trap where
+  the "Nth attempt that just got recorded" both gets a 401 reply AND
+  flips the bucket to blocked, surfacing as a confusing 429 on the same
+  request the user just made.
+
+**Definition of done check.**
+- App still starts locally: yes (login limiter constructed lazily from
+  settings; no behavior change unless config is set).
+- Tests pass: 90/90.
+- No secrets or hardcoded credentials introduced.
+- No data model changes.
+- User-facing behavior preserved: 401 still returned on bad creds; 429
+  is only added under sustained abuse from one IP.
+
+**P0 status.** Of P0-B, only CSRF remains. P0-A and P0-C are
+structurally complete.
+
+**Recommended next task.** P0-B CSRF protection for state-changing
+routes. After that, P1-D (streak logic fix) and P1-E (progress tracking)
+since P0 will be done.
+
+---
+
 ## Iteration 3 — P0-C: versioned migrations + online backup + deployment doc
 
 **Scope chosen.** P0-C is the last P0 item: persistent SQLite with
