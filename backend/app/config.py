@@ -37,6 +37,7 @@ class Settings:
     bootstrap_password: str
     login_rate_limit_max_attempts: int
     login_rate_limit_window_seconds: int
+    csrf_allowed_origins: tuple[str, ...]
 
     @property
     def is_prod(self) -> bool:
@@ -168,6 +169,12 @@ def load_settings(env: Optional[Mapping[str, str]] = None) -> Settings:
         field_name="LOGIN_RATE_LIMIT_WINDOW_SECONDS",
     )
 
+    csrf_allowed_origins = tuple(
+        entry.strip()
+        for entry in source.get("CSRF_ALLOWED_ORIGINS", "").split(",")
+        if entry.strip()
+    )
+
     return Settings(
         env=app_env,
         session_secret=session_secret,
@@ -178,6 +185,7 @@ def load_settings(env: Optional[Mapping[str, str]] = None) -> Settings:
         bootstrap_password=bootstrap_password,
         login_rate_limit_max_attempts=max_attempts,
         login_rate_limit_window_seconds=window_seconds,
+        csrf_allowed_origins=csrf_allowed_origins,
     )
 
 

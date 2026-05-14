@@ -17,6 +17,7 @@ from backend.app.ai_client import (
 from backend.app.ai_coach import generate_ai_coach_output
 from backend.app.auth import verify_password
 from backend.app.config import get_settings
+from backend.app.csrf import CSRFOriginMiddleware
 from backend.app.rate_limit import SlidingWindowLimiter
 from backend.app.content_schema import (
     get_seed_activity,
@@ -59,6 +60,10 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI(title="ELA MVP API", lifespan=lifespan)
+app.add_middleware(
+    CSRFOriginMiddleware,
+    allowed_origins=settings.csrf_allowed_origins,
+)
 app.add_middleware(
     SessionMiddleware,
     secret_key=settings.session_secret,

@@ -2,6 +2,93 @@
 
 Tracks each loop iteration against `docs/RALPH_BRIEF.md`. Newest first.
 
+## Iteration 5 — P0-B (follow-up): CSRF Origin check on state-changing routes
+
+**Scope chosen.** Closes the last open P0-B sub-item. Picked the
+Origin/Referer approach over a double-submit cookie because: (a) browsers
+always send `Origin` on cross-site POSTs so the signal is reliably
+present, (b) it needs no frontend changes (the SPA already same-origins
+the API in our deployment), (c) it needs no test-client changes
+(non-browser clients omit `Origin` and pass through, because they cannot
+ride a victim's session cookie anyway), and (d) it layers on top of the
+existing `SameSite=Lax` cookie which already blocks most cross-site
+POSTs.
+
+**Changes.**
+- `backend/app/csrf.py` (new) — `CSRFOriginMiddleware` (subclass of
+  starlette `BaseHTTPMiddleware`). For unsafe methods (`POST`, `PUT`,
+  `PATCH`, `DELETE`) targeting `/api/*`:
+  - Safe methods short-circuit.
+  - `/api/auth/login` is exempt (chicken-and-egg — no session yet).
+  - If no `Origin` and no `Referer` is present, request is allowed
+    (non-browser flow).
+  - Otherwise the origin host (or referer host fallback) must equal the
+    request's `Host` / URL netloc OR be in the configured allow list.
+    Otherwise 403 with `{"error": "CSRF check failed", "detail": "..."}`.
+- `backend/app/config.py` — adds `Settings.csrf_allowed_origins` parsed
+  from `CSRF_ALLOWED_ORIGINS` (comma-separated). Empty default; the
+  request's own host is always trusted implicitly.
+- `backend/app/main.py` — installs `CSRFOriginMiddleware` outside
+  `SessionMiddleware` so unauthorized cross-origin requests are rejected
+  before session lookup even runs.
+- `backend/tests/test_csrf.py` (new) — 14 cases via a small standalone
+  FastAPI app for the unit path plus integration smoke against the real
+  app:
+  - no Origin → allowed; matching Origin → allowed; mismatched Origin →
+    403; Referer fallback (matching and mismatching); GET ignores
+    Origin; non-`/api/` paths ignored; `/api/auth/login` exempt;
+    explicit allow list with full URL and bare host; malformed Origin →
+    403; real-app `/api/auth/login` works cross-origin; real-app
+    `/api/activities/.../submit` returns 403 with mismatched Origin;
+    config parses + defaults to empty tuple.
+- `.env.example` — documents `CSRF_ALLOWED_ORIGINS`.
+- `docs/DEPLOYMENT.md` — new "CSRF" section explains the model and the
+  `CSRF_ALLOWED_ORIGINS` knob.
+
+**Tests run.**
+- `python3 -m pytest backend/tests -q` → 104 passed (14 new in
+  `test_csrf.py`; all 90 from prior iterations still green).
+
+**Assumptions / scope decisions.**
+- Login is exempt by design. The realistic attack on login CSRF is "make
+  the victim sign in as the attacker", which would deliver the attacker's
+  data into the victim's hands but not vice versa, and doesn't apply to
+  a single-account family app today. Brute-force is covered by hashed
+  passwords + per-IP rate limiting (iter 2 and iter 4).
+- We do not implement double-submit cookie / synchronizer token because
+  the SameSite=Lax + Origin combination is sufficient for the threat
+  model and avoids both frontend and test churn.
+- Tests that omit `Origin` continue to pass — they pre-date this
+  iteration and exercise the request layer in a non-browser way. They
+  remain valid because the omitted-`Origin` branch is documented
+  behavior, not a workaround.
+
+**Definition of done check.**
+- App still starts locally: yes (no breaking behavior change for
+  same-origin requests).
+- Tests pass: 104/104.
+- No secrets or hardcoded credentials introduced.
+- No data model changes.
+- User-facing behavior preserved (the SPA POSTs same-origin → still 200).
+
+**P0 status.** All P0 items now have meaningful coverage:
+- P0-A: hashed-credential login, role column, env-bootstrap (iter 2).
+- P0-B: SESSION_SECRET hygiene + cookies (iter 1), rate limit (iter 4),
+  CSRF (iter 5).
+- P0-C: versioned migrations + online backup + deployment doc (iter 3).
+
+Remaining P0 polish (not blocking): in-app user management UI, child-role
+accounts, formal threat-model review. These move to P1/P2 priority.
+
+**Recommended next task.** P1-D streak logic. Today the streak count
+piggy-backs on `reward_state.updated_at`, which is the wrong source of
+truth — it ticks on every submission update regardless of the activity
+date and gets confused by same-day vs consecutive-day boundaries.
+Replace with a proper streak derived from distinct activity dates with
+explicit timezone handling.
+
+---
+
 ## Iteration 4 — P0-B (follow-up): per-IP login rate limiting
 
 **Scope chosen.** P0-B's outstanding sub-items are CSRF and login rate

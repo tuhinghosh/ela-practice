@@ -93,3 +93,23 @@ a host cron entry:
 ```
 
 Prune old backups with your tool of choice (e.g. `find ... -mtime +30 -delete`).
+
+## CSRF
+
+State-changing requests to `/api/*` (POST/PUT/PATCH/DELETE) are guarded by
+an Origin/Referer check. Browsers always send `Origin` on cross-site
+POSTs, so a malicious page that tries to ride the user's session cookie
+will be blocked with a 403. `/api/auth/login` is exempt — login has no
+prior session, and brute-force is mitigated by hash verification plus
+per-IP rate limiting.
+
+The request's own `Host` is always trusted. If you serve the SPA from a
+different origin than the API (e.g. `app.example.com` calling
+`api.example.com`), list the SPA origin via `CSRF_ALLOWED_ORIGINS`:
+
+```
+CSRF_ALLOWED_ORIGINS=https://app.example.com,https://parents.example.com
+```
+
+Non-browser clients (curl, scripts, the test suite) that omit `Origin`
+pass through, because they cannot ride a victim's session cookie.
