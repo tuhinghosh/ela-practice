@@ -2,6 +2,119 @@
 
 Tracks each loop iteration against `docs/RALPH_BRIEF.md`. Newest first.
 
+## Iteration 9 — P2-F: structured logging, /api/ready, AI quota + instrumentation
+
+**Scope chosen.** Closes P2-F end-to-end. The brief lists six observability
+sub-items (structured logging, `/health` + `/ready`, request/error logs
+without child text, AI call cost/latency, per-session/day AI cap). They are
+tightly coupled — request middleware depends on the logging foundation;
+AI quota depends on the structured logs to surface its decisions; the AI
+quota only makes sense if the cap can be observed in logs. Shipping them
+together avoids two half-finished slices.
+
+**Changes.**
+- `backend/app/logging_config.py` (new) — `JsonLogFormatter` that emits
+  one JSON object per record (`timestamp` UTC ISO-8601, `level`,
+  `logger`, `message`) plus any `extra={...}` fields hoisted to top-level
+  keys for easy pivot. Idempotent `configure_logging(level)` installs
+  the handler exactly once (the install is gated by a `_ela_json` marker
+  attribute, so test/import re-entry does not double-emit). Unsupported
+  values are repr'd rather than raising.
+- `backend/app/request_logging.py` (new) — `RequestLoggingMiddleware`
+  that logs one structured record per request with `method`, `path`,
+  `status_code`, `duration_ms`, `client_ip`, `event=http_request`. The
+  middleware never reads `request.body()` — child free text is barred
+  from telemetry by construction.
+- `backend/app/ai_client.py` — `run_openrouter_chat` now times the call,
+  catches the exception class, and emits a structured `ela.ai_call`
+  record with `provider`, `model`, `duration_ms`, `message_count`,
+  `status` (`ok`/`error`), `error_class`, and OpenRouter usage tokens
+  (`prompt_tokens`, `completion_tokens`, `total_tokens`) when present.
+  Prompts and responses are still not logged.
+- `backend/app/ai_quota.py` (new) — `DailyAICallQuota(daily_limit,
+  clock)` keyed on `(user_id, UTC date)`. `register()` increments and
+  returns a `QuotaCheck`; `check()` is non-mutating. `daily_limit=0`
+  disables the cap. Thread-safe via lock; injectable clock so day
+  rollover is testable without `freezegun`.
+- `backend/app/config.py` — adds `log_level` (validated against stdlib
+  level names) and `ai_calls_per_user_per_day` (non-negative int,
+  default 50).
+- `backend/app/main.py` —
+  - calls `configure_logging(settings.log_level)` at module import
+  - installs `RequestLoggingMiddleware`
+  - adds `GET /api/ready` returning `{status, migrations_applied}` or
+    `503 unavailable` on DB error
+  - constructs the module-level `ai_quota`
+  - new `_enforce_ai_quota(user_id)` helper called from
+    `/api/ai/connectivity-check` and `/api/ai/coach`; returns 429 with
+    `reset_at` ISO timestamp + `Retry-After` header when over budget
+- `backend/tests/conftest.py` — `reset_ai_quota` autouse fixture so
+  module-level quota state never leaks across tests.
+- `backend/tests/test_observability.py` (new) — 15 cases:
+  - 4 formatter cases: required-field shape, extras propagated to
+    top-level, unserializable extras get repr'd, `configure_logging`
+    is idempotent (one handler after two calls)
+  - `/api/health` returns 200; `/api/ready` reports
+    `migrations_applied >= 1`; `/api/ready` returns 503 with a
+    simulated DB outage (monkeypatched `get_connection`)
+  - request middleware emits an `http_request` record with method, path,
+    status, and duration for each call
+  - AI client emits an `ai_call` record on success with model + duration
+    + token counts, and on failure with `error_class`
+  - quota: under-limit allowed then over-limit rejected; users isolated;
+    day rollover via injected clock; `daily_limit=0` disables; full
+    end-to-end via `TestClient` confirming the coach endpoint returns
+    429 once the per-user budget is exhausted
+- `.env.example` — documents `LOG_LEVEL` and `AI_CALLS_PER_USER_PER_DAY`.
+- `docs/DEPLOYMENT.md` — new "Observability" section covers health vs
+  readiness wiring for supervisors, the JSON log schema, the
+  request/AI-call structured fields, and the AI cap behavior.
+
+**Tests run.**
+- `python3 -m pytest backend/tests -q` → 145 passed (15 new in
+  `test_observability.py`; all 130 prior still green).
+
+**Assumptions / scope decisions.**
+- Quota is per-UTC-day, not per-`learning_day_timezone`. UTC aligns with
+  OpenRouter's billing window and keeps the implementation simple; the
+  family-app threat model is "accidental runaway cost", not "perfectly
+  fair daily limits across timezones".
+- In-memory state for quota. A multi-process/multi-container deployment
+  would need a shared store; documented in both the module docstring and
+  `DEPLOYMENT.md`.
+- Request middleware logs `client_ip` from `request.client.host` —
+  behind a reverse proxy this would be the proxy's IP. If we ever sit
+  behind nginx/Cloudflare the brief's "trust X-Forwarded-For" decision
+  belongs in a separate iteration where we can think carefully about
+  spoofing risk.
+- `/api/ready` only checks DB. The next thing worth checking is
+  OpenRouter reachability, but that costs an API call per readiness
+  probe — bad idea on default scrape intervals. Better surfaced via the
+  existing `/api/ai/connectivity-check` admin route.
+
+**Definition of done check.**
+- App still starts locally: yes (additive endpoints + middleware; no
+  schema or contract changes for existing routes).
+- Backend tests pass: 145/145.
+- No secrets or hardcoded credentials.
+- Data model changes: none.
+- User-facing behavior preserved: existing endpoints unchanged; the AI
+  cap surfaces as a 429 only after 50 calls in a day, well above normal
+  family usage.
+
+**P2 status.** P2-F done. P2-G (content workflow — move seeded
+activities out of frontend bundle, versioned JSON, validation, import
+command, activity tests) is the last backlog item left.
+
+**Recommended next task.** P2-G. The seed content currently lives at
+`frontend/src/content/activities.json` and is copied into the backend
+image at build time (`Dockerfile` line 26). Move the canonical copy to
+the backend, validate it on every load, and add an `import-content`
+script + tests asserting all seeded activities pass schema + answer
+sanity checks. After that, all P0/P1/P2 backlog items are covered.
+
+---
+
 ## Iteration 8 — P1-E (finish): recent question history for parent view
 
 **Scope chosen.** Closes the last open P1-E sub-item — "Surface recent

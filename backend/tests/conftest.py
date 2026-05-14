@@ -31,3 +31,13 @@ def reset_login_limiter() -> None:
     login_limiter.reset()
     yield
     login_limiter.reset()
+
+
+@pytest.fixture(autouse=True)
+def reset_ai_quota() -> None:
+    """AI quota is module-level and in-memory; reset between tests."""
+    from backend.app.main import ai_quota
+
+    ai_quota.reset()
+    yield
+    ai_quota.reset()

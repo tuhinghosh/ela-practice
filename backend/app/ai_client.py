@@ -1,11 +1,13 @@
 import logging
 import os
+import time
 from typing import Any, Dict, List, Optional
 
 import httpx
 
 
 logger = logging.getLogger(__name__)
+ai_call_logger = logging.getLogger("ela.ai_call")
 
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 DEFAULT_MODEL = "anthropic/claude-sonnet-4"
@@ -56,9 +58,35 @@ def run_openrouter_chat(
     }
     if response_format:
         request_payload["response_format"] = response_format
-    response_payload = _post_chat_completion(request_payload, timeout_s=timeout_s)
-    text = _extract_text_from_response(response_payload)
-    return {"model": target_model, "response_text": text}
+
+    started = time.perf_counter()
+    error_class: Optional[str] = None
+    response_payload: Optional[Dict[str, Any]] = None
+    try:
+        response_payload = _post_chat_completion(request_payload, timeout_s=timeout_s)
+        text = _extract_text_from_response(response_payload)
+        return {"model": target_model, "response_text": text}
+    except Exception as exc:
+        error_class = type(exc).__name__
+        raise
+    finally:
+        duration_ms = round((time.perf_counter() - started) * 1000, 2)
+        usage = (response_payload or {}).get("usage") if isinstance(response_payload, dict) else None
+        ai_call_logger.info(
+            "openrouter_chat",
+            extra={
+                "event": "ai_call",
+                "provider": "openrouter",
+                "model": target_model,
+                "duration_ms": duration_ms,
+                "message_count": len(messages),
+                "status": "error" if error_class else "ok",
+                "error_class": error_class,
+                "prompt_tokens": (usage or {}).get("prompt_tokens"),
+                "completion_tokens": (usage or {}).get("completion_tokens"),
+                "total_tokens": (usage or {}).get("total_tokens"),
+            },
+        )
 
 
 def _post_chat_completion(request_payload: Dict[str, Any], timeout_s: float) -> Dict[str, Any]:

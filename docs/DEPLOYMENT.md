@@ -113,3 +113,42 @@ CSRF_ALLOWED_ORIGINS=https://app.example.com,https://parents.example.com
 
 Non-browser clients (curl, scripts, the test suite) that omit `Origin`
 pass through, because they cannot ride a victim's session cookie.
+
+## Observability
+
+### Health checks
+
+| Endpoint | Purpose | Status |
+|----------|---------|--------|
+| `GET /api/health` | Liveness — process is up | always `200` |
+| `GET /api/ready`  | Readiness — DB reachable + migrated | `200` ok, `503` if DB error |
+
+Wire these into your process supervisor or load balancer accordingly.
+
+### Logging
+
+All app logs are emitted as one JSON object per line on **stderr**. Each
+record contains at minimum `timestamp` (UTC ISO-8601), `level`, `logger`,
+and `message`. Structured fields (e.g. `request_id`, `duration_ms`,
+`model`) appear as top-level keys for easy filtering.
+
+Per-request logs come from logger `ela.request` with `event=http_request`
+and include `method`, `path`, `status_code`, `duration_ms`, `client_ip`.
+**Request bodies are never logged** — child free-text answers must stay
+out of operator-facing telemetry.
+
+AI calls come from logger `ela.ai_call` with `event=ai_call`. Each entry
+includes `provider`, `model`, `duration_ms`, `status` (`ok` / `error`),
+`error_class` (when applicable), and OpenRouter usage tokens when the
+provider returns them. **Prompts and responses are never logged.**
+
+Set the log level via `LOG_LEVEL` (default `INFO`).
+
+### AI call cap
+
+`AI_CALLS_PER_USER_PER_DAY` (default `50`) caps OpenRouter calls per
+authenticated user per UTC day across `/api/ai/coach` and
+`/api/ai/connectivity-check`. The 51st call returns `429 Too Many
+Requests` with a `reset_at` timestamp in the body. Set to `0` to
+disable. The counter is in-memory and resets on process restart — fine
+for a single-container deployment; revisit if scaling out.

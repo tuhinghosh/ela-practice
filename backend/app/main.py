@@ -15,10 +15,13 @@ from backend.app.ai_client import (
     run_openrouter_connectivity_check,
 )
 from backend.app.ai_coach import generate_ai_coach_output
+from backend.app.ai_quota import DailyAICallQuota
 from backend.app.auth import verify_password
 from backend.app.config import get_settings
 from backend.app.csrf import CSRFOriginMiddleware
+from backend.app.logging_config import configure_logging
 from backend.app.rate_limit import SlidingWindowLimiter
+from backend.app.request_logging import RequestLoggingMiddleware
 from backend.app.skill_progress import compute_skill_windows, recommend_practice_next
 from backend.app.content_schema import (
     get_seed_activity,
@@ -49,10 +52,12 @@ from backend.app.scoring import score_activity_submission
 APP_ROOT = Path(__file__).resolve().parent.parent
 STATIC_DIR = APP_ROOT / "static"
 settings = get_settings()
+configure_logging(settings.log_level)
 login_limiter = SlidingWindowLimiter(
     max_attempts=settings.login_rate_limit_max_attempts,
     window_seconds=settings.login_rate_limit_window_seconds,
 )
+ai_quota = DailyAICallQuota(daily_limit=settings.ai_calls_per_user_per_day)
 
 
 @asynccontextmanager
@@ -62,6 +67,7 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI(title="ELA MVP API", lifespan=lifespan)
+app.add_middleware(RequestLoggingMiddleware)
 app.add_middleware(
     CSRFOriginMiddleware,
     allowed_origins=settings.csrf_allowed_origins,
@@ -104,7 +110,24 @@ class AICoachRequest(BaseModel):
 
 @app.get("/api/health")
 def health() -> JSONResponse:
+    """Liveness check — returns 200 as long as the process is up."""
     return JSONResponse({"status": "ok"})
+
+
+@app.get("/api/ready")
+def ready() -> JSONResponse:
+    """Readiness check — confirms the database is reachable and migrated."""
+    try:
+        with get_connection() as connection:
+            row = connection.execute(
+                "SELECT COUNT(*) AS n FROM schema_migrations"
+            ).fetchone()
+        return JSONResponse({"status": "ok", "migrations_applied": int(row["n"])})
+    except Exception as exc:  # pragma: no cover - exercised via simulated failure
+        return JSONResponse(
+            {"status": "unavailable", "error": str(exc)[:200]},
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+        )
 
 
 @app.get("/api/auth/session")
@@ -133,6 +156,24 @@ def _client_ip(request: Request) -> str:
     if request.client and request.client.host:
         return request.client.host
     return "unknown"
+
+
+def _enforce_ai_quota(user_id: int) -> Optional[JSONResponse]:
+    """Charge one AI call to the user's daily budget. Returns a 429 response
+    when the limit is exceeded; otherwise returns ``None`` and the caller
+    may proceed."""
+    result = ai_quota.register(user_id)
+    if not result.allowed:
+        return JSONResponse(
+            {
+                "error": "Daily AI call limit reached.",
+                "detail": f"You have used {result.used} of {result.limit} AI calls today.",
+                "reset_at": result.reset_at.isoformat(),
+            },
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            headers={"Retry-After": "3600"},
+        )
+    return None
 
 
 @app.post("/api/auth/login")
@@ -547,8 +588,13 @@ def get_rewards(username: str = Depends(_require_authenticated_username)) -> JSO
 @app.post("/api/ai/connectivity-check")
 def ai_connectivity_check(
     payload: ConnectivityCheckRequest,
-    _: str = Depends(_require_authenticated_username),
+    username: str = Depends(_require_authenticated_username),
 ) -> JSONResponse:
+    with get_connection() as connection:
+        user = get_user_by_username(connection, username)
+    quota_response = _enforce_ai_quota(int(user["id"]))
+    if quota_response is not None:
+        return quota_response
     try:
         result = run_openrouter_connectivity_check(prompt=payload.prompt)
     except MissingOpenRouterKeyError as exc:
@@ -582,6 +628,10 @@ def ai_coach_feedback(
     with get_connection() as connection:
         user = get_user_by_username(connection, username)
         child = get_child_profile_for_user(connection, int(user["id"]))
+    quota_response = _enforce_ai_quota(int(user["id"]))
+    if quota_response is not None:
+        return quota_response
+    with get_connection() as connection:
         session = fetch_session_result_by_uuid(connection, payload.session_id)
         if session is None:
             raise HTTPException(

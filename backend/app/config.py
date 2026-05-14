@@ -40,6 +40,8 @@ class Settings:
     login_rate_limit_window_seconds: int
     csrf_allowed_origins: tuple[str, ...]
     learning_day_timezone: ZoneInfo
+    log_level: str
+    ai_calls_per_user_per_day: int
 
     @property
     def is_prod(self) -> bool:
@@ -185,6 +187,18 @@ def load_settings(env: Optional[Mapping[str, str]] = None) -> Settings:
             f"LEARNING_DAY_TIMEZONE={tz_name!r} is not a recognized IANA timezone."
         ) from exc
 
+    log_level = (source.get("LOG_LEVEL") or "INFO").strip().upper()
+    if log_level not in {"CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG", "NOTSET"}:
+        raise ConfigError(
+            f"LOG_LEVEL={log_level!r} is not a recognized level."
+        )
+
+    ai_calls_per_user_per_day = _parse_non_negative_int(
+        source.get("AI_CALLS_PER_USER_PER_DAY"),
+        default=50,
+        field_name="AI_CALLS_PER_USER_PER_DAY",
+    )
+
     return Settings(
         env=app_env,
         session_secret=session_secret,
@@ -197,6 +211,8 @@ def load_settings(env: Optional[Mapping[str, str]] = None) -> Settings:
         login_rate_limit_window_seconds=window_seconds,
         csrf_allowed_origins=csrf_allowed_origins,
         learning_day_timezone=learning_day_timezone,
+        log_level=log_level,
+        ai_calls_per_user_per_day=ai_calls_per_user_per_day,
     )
 
 
