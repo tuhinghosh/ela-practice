@@ -35,6 +35,11 @@ export default function ParentProgressPage() {
   const strongest = progress?.summary.skill_summary?.strength ?? parentProgressHighlights.strongestSkill;
   const growth = progress?.summary.skill_summary?.struggle ?? parentProgressHighlights.growthArea;
   const trend = progress?.summary.trend ?? "starting";
+  const practiceNext = progress?.practice_next ?? [];
+  const thirtyDay = progress?.skill_history?.["30_day"] ?? {};
+  const thirtyDayEntries = Object.entries(thirtyDay)
+    .map(([skill, stats]) => ({ skill, attempts: stats.attempts, avg: stats.avg_score }))
+    .sort((a, b) => a.avg - b.avg);
   const recent = progress
     ? progress.recent_sessions.map((session) => ({
         id: session.session_id,
@@ -120,6 +125,55 @@ export default function ParentProgressPage() {
             ))}
           </ul>
         </Card>
+        <Card as="article" className={styles.cardWithHeader} aria-label="Practice next">
+          <div className={styles.cardHeader}>
+            <span className={styles.cardIcon} style={{ ["--icon-color" as string]: "var(--brand)" }}>
+              <Icon name="trending-up" size={18} />
+            </span>
+            <h2>Practice next</h2>
+          </div>
+          {practiceNext.length === 0 ? (
+            <p className={styles.muted}>
+              No targeted suggestions yet — once your child completes a few more activities
+              we&apos;ll point to the skills with the most room to grow.
+            </p>
+          ) : (
+            <ul className={styles.sessionList}>
+              {practiceNext.map((item) => (
+                <li key={item.skill} className={styles.sessionItem}>
+                  <span className={styles.sessionTitle}>{item.skill}</span>
+                  <span className={styles.sessionScore}>
+                    {Math.round(item.avg_score)}% over {item.attempts} attempts
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Card>
+
+        <Card as="article" className={styles.cardWithHeader} aria-label="Last 30 days by skill">
+          <div className={styles.cardHeader}>
+            <span className={styles.cardIcon} style={{ ["--icon-color" as string]: "var(--accent)" }}>
+              <Icon name="trending-up" size={18} />
+            </span>
+            <h2>Last 30 days by skill</h2>
+          </div>
+          {thirtyDayEntries.length === 0 ? (
+            <p className={styles.muted}>No skill data in the last 30 days yet.</p>
+          ) : (
+            <ul className={styles.sessionList}>
+              {thirtyDayEntries.map((entry) => (
+                <li key={entry.skill} className={styles.sessionItem}>
+                  <span className={styles.sessionTitle}>{entry.skill}</span>
+                  <span className={styles.sessionScore}>
+                    {Math.round(entry.avg)}% ({entry.attempts})
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Card>
+
         <Card as="article" className={styles.cardWithHeader}>
           <div className={styles.cardHeader}>
             <span className={styles.cardIcon} style={{ ["--icon-color" as string]: "var(--accent)" }}>

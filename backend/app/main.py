@@ -19,6 +19,7 @@ from backend.app.auth import verify_password
 from backend.app.config import get_settings
 from backend.app.csrf import CSRFOriginMiddleware
 from backend.app.rate_limit import SlidingWindowLimiter
+from backend.app.skill_progress import compute_skill_windows, recommend_practice_next
 from backend.app.content_schema import (
     get_seed_activity,
     list_seed_activities,
@@ -396,6 +397,12 @@ def get_parent_progress(username: str = Depends(_require_authenticated_username)
         latest_snapshot = get_latest_progress_snapshot(connection, int(user["id"]), int(child["id"]))
         score_history = get_recent_score_history(connection, int(child["id"]), limit=5)
         writing_feedback = get_recent_writing_feedback(connection, int(child["id"]), limit=3)
+        skill_windows = compute_skill_windows(
+            connection,
+            int(child["id"]),
+            tz=settings.learning_day_timezone,
+        )
+    practice_next = recommend_practice_next(skill_windows)
 
     if len(score_history) < 2:
         trend = "starting"
@@ -442,6 +449,8 @@ def get_parent_progress(username: str = Depends(_require_authenticated_username)
                 for row in sessions
             ],
             "writing_feedback_summaries": writing_feedback,
+            "skill_history": skill_windows,
+            "practice_next": practice_next,
         }
     )
 

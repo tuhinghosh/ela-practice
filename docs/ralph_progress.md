@@ -2,6 +2,99 @@
 
 Tracks each loop iteration against `docs/RALPH_BRIEF.md`. Newest first.
 
+## Iteration 7 — P1-E (partial): per-skill windowed stats + "practice next"
+
+**Scope chosen.** First half of P1-E. The brief asks for per-skill
+performance over time, 7/30/all-time windowed summaries, a parent-facing
+"practice next" pointer, and surfacing recent question history. This
+slice ships the first three plus a frontend display + frontend test. The
+"recent question history" detail (per-question with skill tag, joining
+`responses` to `activities.json`) is deferred to a follow-up since the
+plumbing is heavier and the brief allows incremental shipping.
+
+**Changes.**
+- `backend/app/skill_progress.py` (new) — `compute_skill_windows(connection,
+  child_profile_id, *, tz, now=None, windows=DEFAULT_WINDOWS)` aggregates
+  per-skill `attempts` and `avg_score` across `7_day`, `30_day`, and
+  `all_time` buckets, anchored on the configured `learning_day_timezone`.
+  `recommend_practice_next(skill_windows, *, window="30_day",
+  min_attempts=2, max_results=2, score_ceiling=100.0)` picks the
+  lowest-scoring skills with enough attempts so a single bad session
+  doesn't drive the suggestion. Reuses `_parse_sqlite_utc_timestamp`
+  from `streak.py`.
+- `backend/app/main.py` — `/api/progress/parent` now computes the
+  windows + recommendation and returns them as additive fields:
+  `skill_history` (object keyed by window name) and `practice_next`
+  (array of `{skill, avg_score, attempts}`). All pre-existing fields
+  are preserved so this is a safe, non-breaking shape change.
+- `frontend/src/lib/api.ts` — `ParentProgressResponse` extended with
+  optional `skill_history` and `practice_next` matching the backend
+  shape. Optional so older builds/snapshots still typecheck.
+- `frontend/src/app/parent/progress/page.tsx` — two new cards: "Practice
+  next" lists the recommended skills with their 30-day average + attempt
+  count and falls back to a friendly empty-state copy; "Last 30 days by
+  skill" shows the full per-skill breakdown sorted by avg score. Cards
+  derive their accessible name from the `<h2>` heading so the tests can
+  scope queries to the right card.
+- `backend/tests/test_skill_progress.py` (new) — 6 cases: empty buckets,
+  cross-window aggregation (today / 5 days / 20 days / 60 days),
+  recommendation picks lowest with enough attempts and respects
+  `min_attempts` and `score_ceiling` and `max_results`, empty input
+  returns `[]`, and a TestClient integration assertion that the endpoint
+  exposes both new fields and that the lowest-scoring skill is
+  recommended.
+- `frontend/src/app/parent/progress/page.test.tsx` (new) — vitest +
+  React Testing Library: mocks `getParentProgress`, renders the page,
+  scopes queries to each card via `heading.closest("article")`, and
+  asserts (a) skill names + formatted scores appear in both cards and
+  (b) the empty-state copy renders when no suggestions are available.
+
+**Tests run.**
+- `python3 -m pytest backend/tests -q` → 128 passed (6 new in
+  `test_skill_progress.py`; all 122 prior still green).
+- `npm run test:unit` (vitest) → 12 passed (2 new in
+  `parent/progress/page.test.tsx`; all 10 prior still green).
+- `npm run lint` → clean.
+
+**Assumptions / scope decisions.**
+- Computation happens on read. Per-child data volume for an MVP is
+  hundreds of sessions; an in-memory scan is well under a millisecond.
+  This keeps the model explainable ("average of these scores over this
+  window") instead of a cached mastery curve.
+- Window naming is snake_case (`7_day`, `30_day`, `all_time`) for
+  consistency with the rest of the backend response shape. Frontend
+  TypeScript uses the same keys.
+- The recommendation requires `>=2` attempts and the lowest 30-day
+  average; ties broken by skill name alphabetically for deterministic
+  output. `max_results=2` keeps the UI focused on at most two pointers.
+- Cards use `<h2>` for accessibility; the test reaches them via the
+  heading's closest `<article>` ancestor since the `Card` primitive
+  doesn't forward `aria-label`. Considered extending `Card` but a
+  test-only change felt out of scope.
+
+**Definition of done check.**
+- App still starts locally: yes (additive endpoint fields, no schema
+  changes).
+- Backend tests pass: 128/128. Frontend unit tests pass: 12/12. Lint
+  clean.
+- No secrets or hardcoded credentials.
+- Data model changes: none.
+- User-facing behavior preserved: existing parent progress fields
+  unchanged; new UI cards added below the existing layout.
+
+**P1 status.** P1-D done (iter 6). P1-E: windowed stats + "practice
+next" shipped here; recent-question history list is the remaining
+sub-item.
+
+**Recommended next task.** P1-E follow-up: surface recent question
+history with per-question skill tags and correctness. The plumbing
+joins `responses` to the in-memory activity definitions (skill tags
+live on the activity, not the question, in the current content model)
+and feeds the parent view with the concrete questions worth revisiting
+together with the child.
+
+---
+
 ## Iteration 6 — P1-D: streak derived from activity history with explicit timezone
 
 **Scope chosen.** First P1 item now that all P0 sub-items have meaningful

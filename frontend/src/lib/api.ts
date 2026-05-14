@@ -138,6 +138,11 @@ export type ParentProgressResponse = {
     activity_title: string;
     summary: string;
   }>;
+  skill_history?: Record<
+    "7_day" | "30_day" | "all_time",
+    Record<string, { attempts: number; avg_score: number }>
+  >;
+  practice_next?: Array<{ skill: string; avg_score: number; attempts: number }>;
 };
 
 export type SessionResultResponse = {
