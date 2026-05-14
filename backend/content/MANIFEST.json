@@ -1,0 +1,9 @@
+{
+  "content_version": "1.0.0",
+  "files": {
+    "activities.json": "b74091fa6b2eab684c08d61e7a1e87b0fb03dffa21015d1a443f8a0dd1a325b9",
+    "skill-tags.json": "865d7cadcd755b40e216511e1e696f03e72fede4c273919bcf69c5b4335a6421",
+    "themes.json": "5f965479025b0db3bfc73af6658ab5e2db0b55e40d47e9b4d369726384cad462"
+  },
+  "notes": "Authoritative content lives here. Run scripts/sync-content.sh after editing to refresh the frontend mirror."
+}

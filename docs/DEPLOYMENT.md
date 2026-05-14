@@ -152,3 +152,38 @@ authenticated user per UTC day across `/api/ai/coach` and
 Requests` with a `reset_at` timestamp in the body. Set to `0` to
 disable. The counter is in-memory and resets on process restart — fine
 for a single-container deployment; revisit if scaling out.
+
+## Content workflow
+
+The canonical activity / theme / skill-tag data lives in
+`backend/content/`. The Docker image picks it up via the regular
+`COPY backend/` step — no cross-tree copy is needed.
+
+`backend/content/MANIFEST.json` records `content_version` and a SHA256
+for every canonical file. The app validates the manifest on startup via
+`verify_content_manifest()`; the test suite re-runs the full schema /
+cue checks on every commit.
+
+The Next.js bundle still imports the JSON at compile time, so
+`frontend/src/content/` carries a synced mirror of the same files. The
+test `test_frontend_mirror_matches_backend_canonical` fails on drift.
+
+CLI:
+
+```bash
+# Re-run schema + cue checks and verify manifest checksums.
+python3 -m backend.app.content_cli validate
+
+# Recompute checksums and rewrite MANIFEST.json (run after editing).
+python3 -m backend.app.content_cli manifest
+
+# Copy canonical files to frontend/src/content (run after manifest).
+python3 -m backend.app.content_cli sync
+
+# Wrapper that runs validate + sync end-to-end.
+scripts/sync-content.sh
+```
+
+When editing activities, the workflow is: edit a file under
+`backend/content/`, run `scripts/sync-content.sh`, commit both the
+canonical edit and the regenerated mirror.

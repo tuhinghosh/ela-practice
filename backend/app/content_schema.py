@@ -21,17 +21,19 @@ QuestionType = Literal["multiple-choice", "short-response"]
 DifficultyTier = Literal["easy", "medium", "difficult"]
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-FRONTEND_CONTENT_DIR = REPO_ROOT / "frontend" / "src" / "content"
 BACKEND_CONTENT_DIR = Path(__file__).resolve().parent.parent / "content"
+FRONTEND_CONTENT_DIR = REPO_ROOT / "frontend" / "src" / "content"
 
-if (BACKEND_CONTENT_DIR / "activities.json").exists():
-    CONTENT_DIR = BACKEND_CONTENT_DIR
-else:
-    CONTENT_DIR = FRONTEND_CONTENT_DIR
+# backend/content/ is the canonical source. frontend/src/content/ is a
+# checked-in mirror synced by scripts/sync-content.sh so the Next.js build
+# can import the JSON at compile time. Drift between the two is caught by
+# backend/tests/test_content_workflow.py.
+CONTENT_DIR = BACKEND_CONTENT_DIR
 
 ACTIVITIES_FILE = CONTENT_DIR / "activities.json"
 SKILL_TAGS_FILE = CONTENT_DIR / "skill-tags.json"
 THEMES_FILE = CONTENT_DIR / "themes.json"
+MANIFEST_FILE = CONTENT_DIR / "MANIFEST.json"
 MIN_PASSAGE_SENTENCES = 8
 MIN_PASSAGE_PARAGRAPHS = 2
 MIN_PARAGRAPH_SENTENCES = 2
@@ -100,6 +102,46 @@ class DeterministicWritingRubricModel(BaseModel):
     relevance: str
     sentence_completeness: str
     skill_specific_checks: list[str]
+
+
+def _hash_file(path: Path) -> str:
+    import hashlib
+
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def load_content_manifest() -> dict:
+    """Read MANIFEST.json. Raises ``ValueError`` if missing or malformed."""
+    import json
+
+    if not MANIFEST_FILE.exists():
+        raise ValueError(f"Content manifest missing at {MANIFEST_FILE}.")
+    data = json.loads(MANIFEST_FILE.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise ValueError("MANIFEST.json must be a JSON object.")
+    if "content_version" not in data or "files" not in data:
+        raise ValueError("MANIFEST.json must include content_version and files.")
+    if not isinstance(data["files"], dict) or not data["files"]:
+        raise ValueError("MANIFEST.json files entry must be a non-empty object.")
+    return data
+
+
+def verify_content_manifest() -> dict:
+    """Return the manifest, raising ``ValueError`` if any file's checksum does
+    not match the recorded value or any expected file is missing."""
+    manifest = load_content_manifest()
+    for name, expected in manifest["files"].items():
+        file_path = CONTENT_DIR / name
+        if not file_path.exists():
+            raise ValueError(f"Manifest lists {name} but file is missing.")
+        actual = _hash_file(file_path)
+        if actual != expected:
+            raise ValueError(
+                f"Manifest checksum mismatch for {name}: "
+                f"expected {expected[:12]}…, got {actual[:12]}…. "
+                "Regenerate via python3 -m backend.app.content_cli manifest."
+            )
+    return manifest
 
 
 def _count_sentences(text: str) -> int:

@@ -23,7 +23,6 @@ COPY backend/requirements.txt /tmp/requirements.txt
 RUN uv pip install --system --no-cache-dir -r /tmp/requirements.txt
 
 COPY backend/ /app/backend/
-COPY frontend/src/content/ /app/backend/content/
 COPY --from=frontend-build /app/frontend/out /app/backend/static
 
 RUN useradd -m appuser && mkdir -p /app/backend/data && chown -R appuser:appuser /app/backend/data

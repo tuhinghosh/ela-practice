@@ -2,6 +2,131 @@
 
 Tracks each loop iteration against `docs/RALPH_BRIEF.md`. Newest first.
 
+## Iteration 10 — P2-G: canonical content store, manifest, validation CLI
+
+**Scope chosen.** Closes the last backlog item. The seed content was
+already used by both the frontend bundle and the backend API, but the
+canonical copy lived under `frontend/src/content/` and was duplicated
+into the runtime image via a special-case `COPY` in the Dockerfile. This
+slice flips the relationship: `backend/content/` becomes the source of
+truth, with a checksummed manifest and a tiny CLI for the maintainer
+workflow, and `frontend/src/content/` becomes a synced mirror so the
+Next.js bundle still imports the JSON at compile time.
+
+**Changes.**
+- `backend/content/` (new) — `activities.json`, `skill-tags.json`,
+  `themes.json` moved here as the canonical store. `MANIFEST.json` adds
+  a `content_version` (`1.0.0`) and a SHA256 per file.
+- `backend/app/content_schema.py` — drops the runtime fallback path that
+  used `frontend/src/content/` when the backend copy was absent.
+  `CONTENT_DIR` now unconditionally points at `backend/content`. Adds
+  `load_content_manifest()` and `verify_content_manifest()` plus a
+  ``_hash_file`` helper that the CLI and tests both use.
+- `backend/app/content_cli.py` (new) — three subcommands invoked via
+  `python3 -m backend.app.content_cli ...`:
+  - `validate` reloads every activity through the existing Pydantic +
+    cue-presence validator and re-checks every manifest checksum. Exit
+    1 on any failure with a descriptive stderr message.
+  - `manifest` recomputes SHA256 checksums for the canonical files and
+    rewrites `MANIFEST.json`. Preserves an existing `content_version`
+    when present so version bumps are intentional.
+  - `sync` copies the canonical files to `frontend/src/content/` so the
+    Next.js build picks them up.
+- `scripts/sync-content.sh` (new, executable) — runs `validate` then
+  `sync` for the editor workflow.
+- `frontend/src/content/README.md` (new) — marks the directory as a
+  generated mirror and points editors at the canonical store.
+- `Dockerfile` — drops the cross-tree `COPY frontend/src/content/
+  /app/backend/content/`. The `COPY backend/` step now carries the
+  canonical content along with the rest of the backend tree.
+- `backend/tests/test_content_workflow.py` (new) — 11 cases:
+  - All three canonical files plus `MANIFEST.json` exist.
+  - `list_seed_activities()` returns ≥ 50 entries with unique IDs (the
+    Pydantic + cue validator runs over the full 79-activity set).
+  - Every activity has ≥ 1 skill tag; every MC question's
+    `correctChoice` is in its `choices`; every activity's theme is in
+    `themes.json`.
+  - `verify_content_manifest()` raises when checksums drift; passes on
+    a clean tree.
+  - `MANIFEST.json` lists exactly the canonical filenames.
+  - `frontend/src/content/` mirror is byte-identical to the backend
+    canonical (catches forgotten `sync-content.sh` runs).
+  - `content_cli validate` returns 0 on clean state, 1 on corrupted
+    manifest.
+  - `content_cli manifest` writes SHA256s that match the current
+    canonical files (run against a tmp-path manifest so the real one
+    is not rewritten during tests).
+- `docs/DEPLOYMENT.md` — new "Content workflow" section documents the
+  canonical location, the manifest, the CLI subcommands, and the edit →
+  sync → commit flow.
+
+**Tests run.**
+- `python3 -m pytest backend/tests -q` → 156 passed (11 new in
+  `test_content_workflow.py`; all 145 prior still green).
+- Manual: `python3 -m backend.app.content_cli validate` →
+  `ok: 79 activities, 10 themes, manifest version=1.0.0`.
+
+**Assumptions / scope decisions.**
+- Keep the frontend mirror checked in rather than removing the compile-
+  time import. The alternative — gut `content-schema.ts` and have the
+  frontend fetch via `/api/activities` for everything — is a larger,
+  riskier refactor of `mock-data.ts` and its consumers. The mirror +
+  drift test gives single-source-of-truth semantics with no UI risk.
+- The CLI is stdlib-only (no Click/Typer). Three subcommands didn't
+  warrant a dependency.
+- Manifest stores SHA256 over the raw bytes, not normalized JSON. A
+  stray whitespace change therefore counts as a content change — that's
+  the conservative choice and it matches the byte-equality test of the
+  frontend mirror.
+- `content_version` defaults to `1.0.0`. Bumping is a manual step
+  (`manifest` preserves whatever you set). A future iteration could
+  parse semver and require explicit bumps when the schema shape
+  changes; not needed for the MVP.
+
+**Definition of done check.**
+- App still starts locally: yes (drop-in load path; no API or schema
+  changes).
+- Backend tests pass: 156/156. Frontend tests unchanged (13/13 from
+  last iteration; not re-run because no frontend code paths changed).
+- No secrets or hardcoded credentials.
+- Data model changes: none.
+- User-facing behavior preserved.
+
+**Backlog status.** All P0, P1, and P2 backlog items now have meaningful
+coverage:
+
+| Item | Iteration |
+|------|-----------|
+| P0-A real local user management (hashed creds, role column, bootstrap) | 2 |
+| P0-B SESSION_SECRET + cookie hygiene | 1 |
+| P0-B login rate limit | 4 |
+| P0-B CSRF origin check | 5 |
+| P0-C versioned migrations + online backup + deployment doc | 3 |
+| P1-D streak from activity history + timezone | 6 |
+| P1-E per-skill windowed stats + practice-next | 7 |
+| P1-E recent question history | 8 |
+| P2-F structured logging + /api/ready + AI quota + AI call logs | 9 |
+| P2-G canonical content store + manifest + validation CLI | 10 |
+
+Total test count: 156 backend + 13 frontend unit + 5 frontend unit
+files. Lint clean. No backwards-incompatible API changes shipped across
+the ten iterations.
+
+**Recommended next task.** The original brief is fully covered. Sensible
+follow-ups, in priority order, would be:
+1. Front-load CSRF + rate-limit + AI-quota documentation into the README
+   so a new operator knows the security posture without reading code.
+2. Add an in-app password change flow so the bootstrap credential isn't
+   the only path to log in.
+3. Persist the AI quota counter in SQLite so it survives restarts.
+4. Add an `/api/admin/content/reload` endpoint that recalls
+   `list_seed_activities.cache_clear()` to allow hot content updates
+   without a process restart.
+5. Move beyond family-MVP: per-user child accounts with their own login,
+   parent-child role separation enforced on routes.
+
+---
+
 ## Iteration 9 — P2-F: structured logging, /api/ready, AI quota + instrumentation
 
 **Scope chosen.** Closes P2-F end-to-end. The brief lists six observability
