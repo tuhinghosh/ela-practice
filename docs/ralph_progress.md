@@ -2,6 +2,97 @@
 
 Tracks each loop iteration against `docs/RALPH_BRIEF.md`. Newest first.
 
+## Iteration 19 — Design memo for per-user child accounts (docs only)
+
+**Scope chosen.** The remaining open item — per-user child-account
+login — has been deferred since iter 15 because it's the kind of
+feature that ripples across schema, auth, route gating, and UI. Per
+iter 18's recommendation, this iteration writes the design memo
+*before* any code so the implementation slices that follow have a
+concrete target to point at. Cheaper to revise a doc than rewrite
+working code three iterations in.
+
+**Changes.**
+- `docs/CHILD_ACCOUNTS.md` (new) — ~200 lines covering:
+  - **Why now / goals / non-goals.** Multi-parent families, child
+    password recovery, and parent-impersonates-child are all
+    explicitly out of scope.
+  - **Current model recap** for the next reader who didn't ship
+    iterations 1–18.
+  - **Schema migration #3 plan.** Drop `child_profiles.user_id
+    UNIQUE`, add nullable `login_user_id` FK to users with
+    `ON DELETE SET NULL`, optional `is_active` for soft-delete.
+    Full SQL template with the table-recreation pattern SQLite
+    needs (transactional, partial unique index for
+    `login_user_id`).
+  - **Decision on `activity_sessions.user_id` semantics.** Chose
+    "user_id is the *acting* user" (i.e., child's id for child
+    submissions) because it keeps the child's tenant-isolation
+    query a single equality. Old parent-id rows remain reachable
+    via the parent's "see all my children" join.
+  - **Full route role map.** One table with every existing route
+    plus three new ones (`POST /api/parent/child-accounts`,
+    `GET /api/parent/child-accounts`,
+    `POST /api/parent/active-child/{id}`), parent/child columns
+    saying who can hit each. Explicitly forbids parent-submitting
+    to keep progress data honest.
+  - **Active-child concept** — `session["active_child_profile_id"]`
+    with explicit resolution rules for parents with 0 / 1 / N
+    children and for stale ids.
+  - **Frontend outline** — `/parent/children` page, active-child
+    selector in `AppShell`, header label reflecting the active
+    child on parent views.
+  - **Compatibility plan for the seed install** — migration runs
+    once, existing parent + child profile keep working with no
+    operator action.
+  - **Test list** for the implementation slices to satisfy
+    (migration, parent-only endpoint gating, child login,
+    role-gated submit/coach/progress, tenant isolation across
+    families).
+  - **Implementation slice plan** — three follow-up iterations:
+    backend (migration + role surface), frontend (child
+    management UI), polish (password reset + soft-delete).
+  - **Open questions** — username constraints, multi-parent
+    households (deferred), AI quota per-child vs per-family
+    accounting (relevant to the iter-18 "AI usage" card).
+
+**Tests run.**
+- `python3 -m pytest backend/tests -q` → 202 passed (sanity rerun
+  after docs-only change). No code touched.
+
+**Assumptions / scope decisions.**
+- Memo, not implementation. Writing a design pass first is the
+  cheapest way to surface schema decisions (table recreation,
+  user_id semantics) that would be expensive to walk back after
+  shipping code.
+- Picked SQLite's table-recreation pattern over `ALTER TABLE` because
+  SQLite cannot drop a UNIQUE constraint in place. Wrapped in a
+  transaction with `PRAGMA foreign_keys = OFF` around the swap to
+  prevent cascade triggers from firing during the rename.
+- Chose `user_id = acting user` for `activity_sessions` after
+  weighing both alternatives in the memo. The choice is internal —
+  no API contract change.
+- Deferred parent-initiated child password reset to the third
+  implementation slice rather than the first so the migration +
+  role surface lands in one focused iteration.
+
+**Definition of done check.**
+- App still starts locally: yes (no code change).
+- Backend tests pass: 202/202.
+- No secrets or hardcoded credentials.
+- Data model changes: none in this iteration; planned changes
+  documented for the next.
+- User-facing behavior preserved.
+
+**Recommended next task.** Implementation slice "Iter N" from the
+memo: migration #3 with `create_schema` parity, the new role
+dependency, the three parent-side child-management endpoints,
+role-gating updates on existing routes, and the backend test set.
+That's a substantial slice but it's all backend and the tests give
+clear acceptance criteria.
+
+---
+
 ## Iteration 18 — AI usage card on parent view
 
 **Scope chosen.** Same pattern as iter 17: surface a value the
