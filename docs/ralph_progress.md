@@ -2,6 +2,87 @@
 
 Tracks each loop iteration against `docs/RALPH_BRIEF.md`. Newest first.
 
+## Iteration 17 — Reward summary card on parent view
+
+**Scope chosen.** Iter 6 fixed the streak math; iter 8 added the
+recent-question history; both shipped correct data but the parent
+view never surfaced the *streak count itself*. The child dashboard
+already shows it via `/api/dashboard.rewards.streak_days`. Surfacing
+the same shape on the parent endpoint lets the parent see the streak
+beside the per-skill stats without flipping between views.
+
+**Changes.**
+- `backend/app/main.py` — `/api/progress/parent` now reads
+  `reward_state` via the existing `get_reward_state` helper inside
+  the existing connection block and returns it as `rewards: {stars,
+  streak_days, badges}`. Same shape as `/api/dashboard.rewards`, so a
+  shared `RewardsBlock` type in the frontend would work for both
+  callers (not introduced yet — kept this slice small).
+- `frontend/src/lib/api.ts` — `ParentProgressResponse.rewards`
+  typed to match.
+- `frontend/src/app/parent/progress/page.tsx` — new "Reward summary"
+  card with three `StatGrid` cells: streak days, stars, badge count.
+  Badge names live on the child reward celebration; the parent
+  summary intentionally shows the *count* rather than the list to
+  keep the card compact.
+- `backend/tests/test_parent_rewards.py` (new) — 3 cases:
+  - After a real submission the parent endpoint exposes a `rewards`
+    block with `streak_days >= 1`, `stars >= 0`, and badges as a
+    list.
+  - The parent rewards block equals the child dashboard's rewards
+    block (key consistency invariant — both views read the same
+    `reward_state` row).
+  - Before any submission, all three counts are zero / empty (so a
+    fresh family sees a clean slate, not stale defaults).
+- `frontend/src/app/parent/progress/page.test.tsx` — 1 new case
+  asserts the card heading + each stat label + value, and that the
+  badge cell shows the *count* (2) rather than the badge names.
+
+**Tests run.**
+- `python3 -m pytest backend/tests -q` → 198 passed (3 new in
+  `test_parent_rewards.py`; all 195 prior still green).
+- `npm run test:unit` → 19 passed (1 new in
+  `parent/progress/page.test.tsx`; all 18 prior still green).
+- `npm run lint` → clean.
+
+**Assumptions / scope decisions.**
+- Reuses the existing `get_reward_state` helper inside the same
+  connection block. No extra DB round trip beyond what was already
+  there.
+- Showed badge *count* rather than names. The child reward
+  celebration already lists the names on submission; duplicating
+  them in the parent summary felt like clutter and would have
+  required word-wrap design for long badge lists.
+- Did not factor a shared `Rewards` type yet across the dashboard
+  and parent shapes. Two places using the same field set is below
+  my "rule of three" for premature abstraction. If/when a third
+  endpoint surfaces rewards I'll factor.
+
+**Definition of done check.**
+- App still starts locally: yes.
+- Backend tests: 198/198. Frontend tests: 19/19. Lint clean.
+- No secrets or hardcoded credentials.
+- Data model changes: none.
+- User-facing behavior: existing parent fields unchanged; one new
+  card rendered above the existing layout.
+
+**Open backlog.**
+- **AI usage card on parent view** — surface today's
+  `ai_call_log` count + remaining budget so parents can sanity-check
+  cost without reading logs. Probably one tiny new endpoint
+  (`/api/parent/ai-usage`) plus a card. Same shape as this
+  iteration; small slice.
+- **Item 5: Per-user child-account login** — still explicitly
+  deferred. Needs a design pass that single ralph slices cannot
+  safely carry.
+
+**Recommended next task.** The AI usage card. It mirrors this
+iteration's pattern (read a value the system already tracks,
+surface it on `/parent/progress`), and the budget knob is real ops
+value for a parent paying OpenRouter bills.
+
+---
+
 ## Iteration 16 — Backup rotation + prune CLI
 
 **Scope chosen.** Pattern-symmetric with iter 15. `scripts/backup-db.sh`

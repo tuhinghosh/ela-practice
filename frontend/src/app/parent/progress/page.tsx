@@ -42,6 +42,7 @@ export default function ParentProgressPage() {
     .map(([skill, stats]) => ({ skill, attempts: stats.attempts, avg: stats.avg_score }))
     .sort((a, b) => a.avg - b.avg);
   const recentQuestions = progress?.recent_questions ?? [];
+  const rewards = progress?.rewards;
   const recent = progress
     ? progress.recent_sessions.map((session) => ({
         id: session.session_id,
@@ -127,6 +128,42 @@ export default function ParentProgressPage() {
             ))}
           </ul>
         </Card>
+        <Card as="article" className={styles.cardWithHeader}>
+          <div className={styles.cardHeader}>
+            <span className={styles.cardIcon} style={{ ["--icon-color" as string]: "var(--brand)" }}>
+              <Icon name="award" size={18} />
+            </span>
+            <h2>Reward summary</h2>
+          </div>
+          {rewards ? (
+            <StatGrid>
+              <div className={styles.stat}>
+                <span className={styles.statTopRow}>
+                  <Icon name="trending-up" size={14} />
+                  <span className={styles.statLabel}>Streak (days)</span>
+                </span>
+                <p className={styles.statValue}>{rewards.streak_days}</p>
+              </div>
+              <div className={styles.stat}>
+                <span className={styles.statTopRow}>
+                  <Icon name="award" size={14} />
+                  <span className={styles.statLabel}>Stars</span>
+                </span>
+                <p className={styles.statValue}>{rewards.stars}</p>
+              </div>
+              <div className={styles.stat}>
+                <span className={styles.statTopRow}>
+                  <Icon name="award" size={14} />
+                  <span className={styles.statLabel}>Badges</span>
+                </span>
+                <p className={styles.statValue}>{rewards.badges.length}</p>
+              </div>
+            </StatGrid>
+          ) : (
+            <p className={styles.muted}>Reward data loading…</p>
+          )}
+        </Card>
+
         <Card as="article" className={styles.cardWithHeader} aria-label="Practice next">
           <div className={styles.cardHeader}>
             <span className={styles.cardIcon} style={{ ["--icon-color" as string]: "var(--brand)" }}>

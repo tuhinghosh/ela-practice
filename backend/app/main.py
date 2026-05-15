@@ -538,6 +538,7 @@ def get_parent_progress(username: str = Depends(_require_authenticated_username)
         recent_response_rows = get_recent_responses_with_activity(
             connection, int(child["id"]), limit=8
         )
+        rewards = get_reward_state(connection, int(user["id"]))
     practice_next = recommend_practice_next(skill_windows)
     recent_questions = _hydrate_recent_questions(recent_response_rows)
 
@@ -589,6 +590,11 @@ def get_parent_progress(username: str = Depends(_require_authenticated_username)
             "skill_history": skill_windows,
             "practice_next": practice_next,
             "recent_questions": recent_questions,
+            "rewards": {
+                "stars": rewards["stars"],
+                "streak_days": rewards["streak_days"],
+                "badges": json.loads(rewards["badges_json"]),
+            },
         }
     )
 

@@ -156,6 +156,11 @@ export type ParentProgressResponse = {
     correct_answer: string | null;
     is_correct: boolean | null;
   }>;
+  rewards?: {
+    stars: number;
+    streak_days: number;
+    badges: string[];
+  };
 };
 
 export type SessionResultResponse = {

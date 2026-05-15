@@ -30,6 +30,11 @@ const baseProgress: api.ParentProgressResponse = {
     { skill: "summary", avg_score: 55, attempts: 4 },
     { skill: "sentence-quality", avg_score: 70, attempts: 3 },
   ],
+  rewards: {
+    stars: 12,
+    streak_days: 4,
+    badges: ["Three Mission Starter", "Story Explorer"],
+  },
   recent_questions: [
     {
       session_id: "s-1",
@@ -130,6 +135,24 @@ describe("ParentProgressPage", () => {
 
     const recentCard = cardForHeading("Recent questions");
     expect(recentCard).toHaveTextContent("No recent questions yet.");
+  });
+
+  it("renders the reward summary card with streak, stars, and badge count", async () => {
+    render(<ParentProgressPage />);
+
+    await waitFor(() => {
+      expect(screen.getByRole("heading", { name: "Reward summary" })).toBeInTheDocument();
+    });
+
+    const card = cardForHeading("Reward summary");
+    expect(card).toHaveTextContent("Streak (days)");
+    expect(card).toHaveTextContent("4");
+    expect(card).toHaveTextContent("Stars");
+    expect(card).toHaveTextContent("12");
+    expect(card).toHaveTextContent("Badges");
+    // Badge count, not the names — the names live on the child reward
+    // celebration, not the parent summary.
+    expect(card).toHaveTextContent("2");
   });
 
   it("renders recent questions with correctness badges and skill chips", async () => {
