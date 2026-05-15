@@ -2,6 +2,141 @@
 
 Tracks each loop iteration against `docs/RALPH_BRIEF.md`. Newest first.
 
+## Iteration 23 — Railway-readiness #2: deploy doc + Dockerfile fixes
+
+**Scope chosen.** The recommended next slice from iter 22: volume +
+healthcheck guidance for Railway. While inspecting the Dockerfile to
+write the docs honestly, I found two hard blockers I had missed in
+the original assessment, and a third surfaced from the smoke test.
+All three are real "the deploy will fail" problems. Bundled the
+fixes into this slice because shipping the doc without them would
+mean every reader hits the same wall.
+
+**Bugs found and fixed.**
+
+1. **`CMD` hard-coded `--port 8000`.** Railway assigns `PORT`
+   dynamically and forwards external traffic to it. The hard-coded
+   port meant Railway's router could never reach uvicorn. **Fix:**
+   switched to shell-form CMD so `$PORT` interpolates, with `8000`
+   as the default for local Docker.
+2. **`USER appuser` collides with Railway volume mounts.** Railway-
+   mounted volumes are root-owned by default; UID 1000 inside the
+   container gets permission-denied on the first DB write. **Fix:**
+   dropped the `USER` directive. Containers run as root; the
+   platform sandbox is the security boundary, not the in-container
+   UID. Documented the rationale.
+3. **`backend/data/ela.sqlite3` was being baked into the image.**
+   The existing `.dockerignore` didn't exclude it, so any developer
+   who had run the app locally shipped their dev DB into the image.
+   Worse, on cross-version installs the baked-in DB had an old
+   schema and `create_schema`'s `CREATE INDEX … login_user_id`
+   failed on the in-image table (CREATE TABLE IF NOT EXISTS
+   short-circuited because the table was already there). **Fix:**
+   added `backend/data/*.sqlite3*` to `.dockerignore` along with
+   `backups/`, `.pytest_cache/`, and `.claude/`. Caught by the
+   smoke-test step of this iteration — the first build failed with
+   the exact symptom and led me back to `.dockerignore`.
+
+**Changes.**
+- `Dockerfile` — shell-form CMD with `PORT` interpolation, dropped
+  `USER appuser` and the user-creation steps. `mkdir -p
+  /app/backend/data` retained for cases where no volume is mounted.
+- `.dockerignore` — added DB files, journals/WAL, backups, pytest
+  cache, `.claude/` workspace dir. Inline comment explaining the
+  stale-DB trap.
+- `railway.toml` (new) — declarative Railway config:
+  `healthcheckPath = "/api/ready"`, `healthcheckTimeout = 30`,
+  `restartPolicyType = "ON_FAILURE"`, `restartPolicyMaxRetries = 5`.
+  Picked up automatically by Railway when the file is at the repo
+  root.
+- `docs/DEPLOYMENT.md` — new "Deploying to Railway" section at the
+  top with a five-step recipe:
+  - Connect repo (auto-detects Dockerfile + `railway.toml`).
+  - Attach volume to `/app/backend/data` (required).
+  - Set env vars (required + recommended tables; the `TRUSTED_PROXY_IPS=*`
+    requirement that iter 22 introduced is in the required column).
+  - Verify (`curl` examples for `/api/health` and `/api/ready`).
+  - Caveats: no cron on Railway, backups live on the same volume,
+    single worker, outbound network is OpenRouter-only.
+
+**Tests run.**
+- `python3 -m pytest backend/tests -q` → 228 passed (no code path
+  affected by the Dockerfile + doc changes).
+- Boot-as-prod check: `ELA_ENV=prod` + the required secrets,
+  `python3 -c "from backend.app.main import app"` succeeds with all
+  four middlewares installed (request logging, CSRF, session, proxy
+  headers).
+- **End-to-end Docker smoke test**: `docker build --no-cache`, then
+  `docker run -e PORT=9999`, then `curl http://localhost:9999/api/ready`
+  → `{"status":"ok","migrations_applied":3}`. Confirms the
+  PORT-honoring CMD works, the container starts as root without
+  permission issues, and the stripped image migrates cleanly to the
+  current schema head.
+
+**Assumptions / scope decisions.**
+- Ran the smoke test as the equivalent of "tests" for the Dockerfile
+  layer since there's no Python unit test that exercises the
+  Dockerfile. Caught a real bug (`.dockerignore`); worth the two-
+  minute build cost.
+- Kept the `restartPolicyType = "ON_FAILURE"` instead of `"ALWAYS"`
+  so a container that fails its own healthcheck doesn't get into a
+  thrashing restart loop on a misconfigured deploy; `MaxRetries = 5`
+  caps it.
+- Did not introduce an entrypoint script with `gosu` / `setpriv`
+  shenanigans to keep the non-root user. Root inside a PaaS sandbox
+  is the accepted pattern and avoids a brittle ownership-fixup step
+  on first volume mount.
+
+**Definition of done check.**
+- App still starts locally: yes (verified via docker build + run on
+  a non-default port). The local `scripts/start-mac.sh` flow is
+  unchanged because it didn't depend on `USER appuser` (host bind
+  mount, root-in-container works fine).
+- Backend tests pass: 228/228.
+- No secrets or hardcoded credentials.
+- Data model changes: none.
+- User-facing behavior preserved.
+
+**Railway-readiness scorecard update.**
+
+| # | Blocker | Status |
+|---|---------|--------|
+| 1 | X-Forwarded-For handling | ✓ iter 22 |
+| 2 | Volume mount documented for Railway | ✓ this iteration |
+| 2a | (newly found) `PORT` env honored in Dockerfile | ✓ this iteration |
+| 2b | (newly found) Container UID vs Railway volume ownership | ✓ this iteration |
+| 2c | (newly found) Dev DB baked into image | ✓ this iteration |
+| 3 | Backups stay on same volume | open |
+| 4 | No scheduled jobs (cron) | open |
+| 5 | Bootstrap credential sticky / no rotation prompt | open |
+| 7 | Per-family AI cap | open |
+| 8 | Healthcheck wiring in Railway settings | ✓ via `railway.toml` |
+| 9 | Outbound network audit | ✓ documented in DEPLOYMENT.md |
+| 10 | First-login rotation banner | open |
+
+**Recommended next task.** The remaining three Railway-readiness items
+are independent and small enough to be single slices each:
+
+- **#5 / #10 First-login rotation banner.** Track
+  `password_changed_at` on `users`; show a parent UI banner when the
+  current value matches the bootstrap-seed timestamp. Useful
+  signal for the operator the first time they actually use the
+  deployed app.
+- **#3 Off-volume backup.** A `--upload` mode for `scripts/backup-db.sh`
+  that pushes the snapshot to S3-compatible storage via a tiny
+  stdlib `urllib` PUT (signed URL passed in via env). Keeps the
+  Python deps minimal.
+- **#7 Per-family AI cap.** Aggregate `ai_call_log` across the
+  parent's owned children for a `family_used / family_limit` view.
+  Surfaces on the parent progress card as a second line.
+
+My weak preference for the next ralph slice is #5/#10 (rotation
+banner) — smallest, most visible improvement, lowers the chance of
+the operator forgetting to rotate the bootstrap password after a
+real deploy.
+
+---
+
 ## Iteration 22 — Railway-readiness #1: X-Forwarded-For via ProxyHeadersMiddleware
 
 **Scope chosen.** The Railway-readiness assessment ranked

@@ -8,3 +8,17 @@ frontend/node_modules
 frontend/.next
 frontend/out
 docs
+
+# Never bake the dev/local SQLite database into the image. The volume
+# mount on Railway / start-mac.sh provides the runtime DB; an in-image
+# copy from a prior dev session would shadow the mount and ship stale
+# (or pre-migration-shape) data into production.
+backend/data/ela.sqlite3
+backend/data/*.sqlite3-journal
+backend/data/*.sqlite3-wal
+backend/data/*.sqlite3-shm
+
+# Local test artifacts.
+backups/
+.pytest_cache/
+.claude/

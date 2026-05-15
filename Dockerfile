@@ -25,9 +25,13 @@ RUN uv pip install --system --no-cache-dir -r /tmp/requirements.txt
 COPY backend/ /app/backend/
 COPY --from=frontend-build /app/frontend/out /app/backend/static
 
-RUN useradd -m appuser && mkdir -p /app/backend/data && chown -R appuser:appuser /app/backend/data
-USER appuser
+RUN mkdir -p /app/backend/data
 
 EXPOSE 8000
 
-CMD ["uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Shell-form CMD so $PORT (set by Railway / Fly / Heroku / etc.)
+# interpolates; falls back to 8000 for local Docker. Runs as root
+# inside the container — the PaaS-level sandbox is the security
+# boundary, and Railway-mounted volumes are root-owned by default
+# (a non-root UID would hit permission-denied on first DB write).
+CMD ["sh", "-c", "uvicorn backend.app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]

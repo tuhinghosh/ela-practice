@@ -5,6 +5,86 @@ server. This doc covers the bits that aren't obvious from `README` or
 `CLAUDE.md`: where data lives, how schema changes are applied, and how to
 back up the database.
 
+## Deploying to Railway
+
+End-to-end recipe. Skip ahead to the "Behind a reverse proxy" section
+below for the env var that makes the rate limiter work correctly once
+you're up.
+
+### 1. Connect the repo
+
+In Railway: **New Project → Deploy from GitHub repo → pick this repo**.
+Railway detects `Dockerfile` automatically and reads `railway.toml`
+from the repo root for healthcheck + restart settings. No build
+command override needed.
+
+### 2. Attach a persistent volume
+
+**This is required.** Without it, every redeploy wipes user accounts,
+sessions, scores, rewards, and AI call history.
+
+In the Railway service settings:
+
+- Volumes → **New Volume** → mount path `/app/backend/data` → size
+  `1 GB` (plenty for an MVP; the SQLite DB is hundreds of KB even with
+  years of data).
+
+The Docker image runs as root inside the container so it can write to
+the Railway-mounted volume on first start. The platform sandbox is the
+security boundary, not the in-container UID.
+
+### 3. Set environment variables
+
+In the service's **Variables** tab, set at minimum:
+
+| Variable | Value | Why |
+|----------|-------|-----|
+| `ELA_ENV` | `prod` | Enables strict secret validation + `Secure` cookies. |
+| `SESSION_SECRET` | `python3 -c "import secrets; print(secrets.token_urlsafe(48))"` | Required in prod; rejects the dev placeholder. |
+| `ELA_BOOTSTRAP_USERNAME` | (your choice, e.g. `parent`) | Seeded on first start only. |
+| `ELA_BOOTSTRAP_PASSWORD` | (strong password, 8+ chars) | Required in prod; rejected if it matches the dev placeholder. |
+| `OPENROUTER_API_KEY` | (your key) | Empty means AI coach features fail closed. |
+| `TRUSTED_PROXY_IPS` | `*` | **Required** behind Railway — without it the per-IP rate limiter collapses (see below). |
+
+Optional but recommended:
+
+| Variable | Sensible value | Why |
+|----------|---------------|-----|
+| `LEARNING_DAY_TIMEZONE` | your local IANA zone, e.g. `America/Los_Angeles` | Streak day boundaries match the child's experience. |
+| `AI_CALLS_PER_USER_PER_DAY` | `50` (default) | Cost cap. Lower for tighter spend control. |
+| `LOG_LEVEL` | `INFO` (default) | `DEBUG` for troubleshooting. |
+
+After saving variables, Railway will redeploy. Watch the logs for
+`migrations_applied=...` in the `/api/ready` probe — that means schema
+migrations ran cleanly.
+
+### 4. Verify
+
+- `curl https://<your-service>.up.railway.app/api/health` → `{"status":"ok"}`
+- `curl https://<your-service>.up.railway.app/api/ready` → `{"status":"ok","migrations_applied":3}`
+- Visit `https://<your-service>.up.railway.app/login` and sign in
+  with the bootstrap credentials. **Immediately rotate the password**
+  via `/parent/progress` → "Account password".
+
+### 5. Caveats
+
+- **Cron is not built in.** The AI call log pruner
+  (`python3 -m backend.app.ai_quota_prune`) and backup script
+  (`scripts/backup-db.sh`) assume a host cron. On Railway you'd need
+  to add a Railway Cron service (separate cron worker) pointing at the
+  same volume — or accept the unbounded `ai_call_log` table for the
+  MVP's lifetime (~18k rows/year at the default cap, still well
+  within SQLite's comfort zone).
+- **Backups live on the same volume.** A volume corruption loses both
+  the DB and the backups. For real production hygiene, periodically
+  download a backup with `railway run scripts/backup-db.sh` and store
+  it off-platform.
+- **Single worker.** The default uvicorn process serves one worker.
+  The in-memory `login_limiter` and the SQLite WAL don't tolerate
+  multi-worker scale-out as written. Family-MVP scale is fine on one.
+- **Outbound network**: the only outbound dependency is
+  `api.openrouter.ai:443`. Allowed by default on Railway.
+
 ## Behind a reverse proxy (Railway, Fly, nginx, Cloudflare)
 
 If anything terminates TLS in front of the container — Railway, Fly,
