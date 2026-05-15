@@ -161,6 +161,13 @@ export type ParentProgressResponse = {
     streak_days: number;
     badges: string[];
   };
+  ai_usage?: {
+    enabled: boolean;
+    used: number;
+    limit: number;
+    remaining: number | null;
+    reset_at: string;
+  };
 };
 
 export type SessionResultResponse = {

@@ -35,6 +35,13 @@ const baseProgress: api.ParentProgressResponse = {
     streak_days: 4,
     badges: ["Three Mission Starter", "Story Explorer"],
   },
+  ai_usage: {
+    enabled: true,
+    used: 7,
+    limit: 50,
+    remaining: 43,
+    reset_at: "2026-05-16T00:00:00+00:00",
+  },
   recent_questions: [
     {
       session_id: "s-1",
@@ -153,6 +160,41 @@ describe("ParentProgressPage", () => {
     // Badge count, not the names — the names live on the child reward
     // celebration, not the parent summary.
     expect(card).toHaveTextContent("2");
+  });
+
+  it("renders the AI usage card with used/limit and remaining + reset_at", async () => {
+    render(<ParentProgressPage />);
+
+    await waitFor(() => {
+      expect(screen.getByRole("heading", { name: "AI usage today" })).toBeInTheDocument();
+    });
+    const card = cardForHeading("AI usage today");
+    expect(card).toHaveTextContent("7 / 50");
+    expect(card).toHaveTextContent(/43 remaining/);
+    expect(card).toHaveTextContent(/Resets at/);
+  });
+
+  it("shows the unlimited copy when the daily cap is disabled", async () => {
+    vi.spyOn(api, "getParentProgress").mockResolvedValue({
+      ...baseProgress,
+      ai_usage: {
+        enabled: false,
+        used: 99,
+        limit: 0,
+        remaining: null,
+        reset_at: "2026-05-16T00:00:00+00:00",
+      },
+    });
+
+    render(<ParentProgressPage />);
+
+    await waitFor(() => {
+      expect(screen.getByRole("heading", { name: "AI usage today" })).toBeInTheDocument();
+    });
+    const card = cardForHeading("AI usage today");
+    expect(card).toHaveTextContent("99");
+    expect(card).toHaveTextContent(/No daily cap configured/i);
+    expect(card).not.toHaveTextContent("/ 0");
   });
 
   it("renders recent questions with correctness badges and skill chips", async () => {

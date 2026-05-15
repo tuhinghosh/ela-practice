@@ -2,6 +2,108 @@
 
 Tracks each loop iteration against `docs/RALPH_BRIEF.md`. Newest first.
 
+## Iteration 18 — AI usage card on parent view
+
+**Scope chosen.** Same pattern as iter 17: surface a value the
+system already tracks. The SQLite-backed AI quota (iter 12) records
+every coach + connectivity call but the parent has no UI for the
+running total. Today the only way to check OpenRouter spend is to
+read server logs or query the DB. This slice puts today's usage on
+`/parent/progress` so a parent can sanity-check costs at a glance.
+
+**Changes.**
+- `backend/app/main.py` — `/api/progress/parent` calls
+  `ai_quota.check(user_id)` and returns an additional `ai_usage`
+  block: `{enabled, used, limit, remaining, reset_at}`. `remaining`
+  is `null` when the limit is disabled (`AI_CALLS_PER_USER_PER_DAY=0`)
+  so the UI can render "Unlimited" instead of a misleading zero.
+  `reset_at` is the UTC midnight of the next day in ISO-8601.
+- `frontend/src/lib/api.ts` — `ParentProgressResponse.ai_usage`
+  typed to match.
+- `frontend/src/app/parent/progress/page.tsx` — new "AI usage today"
+  card. Two render paths:
+  - Enabled: large `used / limit` value + a muted "X remaining.
+    Resets at YYYY-MM-DD HH:MM" line (the local-formatted reset
+    timestamp).
+  - Disabled: large `used` value + a muted note explaining the cap is
+    off and pointing at the env var to enable it.
+- `backend/tests/test_parent_ai_usage.py` (new) — 4 cases:
+  - Shape after two pre-charged calls (`used=2, limit=50,
+    remaining=48, reset_at` set).
+  - Zero before any call.
+  - With the limit disabled, the endpoint replies `enabled=false`,
+    surfaces the actual `used` count, and returns `remaining=null`.
+  - End-to-end: hitting `/api/ai/coach` increments the count
+    surfaced by `/api/progress/parent` by exactly one (proves the
+    parent view reads the same store the quota writes to).
+- `frontend/src/app/parent/progress/page.test.tsx` — 2 new cases
+  asserting the enabled card renders `used / limit`, the remaining
+  count, and a "Resets at" line; and the disabled path renders the
+  "No daily cap configured" copy without misleading `/ 0`.
+
+**Tests run.**
+- `python3 -m pytest backend/tests -q` → 202 passed (4 new in
+  `test_parent_ai_usage.py`; all 198 prior still green).
+- `npm run test:unit` → 21 passed (2 new in
+  `parent/progress/page.test.tsx`; all 19 prior still green).
+- `npm run lint` → clean.
+
+**Assumptions / scope decisions.**
+- Reused the existing `ai_quota` module-level instance instead of a
+  fresh DB round-trip. That instance's `check()` already does the
+  count query against `ai_call_log`, so the parent endpoint pays
+  exactly one extra SELECT.
+- `remaining` is `null` (not `0`) when the limit is disabled, so the
+  UI can branch cleanly. Setting it to `0` would imply "no budget
+  left" which is the opposite of the intended meaning.
+- No new "Top AI users" or per-user history. Today the app has one
+  user; this is forward-looking work for the deferred item 5
+  (per-child accounts).
+- Reset timestamp is rendered with `toLocaleString()` in the UI so
+  the parent sees their local zone, not UTC. The API still returns
+  UTC ISO-8601 for consistency with every other timestamp the
+  backend emits.
+
+**Definition of done check.**
+- App still starts locally: yes.
+- Backend tests: 202/202. Frontend tests: 21/21. Lint clean.
+- No secrets or hardcoded credentials.
+- Data model changes: none.
+- User-facing behavior: existing parent fields unchanged; one new
+  card rendered.
+
+**Open backlog.**
+- **Item 5: Per-user child-account login** — still deferred and is
+  now the largest remaining piece of unfinished business. The five
+  adjacent small slices that were the safer "while we wait" picks
+  are all closed.
+
+**Recommended next task.** Plan and start the per-user child-account
+work, but explicitly do the planning before the implementation. A
+sensible structure for the next 2–3 iterations:
+
+1. **Design memo** — write `docs/CHILD_ACCOUNTS.md` covering:
+   schema changes (drop `child_profiles.user_id UNIQUE`, add a
+   `child_profiles.login_user_id` nullable FK to users so a
+   parent-only setup still works); the route map (parent-only,
+   child-only, both-roles); the parent UI for creating child
+   accounts; the dashboard switching story (which profile is
+   "active" for a parent with multiple children); and the
+   migration plan that does not break the seed parent's existing
+   single child profile.
+2. **Backend slice** — schema migration #3, parent endpoint to
+   create a child account, route-gating updates that distinguish
+   parent vs child sessions where it matters, tests covering both
+   roles.
+3. **Frontend slice** — parent-managed child profile creation UI,
+   role-aware navigation, and the active-child selector.
+
+The design memo in step 1 is itself a single safe ralph slice and
+the right next move so the implementation slices have something
+concrete to point at.
+
+---
+
 ## Iteration 17 — Reward summary card on parent view
 
 **Scope chosen.** Iter 6 fixed the streak math; iter 8 added the

@@ -541,6 +541,7 @@ def get_parent_progress(username: str = Depends(_require_authenticated_username)
         rewards = get_reward_state(connection, int(user["id"]))
     practice_next = recommend_practice_next(skill_windows)
     recent_questions = _hydrate_recent_questions(recent_response_rows)
+    ai_usage = ai_quota.check(int(user["id"]))
 
     if len(score_history) < 2:
         trend = "starting"
@@ -594,6 +595,13 @@ def get_parent_progress(username: str = Depends(_require_authenticated_username)
                 "stars": rewards["stars"],
                 "streak_days": rewards["streak_days"],
                 "badges": json.loads(rewards["badges_json"]),
+            },
+            "ai_usage": {
+                "enabled": ai_quota.is_enabled,
+                "used": ai_usage.used,
+                "limit": ai_usage.limit,
+                "remaining": max(0, ai_usage.limit - ai_usage.used) if ai_quota.is_enabled else None,
+                "reset_at": ai_usage.reset_at.isoformat(),
             },
         }
     )

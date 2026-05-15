@@ -43,6 +43,7 @@ export default function ParentProgressPage() {
     .sort((a, b) => a.avg - b.avg);
   const recentQuestions = progress?.recent_questions ?? [];
   const rewards = progress?.rewards;
+  const aiUsage = progress?.ai_usage;
   const recent = progress
     ? progress.recent_sessions.map((session) => ({
         id: session.session_id,
@@ -161,6 +162,39 @@ export default function ParentProgressPage() {
             </StatGrid>
           ) : (
             <p className={styles.muted}>Reward data loading…</p>
+          )}
+        </Card>
+
+        <Card as="article" className={styles.cardWithHeader}>
+          <div className={styles.cardHeader}>
+            <span className={styles.cardIcon} style={{ ["--icon-color" as string]: "var(--accent)" }}>
+              <Icon name="message-circle" size={18} />
+            </span>
+            <h2>AI usage today</h2>
+          </div>
+          {aiUsage ? (
+            aiUsage.enabled ? (
+              <>
+                <p className={styles.statValue}>
+                  {aiUsage.used} / {aiUsage.limit}
+                </p>
+                <p className={styles.muted}>
+                  {aiUsage.remaining ?? 0} remaining. Resets at{" "}
+                  {new Date(aiUsage.reset_at).toLocaleString()}.
+                </p>
+              </>
+            ) : (
+              <>
+                <p className={styles.statValue}>{aiUsage.used}</p>
+                <p className={styles.muted}>
+                  No daily cap configured (AI_CALLS_PER_USER_PER_DAY=0). Set a
+                  limit in <code>.env</code> to enable runaway-cost
+                  protection.
+                </p>
+              </>
+            )
+          ) : (
+            <p className={styles.muted}>AI usage data loading…</p>
           )}
         </Card>
 
