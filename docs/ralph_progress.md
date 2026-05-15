@@ -2,6 +2,67 @@
 
 Tracks each loop iteration against `docs/RALPH_BRIEF.md`. Newest first.
 
+## Iteration 14 — Follow-up #1: README security-posture summary
+
+**Scope chosen.** Docs-only slice. The README is the first page a new
+contributor lands on, but it had no summary of the security work
+shipped across iterations 1–13. The full operator detail already lives
+in `docs/DEPLOYMENT.md`; this iteration adds a 30-line orientation
+section to the README and flags the bootstrap login as a default that
+should be rotated.
+
+**Changes.**
+- `README.md` —
+  - Annotates the `Login: user / password` line to clarify it's a
+    dev bootstrap and points at the in-app rotation card.
+  - New "Security posture" section between "Quick start" and
+    "Persistence" with bullets covering: hashed credentials,
+    SESSION_SECRET + cookie hygiene, CSRF origin check, login rate
+    limit, AI call quota with SQLite persistence, structured JSON
+    logs, migrations + backups. Each bullet is the elevator pitch;
+    deeper detail links to `.env.example` and
+    `docs/DEPLOYMENT.md`.
+
+**Tests run.**
+- `python3 -m pytest backend/tests -q` → 174 passed (sanity rerun
+  after a docs-only change; no behavior touched).
+
+**Assumptions / scope decisions.**
+- Kept the section short and scannable. The detailed reference is
+  `docs/DEPLOYMENT.md`; duplicating it in the README would create a
+  drift trap.
+- Did not move the "Login: user / password" line out of the Quick
+  start. It's still the working default and removing it would make
+  the smoke-test path harder to discover; the inline rotation
+  reminder addresses the security concern without breaking the
+  onboarding path.
+- No new tests. Docs-only changes do not have behavior to assert; the
+  existing 174-test suite still passes.
+
+**Definition of done check.**
+- App still starts locally: yes (no code change).
+- Backend tests pass: 174/174.
+- No secrets or hardcoded credentials introduced.
+- Data model changes: none.
+- User-facing behavior preserved.
+
+**Follow-up status.** All five post-brief follow-ups now closed except
+the last:
+1. ~~README security-posture summary~~ ✓ (this iteration)
+2. ~~In-app password change~~ ✓ (iter 11)
+3. ~~Persist AI quota in SQLite~~ ✓ (iter 12)
+4. ~~Hot content reload endpoint~~ ✓ (iter 13)
+5. Per-user child-account login — open
+
+**Recommended next task.** Item 5: per-user child-account login. This
+is the largest remaining gap and the most substantial product step
+beyond the family MVP. It needs UI for parent-managed child profile
+creation, a child-role login path, route guards that distinguish
+parent vs child views, and a redesign of which routes a child can
+read or write. Worth a dedicated iteration plan before implementation.
+
+---
+
 ## Iteration 13 — Follow-up #4: hot content reload endpoint
 
 **Scope chosen.** Iter 10's `content_cli` already validates and syncs
