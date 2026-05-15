@@ -42,6 +42,7 @@ class Settings:
     learning_day_timezone: ZoneInfo
     log_level: str
     ai_calls_per_user_per_day: int
+    ai_call_log_retention_days: int
 
     @property
     def is_prod(self) -> bool:
@@ -198,6 +199,11 @@ def load_settings(env: Optional[Mapping[str, str]] = None) -> Settings:
         default=50,
         field_name="AI_CALLS_PER_USER_PER_DAY",
     )
+    ai_call_log_retention_days = _parse_non_negative_int(
+        source.get("AI_CALL_LOG_RETENTION_DAYS"),
+        default=90,
+        field_name="AI_CALL_LOG_RETENTION_DAYS",
+    )
 
     return Settings(
         env=app_env,
@@ -213,6 +219,7 @@ def load_settings(env: Optional[Mapping[str, str]] = None) -> Settings:
         learning_day_timezone=learning_day_timezone,
         log_level=log_level,
         ai_calls_per_user_per_day=ai_calls_per_user_per_day,
+        ai_call_log_retention_days=ai_call_log_retention_days,
     )
 
 

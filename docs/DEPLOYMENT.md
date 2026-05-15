@@ -153,8 +153,26 @@ Requests` with a `reset_at` timestamp in the body. Set to `0` to
 disable.
 
 The counter is persisted in the SQLite ``ai_call_log`` table, so the
-cap survives container rebuilds. Rows are append-only; a future
-follow-up could add a pruner that drops rows older than 30 days.
+cap survives container rebuilds.
+
+### Pruning the AI call log
+
+`AI_CALL_LOG_RETENTION_DAYS` (default `90`) sets how long rows live.
+Run the pruner from cron to keep the table from growing forever:
+
+```bash
+python3 -m backend.app.ai_quota_prune              # uses retention from env
+python3 -m backend.app.ai_quota_prune --days 30    # one-off override
+```
+
+Set the env var to `0` to disable pruning entirely. The pruner prints
+the deletion count on a single line for log scraping. Example crontab
+on a single-container host:
+
+```cron
+# Prune the AI call log nightly at 02:30.
+30 2 * * * /path/to/repo && python3 -m backend.app.ai_quota_prune >> /var/log/ela-prune.log 2>&1
+```
 
 ## Rotating the parent password
 

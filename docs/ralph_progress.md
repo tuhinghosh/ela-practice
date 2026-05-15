@@ -2,6 +2,127 @@
 
 Tracks each loop iteration against `docs/RALPH_BRIEF.md`. Newest first.
 
+## Iteration 15 — AI call log retention + pruning
+
+**Scope chosen.** Item 5 (per-user child-account login) was next on the
+post-brief list, but on a careful pass it needs more design than a
+single ralph slice should carry: multi-child profiles per parent,
+child-as-users rows, a redesign of which routes a child can read or
+write, plus parent-side UI for managing children. Cramming that into
+one slice would either produce shallow scaffolding (schema change with
+nothing actually using it) or sprawl across the codebase without a
+chance for user feedback. Explicitly deferring it; see the bottom of
+this entry.
+
+Instead, this slice closes the smaller gap I flagged in iter 12: the
+`ai_call_log` table now appends forever. With the default 50
+calls/day cap that's ~18k rows/year on a single-user instance —
+within SQLite's comfort zone but still a code smell. The pruner makes
+the table self-bounding.
+
+**Changes.**
+- `backend/app/ai_quota.py` —
+  - `QuotaStore.prune_older_than(cutoff)` added as an abstract method.
+    Returns rows deleted for telemetry.
+  - `InMemoryQuotaStore.prune_older_than` drops `(user_id, date)`
+    keys strictly older than the cutoff date and returns the count
+    of removed entries (matching SQLite's row-count semantics).
+  - `SQLiteQuotaStore.prune_older_than` issues `DELETE FROM
+    ai_call_log WHERE called_at < ?` with the cutoff in UTC and
+    returns `cursor.rowcount`.
+- `backend/app/config.py` — `Settings.ai_call_log_retention_days`
+  (default `90`; `0` disables). Validated non-negative via the
+  existing `_parse_non_negative_int` helper.
+- `backend/app/ai_quota_prune.py` (new) — CLI: `python3 -m
+  backend.app.ai_quota_prune [--days N]`. Reads retention from
+  settings if `--days` is omitted; prints a single-line summary with
+  the deletion count, cutoff timestamp, and effective retention for
+  log scraping; exits 2 on a negative `--days`; exits 0 with a
+  "disabled" message when retention is 0.
+- `backend/tests/test_ai_quota_prune.py` (new) — 11 cases:
+  - SQLite store removes only rows < cutoff, leaves recent ones,
+    today's count returned by `count_today` is unchanged.
+  - SQLite store no-ops on an empty table (0 returned).
+  - In-memory store has the same behavior across two users.
+  - `DailyAICallQuota.check` is unaffected by a prune that drops
+    older rows (the headline guarantee — pruning must not retroactively
+    free up budget for today).
+  - Config: default 90, accepts 0, rejects negative, rejects
+    non-integer.
+  - CLI: prints "disabled" when `--days 0`, reports deletion count
+    when rows are pruned, exits 2 on negative `--days`.
+- `.env.example` — documents `AI_CALL_LOG_RETENTION_DAYS` and points
+  at the CLI.
+- `docs/DEPLOYMENT.md` — new "Pruning the AI call log" subsection with
+  CLI usage and a cron example for a single-container host.
+
+**Tests run.**
+- `python3 -m pytest backend/tests -q` → 185 passed (11 new; all 174
+  prior still green).
+
+**Assumptions / scope decisions.**
+- Default 90 days is generous and gives operators headroom to inspect
+  historical usage if they want. The cap survives container rebuilds
+  for that long; only manual pruning beyond it.
+- Prune is a CLI run via cron, not an inline call inside the request
+  path. Inline pruning every Nth call would couple latency to disk
+  cleanup; cron is the simpler, more testable, more debuggable
+  pattern.
+- Today's count must remain accurate after a prune. The
+  `test_quota_check_unaffected_by_prune` case is the regression
+  guard for that.
+- No log retention dashboard. If we ever want one, the SQL is
+  trivially `SELECT COUNT(*), MIN(called_at), MAX(called_at) FROM
+  ai_call_log`.
+
+**Definition of done check.**
+- App still starts locally: yes (new env var with a safe default;
+  CLI runs against the configured DB).
+- Backend tests pass: 185/185.
+- No secrets or hardcoded credentials.
+- Data model changes: none (existing `ai_call_log` table from iter
+  12).
+- User-facing behavior preserved: 429 semantics unchanged.
+
+**Follow-up status.** All originally-identified follow-ups closed
+except item 5, which is now explicitly deferred:
+1. ~~README security-posture summary~~ ✓ (iter 14)
+2. ~~In-app password change~~ ✓ (iter 11)
+3. ~~Persist AI quota in SQLite~~ ✓ (iter 12)
+4. ~~Hot content reload endpoint~~ ✓ (iter 13)
+5. Per-user child-account login — **deferred**. Needs a dedicated
+   design pass: schema changes for many-children-per-parent, child-
+   user creation by parent, role-aware route guards (likely a new
+   `_require_authenticated_child` dependency plus a route map of
+   what each role can hit), and a parent-side UI for managing child
+   accounts. A single ralph slice cannot do this safely.
+
+**Recommended next task.** Three reasonable adjacent options, all
+small enough to be a single slice:
+
+a. **Backup rotation/pruning** (mirrors the AI log pruner). The
+   `scripts/backup-db.sh` script appends to `backups/` forever today.
+   A tiny `--keep N` flag plus a cron example would close the loop on
+   ops hygiene.
+
+b. **Dashboard streak surface in UI**. The streak is computed
+   correctly (iter 6) and stored in `reward_state.streak_days`. The
+   child dashboard reads it via `/api/dashboard.rewards.streak_days`
+   but the parent progress view doesn't surface it. One small card
+   addition would help parents see streak progression alongside the
+   per-skill stats.
+
+c. **AI usage in parent view**. Today the parent has no way to see
+   how many AI calls have been used today. Surface
+   `/api/progress/parent` (or a new tiny endpoint) with the day's
+   usage + remaining budget so parents can sanity-check costs without
+   reading server logs.
+
+My weak preference is (a) — it's the smallest, most operationally
+useful, and pattern-symmetric with what we just shipped.
+
+---
+
 ## Iteration 14 — Follow-up #1: README security-posture summary
 
 **Scope chosen.** Docs-only slice. The README is the first page a new

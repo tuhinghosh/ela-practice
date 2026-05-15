@@ -46,6 +46,11 @@ class QuotaStore(ABC):
     def reset(self) -> None:
         """Drop all recorded calls. For test isolation."""
 
+    @abstractmethod
+    def prune_older_than(self, cutoff: datetime) -> int:
+        """Delete records strictly older than ``cutoff`` (UTC). Returns the
+        number of records removed. Today's counts must remain intact."""
+
 
 class InMemoryQuotaStore(QuotaStore):
     def __init__(self) -> None:
@@ -65,6 +70,15 @@ class InMemoryQuotaStore(QuotaStore):
     def reset(self) -> None:
         with self._lock:
             self._counts.clear()
+
+    def prune_older_than(self, cutoff: datetime) -> int:
+        cutoff_date = cutoff.astimezone(timezone.utc).date()
+        with self._lock:
+            stale = [key for key in self._counts if key[1] < cutoff_date]
+            removed = sum(self._counts[key] for key in stale)
+            for key in stale:
+                del self._counts[key]
+        return removed
 
 
 class SQLiteQuotaStore(QuotaStore):
@@ -109,6 +123,16 @@ class SQLiteQuotaStore(QuotaStore):
         with self._connect() as connection:
             connection.execute("DELETE FROM ai_call_log")
             connection.commit()
+
+    def prune_older_than(self, cutoff: datetime) -> int:
+        cutoff_utc = cutoff.astimezone(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+        with self._connect() as connection:
+            cursor = connection.execute(
+                "DELETE FROM ai_call_log WHERE called_at < ?",
+                (cutoff_utc,),
+            )
+            connection.commit()
+            return int(cursor.rowcount)
 
 
 class DailyAICallQuota:
