@@ -195,6 +195,22 @@ def _require_authenticated_child(request: Request) -> str:
     return username
 
 
+def _resolve_active_child_or_400(connection, request: Request, user_row) -> dict:
+    """Caller-friendly wrapper around ``_resolve_active_child_profile``: raises
+    a 400 with a useful message when the caller has no resolvable child
+    profile (e.g. a parent who soft-deleted their only child)."""
+    profile = _resolve_active_child_profile(connection, request, user_row)
+    if profile is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=(
+                "No active child profile available for this account. "
+                "Create or activate a child profile to continue."
+            ),
+        )
+    return profile
+
+
 def _resolve_active_child_profile(
     connection,
     request: Request,
@@ -325,6 +341,13 @@ def create_child_account(
                 connection.execute(
                     "SELECT id FROM users WHERE username = ?", (child_username,)
                 ).fetchone()["id"]
+            )
+            # Each user has a reward_state row keyed by user_id; seed it
+            # so the dashboard works the first time the child logs in.
+            connection.execute(
+                "INSERT INTO reward_state (user_id, stars, streak_days, badges_json) "
+                "VALUES (?, 0, 0, '[]')",
+                (login_user_id,),
             )
         connection.execute(
             """
@@ -528,12 +551,15 @@ def change_password(
 
 
 @app.get("/api/dashboard")
-def get_dashboard(username: str = Depends(_require_authenticated_username)) -> JSONResponse:
+def get_dashboard(
+    request: Request,
+    username: str = Depends(_require_authenticated_username),
+) -> JSONResponse:
     activities = list_seed_activities()
     mission = activities[0]
     with get_connection() as connection:
         user = get_user_by_username(connection, username)
-        child = get_child_profile_for_user(connection, int(user["id"]))
+        child = _resolve_active_child_or_400(connection, request, user)
         rewards = get_reward_state(connection, int(user["id"]))
         progress = get_latest_progress_snapshot(connection, int(user["id"]), int(child["id"]))
         recent = get_recent_sessions(connection, int(child["id"]), limit=3)
@@ -654,6 +680,7 @@ def get_activity(activity_id: str, _: str = Depends(_require_authenticated_usern
 def submit_activity(
     activity_id: str,
     payload: SubmitActivityRequest,
+    request: Request,
     username: str = Depends(_require_authenticated_username),
 ) -> JSONResponse:
     try:
@@ -707,7 +734,7 @@ def submit_activity(
 
     with get_connection() as connection:
         user = get_user_by_username(connection, username)
-        child = get_child_profile_for_user(connection, int(user["id"]))
+        child = _resolve_active_child_or_400(connection, request, user)
         submission = create_submission(
             connection,
             int(user["id"]),
@@ -734,10 +761,13 @@ def submit_activity(
 
 
 @app.get("/api/progress/parent")
-def get_parent_progress(username: str = Depends(_require_authenticated_username)) -> JSONResponse:
+def get_parent_progress(
+    request: Request,
+    username: str = Depends(_require_authenticated_parent),
+) -> JSONResponse:
     with get_connection() as connection:
         user = get_user_by_username(connection, username)
-        child = get_child_profile_for_user(connection, int(user["id"]))
+        child = _resolve_active_child_or_400(connection, request, user)
         projection = fetch_parent_progress_projection(connection, int(child["id"]))
         sessions = get_recent_sessions(connection, int(child["id"]), limit=10)
         latest_snapshot = get_latest_progress_snapshot(connection, int(user["id"]), int(child["id"]))
@@ -906,7 +936,7 @@ def get_rewards(username: str = Depends(_require_authenticated_username)) -> JSO
 @app.post("/api/ai/connectivity-check")
 def ai_connectivity_check(
     payload: ConnectivityCheckRequest,
-    username: str = Depends(_require_authenticated_username),
+    username: str = Depends(_require_authenticated_parent),
 ) -> JSONResponse:
     with get_connection() as connection:
         user = get_user_by_username(connection, username)
@@ -941,11 +971,12 @@ def ai_connectivity_check(
 @app.post("/api/ai/coach")
 def ai_coach_feedback(
     payload: AICoachRequest,
+    request: Request,
     username: str = Depends(_require_authenticated_username),
 ) -> JSONResponse:
     with get_connection() as connection:
         user = get_user_by_username(connection, username)
-        child = get_child_profile_for_user(connection, int(user["id"]))
+        child = _resolve_active_child_or_400(connection, request, user)
     quota_response = _enforce_ai_quota(int(user["id"]))
     if quota_response is not None:
         return quota_response

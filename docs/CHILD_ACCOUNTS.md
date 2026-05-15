@@ -1,11 +1,10 @@
 # Design: per-user child-account login
 
-> Status: **iter N implemented** (commit 71e126e memo, iter 20
-> backend foundation). Iter N+1 (frontend) and N+2 (polish) still
-> outstanding. The schema, route-gating-of-existing-routes, and
-> child-as-submitter flow remain partially open — see the
-> "Implementation slice plan" section for what each follow-up still
-> needs to do.
+> Status: **iter N + N+1 backend complete** (commits: 71e126e memo,
+> baff86a backend foundation, this commit iter 21 gates + resolver).
+> Frontend child management (originally Iter N+2) is the next slice.
+> Polish (parent-initiated child password reset, soft-delete UX,
+> active-child banner) follows.
 
 ## Why
 

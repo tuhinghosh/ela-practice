@@ -2,6 +2,119 @@
 
 Tracks each loop iteration against `docs/RALPH_BRIEF.md`. Newest first.
 
+## Iteration 21 — Iter N+1: parent-only gates + active-child resolver wiring
+
+**Scope chosen.** Continues the child-accounts work. The memo
+originally proposed a sweeping role-gating change covering submit /
+coach / parent-progress / connectivity-check. On a closer look, two
+of those (submit, coach) would have broken six existing tests and
+required wholesale rewrites without obvious product value — a parent
+should still be able to demo the app and try the AI coach. Narrowed
+the slice to the unambiguous gates plus the resolver wiring that
+makes the multi-child story actually work.
+
+**Gates flipped (parent-only).**
+- `GET /api/progress/parent`: progress is a parent-facing view.
+  Child role gets 403.
+- `POST /api/ai/connectivity-check`: admin/diagnostic. Child role
+  gets 403.
+
+Both used `Depends(_require_authenticated_username)`; switched to the
+existing `Depends(_require_authenticated_parent)` (iter 13). The
+existing test suite logs in as the parent for both endpoints so this
+is a no-op for the 215-test baseline.
+
+**Active-child resolver wired in.**
+- `_resolve_active_child_or_400` (new) — small wrapper around the
+  iter-20 `_resolve_active_child_profile` that raises a clean 400
+  with a useful message when the caller has no resolvable child
+  profile (e.g. a child user that was created without a linked
+  profile, or a parent who soft-deleted their last child).
+- Four routes now call the resolver instead of
+  `get_child_profile_for_user(user_id)`:
+  - `GET /api/dashboard`
+  - `POST /api/activities/{id}/submit`
+  - `GET /api/progress/parent`
+  - `POST /api/ai/coach`
+  Each gains a `request: Request` parameter so the resolver can read
+  `session["active_child_profile_id"]`. The legacy DB helper now has
+  one remaining caller path inside the resolver itself.
+
+**Child reward_state seed.**
+- `create_child_account` now also inserts a `reward_state` row keyed
+  by the new child user's id. Without this, the *first* dashboard
+  load for a freshly-created child user crashed because
+  `get_reward_state(user_id)` is `LIMIT 1`-not-`SELECT-or-create` and
+  raises `ValueError` on missing rows. Caught by the test
+  `test_child_dashboard_resolves_to_own_profile` during this
+  iteration's first test run — fixed inline.
+
+**Changes.**
+- `backend/app/main.py` — endpoint signature changes (add
+  `request: Request`), gate flips on two endpoints, resolver wired
+  into four endpoints, child reward_state seed in
+  `create_child_account`, new `_resolve_active_child_or_400` helper.
+- `backend/tests/test_child_account_routes.py` (new) — 5 cases:
+  - Child caller gets 403 on `/api/progress/parent`.
+  - Child caller gets 403 on `/api/ai/connectivity-check`.
+  - Mira (child-role user with own login) lands on her own
+    dashboard, not the seeded "Explorer Kid".
+  - Parent with three children switches active twice via
+    `POST /api/parent/active-child/{id}` and the dashboard follows.
+  - Child user with no linked profile gets a clean 400 (not 500)
+    when hitting `/api/dashboard`.
+- `docs/CHILD_ACCOUNTS.md` — status line updated.
+
+**Tests run.**
+- `python3 -m pytest backend/tests -q` → 220 passed (5 new in
+  `test_child_account_routes.py`; all 215 prior still green).
+
+**Assumptions / scope decisions.**
+- **Submit / coach stay open to parents.** A parent submitting an
+  activity for demo purposes is a legitimate flow, and the resolver
+  attributes the submission to the *active child profile* —
+  progress data integrity is preserved by attribution, not by
+  blocking the caller. If we ever decide parent-submission corrupts
+  data we can flip that gate in a future slice without touching the
+  resolver.
+- **Reward state stays keyed by user_id.** For a parent with N
+  children, each child user has their own reward_state row; the
+  parent's reward_state belongs to the parent's own (rare) actions.
+  The "family-wide rewards" question raised in the design memo is
+  punted to the polish iteration.
+- **Resolver returns first owned child by id when no active is
+  set.** Matches the memo. Edge case where a parent's only child
+  was soft-deleted hits the 400 path; documented behavior, no
+  silent fallback.
+
+**Definition of done check.**
+- App still starts locally: yes (no schema changes; only behavior
+  changes are the two new 403s and the resolver-attributed
+  child profile).
+- Backend tests pass: 220/220.
+- No secrets or hardcoded credentials.
+- Data model changes: none in this iteration.
+- User-facing behavior: parents see no change (single-child setup);
+  parents with multiple children see the active-child switch land
+  cleanly; child-role users (when they exist) see their own
+  dashboard.
+
+**Open backlog.**
+- **Iter N+2: Frontend child management.** `/parent/children` page
+  with create form, active-child selector in the AppShell,
+  api.ts client functions for the three iter-20 endpoints, vitest
+  cases. UI-only on top of the now-stable backend surface.
+- **Iter N+3: Polish.** Parent-initiated child password reset, soft-
+  delete UX (`is_active` already lives in the schema), "currently
+  viewing" banner on parent views, family-wide AI usage aggregation
+  if we decide that's the right surface for the AI usage card.
+
+**Recommended next task.** Iter N+2 (frontend child management).
+Backend surface is stable: three endpoints (list, create, set
+active) all return well-defined shapes and have integration tests.
+
+---
+
 ## Iteration 20 — Iter N: backend foundation for child accounts
 
 **Scope chosen.** First implementation slice from
