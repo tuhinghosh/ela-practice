@@ -150,8 +150,11 @@ Set the log level via `LOG_LEVEL` (default `INFO`).
 authenticated user per UTC day across `/api/ai/coach` and
 `/api/ai/connectivity-check`. The 51st call returns `429 Too Many
 Requests` with a `reset_at` timestamp in the body. Set to `0` to
-disable. The counter is in-memory and resets on process restart — fine
-for a single-container deployment; revisit if scaling out.
+disable.
+
+The counter is persisted in the SQLite ``ai_call_log`` table, so the
+cap survives container rebuilds. Rows are append-only; a future
+follow-up could add a pruner that drops rows older than 30 days.
 
 ## Rotating the parent password
 

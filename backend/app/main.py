@@ -15,7 +15,7 @@ from backend.app.ai_client import (
     run_openrouter_connectivity_check,
 )
 from backend.app.ai_coach import generate_ai_coach_output
-from backend.app.ai_quota import DailyAICallQuota
+from backend.app.ai_quota import DailyAICallQuota, SQLiteQuotaStore
 from backend.app.auth import hash_password, verify_password
 from backend.app.config import get_settings
 from backend.app.csrf import CSRFOriginMiddleware
@@ -58,7 +58,10 @@ login_limiter = SlidingWindowLimiter(
     max_attempts=settings.login_rate_limit_max_attempts,
     window_seconds=settings.login_rate_limit_window_seconds,
 )
-ai_quota = DailyAICallQuota(daily_limit=settings.ai_calls_per_user_per_day)
+ai_quota = DailyAICallQuota(
+    daily_limit=settings.ai_calls_per_user_per_day,
+    store=SQLiteQuotaStore(get_connection),
+)
 
 
 @asynccontextmanager

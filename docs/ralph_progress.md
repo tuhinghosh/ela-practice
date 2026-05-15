@@ -2,6 +2,97 @@
 
 Tracks each loop iteration against `docs/RALPH_BRIEF.md`. Newest first.
 
+## Iteration 12 — Follow-up #3: SQLite-persisted AI call quota
+
+**Scope chosen.** Iter 9 capped per-user-per-day AI calls in memory.
+That counter resets on every process restart, which makes the
+cost-control guardrail effectively useless during a deploy storm or
+even after an unrelated container restart. Moving the counter to
+SQLite keeps it ops-grade for the single-container family deployment
+without adding any dependency.
+
+**Changes.**
+- `backend/app/migrations.py` — `Migration(id=2, "add_ai_call_log")`
+  creates `ai_call_log(id, user_id, called_at)` with `ON DELETE
+  CASCADE` to `users` and an index on `(user_id, called_at)` for the
+  hot count-by-(user, day) query. Idempotent via `IF NOT EXISTS`.
+- `backend/app/ai_quota.py` — refactored to a strategy pattern:
+  - `QuotaStore` ABC with `count_today` / `increment` / `reset`.
+  - `InMemoryQuotaStore` kept for unit tests (cheap, no DB).
+  - `SQLiteQuotaStore(connection_factory)` reads/writes
+    `ai_call_log`; the factory is called per operation so the store
+    does not own the DB connection lifecycle.
+  - `DailyAICallQuota(daily_limit, store=None, clock=...)` now pure
+    logic. `store=None` defaults to in-memory for back-compat with
+    iter-9 unit tests; production code passes the SQLite store.
+- `backend/app/main.py` — `ai_quota` constructed with
+  `SQLiteQuotaStore(get_connection)`. Public `_enforce_ai_quota`
+  helper signature unchanged.
+- `backend/tests/test_ai_quota_persistence.py` (new) — 8 cases:
+  - Migration creates the table + index.
+  - SQLite store basic increment/count round-trip.
+  - **The headline guarantee:** a fresh `DailyAICallQuota` against the
+    same store sees the prior counts (simulates process restart).
+  - 4th call past a limit-of-3 is blocked, and a replacement quota
+    still sees the over-budget state.
+  - Day rollover ignores yesterday's rows.
+  - Per-user isolation under the persistent store.
+  - `reset()` truncates `ai_call_log` (verified at the row level).
+  - In-memory store still works for unit tests with the same public
+    API.
+- `docs/DEPLOYMENT.md` — drops the "resets on process restart" caveat,
+  notes the new table, and flags row pruning as a future follow-up.
+
+**Tests run.**
+- `python3 -m pytest backend/tests -q` → 170 passed (8 new in
+  `test_ai_quota_persistence.py`; all 162 prior still green). The
+  iter-9 in-memory tests in `test_observability.py` continue to
+  exercise the same `DailyAICallQuota` class via the in-memory store
+  path, so we preserved coverage without rewriting them.
+
+**Assumptions / scope decisions.**
+- Day boundary stays UTC. The `learning_day_timezone` setting governs
+  *streak* day boundaries; AI billing aligns with OpenRouter's UTC
+  cycle. Coupling them would introduce a confusing retro-active shift
+  when a parent picks a non-UTC zone for streak display.
+- `ai_call_log.user_id` has a real foreign key to `users.id` with
+  cascade. Deleting a parent therefore garbage-collects their call
+  log. The trade-off is that the persistence tests have to insert
+  user rows before incrementing; documented inline.
+- The store is not rate-limited at the SQL level — concurrent
+  requests can both pass `check` before either inserts. That's
+  acceptable: same approximate semantics as the in-memory limiter,
+  and the per-day limit is generous enough (50 default) that a 1-2
+  call overrun is harmless.
+- No log pruning. Rows accumulate indefinitely. For a family-MVP
+  with ~50 calls/day this is < 20k rows/year — well within SQLite's
+  comfort zone. Adding a 30-day prune job is a future iteration.
+
+**Definition of done check.**
+- App still starts locally: yes (additive migration; runs
+  automatically on next `ensure_database()` call).
+- Backend tests pass: 170/170.
+- No secrets or hardcoded credentials.
+- Data model changes: additive only (one new table + one index).
+- User-facing behavior preserved (still 429 with `reset_at` past the
+  limit; the only observable change is that the limit now persists).
+
+**Follow-up status.** Of the five follow-ups identified after iter 10:
+1. README security-posture summary — open
+2. ~~In-app password change~~ ✓ (iter 11)
+3. ~~Persist AI quota in SQLite~~ ✓ (this iteration)
+4. Hot content reload endpoint — open
+5. Per-user child-account login — open
+
+**Recommended next task.** Item 4 (hot content reload endpoint). The
+new content-CLI workflow from iter 10 still requires a process
+restart for edits to take effect because `list_seed_activities` is
+LRU-cached. A small admin endpoint that calls
+`list_seed_activities.cache_clear()` (gated to parent role) would
+close that gap and is the smallest remaining slice.
+
+---
+
 ## Iteration 11 — Follow-up #2: in-app password rotation
 
 **Scope chosen.** First of the post-brief follow-ups identified at the end

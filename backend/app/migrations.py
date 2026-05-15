@@ -40,11 +40,38 @@ def _migration_001_add_user_auth_columns(connection: sqlite3.Connection) -> None
         )
 
 
+def _migration_002_add_ai_call_log(connection: sqlite3.Connection) -> None:
+    """Persist AI call counts so the per-user-per-day quota survives restarts.
+
+    ``called_at`` is stored in UTC (``CURRENT_TIMESTAMP``). The index
+    supports the count-by-(user, day) query the quota performs on every
+    AI call.
+    """
+    connection.executescript(
+        """
+        CREATE TABLE IF NOT EXISTS ai_call_log (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            called_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_ai_call_log_user_day
+            ON ai_call_log(user_id, called_at);
+        """
+    )
+
+
 MIGRATIONS: List[Migration] = [
     Migration(
         id=1,
         name="add_user_auth_columns",
         apply=_migration_001_add_user_auth_columns,
+    ),
+    Migration(
+        id=2,
+        name="add_ai_call_log",
+        apply=_migration_002_add_ai_call_log,
     ),
 ]
 
