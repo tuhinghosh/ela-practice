@@ -28,6 +28,7 @@ from backend.app.content_schema import (
     list_seed_activities,
     list_seed_difficulty_tiers,
     list_seed_themes,
+    verify_content_manifest,
 )
 from backend.app.db import ensure_database
 from backend.app.db import (
@@ -161,6 +162,19 @@ def _require_authenticated_username(request: Request) -> str:
     return str(username)
 
 
+def _require_authenticated_parent(request: Request) -> str:
+    """Same as ``_require_authenticated_username`` but additionally enforces
+    that the session's role is ``parent``. Returns the username on success."""
+    username = _require_authenticated_username(request)
+    role = request.session.get("role")
+    if role != "parent":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Parent role required for this action.",
+        )
+    return username
+
+
 def _client_ip(request: Request) -> str:
     if request.client and request.client.host:
         return request.client.host
@@ -183,6 +197,37 @@ def _enforce_ai_quota(user_id: int) -> Optional[JSONResponse]:
             headers={"Retry-After": "3600"},
         )
     return None
+
+
+@app.post("/api/admin/content/reload")
+def admin_reload_content(
+    _: str = Depends(_require_authenticated_parent),
+) -> JSONResponse:
+    """Drop the cached seed activity list, verify the manifest, then reload.
+
+    Lets a parent pick up content edits without restarting the container.
+    Returns the recomputed counts so the caller knows how much the catalog
+    just changed.
+    """
+    list_seed_activities.cache_clear()
+    try:
+        manifest = verify_content_manifest()
+        activities = list_seed_activities()
+        themes = list_seed_themes()
+    except ValueError as exc:
+        # Leave the cache cleared so the next call retries cleanly.
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Content reload failed: {exc}",
+        ) from exc
+    return JSONResponse(
+        {
+            "status": "ok",
+            "content_version": manifest["content_version"],
+            "activity_count": len(activities),
+            "theme_count": len(themes),
+        }
+    )
 
 
 @app.post("/api/auth/login")

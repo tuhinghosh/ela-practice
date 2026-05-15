@@ -2,6 +2,84 @@
 
 Tracks each loop iteration against `docs/RALPH_BRIEF.md`. Newest first.
 
+## Iteration 13 — Follow-up #4: hot content reload endpoint
+
+**Scope chosen.** Iter 10's `content_cli` already validates and syncs
+content end-to-end, but `list_seed_activities` is LRU-cached on the
+running server, so a content edit still required restarting the
+container to take effect. This slice closes that gap with a single
+admin endpoint.
+
+**Changes.**
+- `backend/app/main.py` —
+  - New `_require_authenticated_parent` dependency: builds on
+    `_require_authenticated_username` and additionally enforces
+    `request.session["role"] == "parent"`, returning 403 with a clear
+    detail message otherwise.
+  - New `POST /api/admin/content/reload`: clears the
+    `list_seed_activities` LRU cache, re-runs
+    `verify_content_manifest()` and `list_seed_activities()` (which
+    triggers the full Pydantic + cue validator), and returns
+    `{status, content_version, activity_count, theme_count}`. A
+    validation/manifest failure surfaces as 500 with the exception
+    detail; the cache stays cleared so a retry after fixing content
+    reloads cleanly.
+  - Endpoint is automatically CSRF-guarded by the iter-5 middleware
+    (it's a POST under `/api/` that is not exempt).
+- `backend/tests/test_admin_content_reload.py` (new) — 4 cases:
+  - Unauthenticated → 401.
+  - Authenticated but `role='child'` → 403 (set up by flipping the
+    seeded user's role then re-logging in).
+  - Parent + clean content → 200 with sensible counts and the LRU
+    cache populated again.
+  - Forged manifest → 500 with `"checksum mismatch"` in `detail`.
+- `docs/DEPLOYMENT.md` — new "Hot reload (no restart)" subsection
+  under the content workflow with the exact curl invocation and a
+  note that the frontend bundle still needs a rebuild for compile-
+  time imports.
+
+**Tests run.**
+- `python3 -m pytest backend/tests -q` → 174 passed (4 new in
+  `test_admin_content_reload.py`; all 170 prior still green).
+
+**Assumptions / scope decisions.**
+- Endpoint is parent-only. Child accounts (when they exist as logged-
+  in users) should not be able to mutate runtime content state. The
+  role check is reusable for future admin routes.
+- Reload is best-effort atomic: cache_clear → verify → reload. If
+  verify fails after clear, the *next* request will repopulate from
+  whatever's on disk. That's the correct failure mode — better than
+  serving stale activities while an inconsistent manifest sits on
+  disk.
+- No frontend hot-reload. The static export bundles content at build
+  time; making the frontend refetch the activity registry at runtime
+  is a separate refactor that's not worth pulling into this slice.
+
+**Definition of done check.**
+- App still starts locally: yes.
+- Backend tests pass: 174/174.
+- No secrets or hardcoded credentials.
+- Data model changes: none.
+- User-facing behavior preserved: existing routes unchanged; only a
+  new admin endpoint added.
+
+**Follow-up status.** Of the five follow-ups identified after iter 10:
+1. README security-posture summary — open
+2. ~~In-app password change~~ ✓ (iter 11)
+3. ~~Persist AI quota in SQLite~~ ✓ (iter 12)
+4. ~~Hot content reload endpoint~~ ✓ (this iteration)
+5. Per-user child-account login — open
+
+**Recommended next task.** Item 1 (README security-posture summary).
+The DEPLOYMENT.md doc has grown to a thorough operator reference but
+new contributors land in the README first, and there is no quick
+"what is the current security posture" overview there. A short
+section summarizing CSRF + rate limit + AI quota + hashed
+credentials, with pointers into DEPLOYMENT.md, is a 30-line addition
+with no code risk and high onboarding value.
+
+---
+
 ## Iteration 12 — Follow-up #3: SQLite-persisted AI call quota
 
 **Scope chosen.** Iter 9 capped per-user-per-day AI calls in memory.

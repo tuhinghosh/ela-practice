@@ -210,3 +210,24 @@ scripts/sync-content.sh
 When editing activities, the workflow is: edit a file under
 `backend/content/`, run `scripts/sync-content.sh`, commit both the
 canonical edit and the regenerated mirror.
+
+### Hot reload (no restart)
+
+After editing canonical content on a running instance, you can pick up
+the change without bouncing the container:
+
+```bash
+curl -X POST -b cookies.txt -c cookies.txt http://localhost:8000/api/admin/content/reload
+```
+
+The endpoint requires an authenticated parent session, clears the cached
+activity list, re-verifies `MANIFEST.json`, and re-runs the full
+validator. The response includes the new `activity_count`,
+`theme_count`, and `content_version`. A manifest mismatch returns 500
+with the offending file in `detail` — re-run `content_cli manifest` and
+try again.
+
+The frontend bundle still has a compile-time copy of the JSON, so a
+front-end refresh is needed to pick up edits there — that means a
+re-`build` of the static export, or a `scripts/sync-content.sh` + dev
+server reload for local edits.
