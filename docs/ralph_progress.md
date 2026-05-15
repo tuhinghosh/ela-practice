@@ -2,6 +2,140 @@
 
 Tracks each loop iteration against `docs/RALPH_BRIEF.md`. Newest first.
 
+## Iteration 20 — Iter N: backend foundation for child accounts
+
+**Scope chosen.** First implementation slice from
+`docs/CHILD_ACCOUNTS.md`. Deliberately additive — adds new
+capabilities without flipping role-gating on existing routes, so the
+existing 202-test suite continues to pass and the next slice (Iter
+N+1 frontend) has a stable backend surface to consume. Submit / coach
+/ parent-progress are still callable by the parent in this iteration;
+the strict gating that breaks parent submit is its own slice that
+also updates the test suite.
+
+**Changes.**
+- `backend/app/migrations.py` — `Migration(id=3,
+  "child_profile_login_user_id")` recreates `child_profiles` to drop
+  the `user_id UNIQUE` constraint and add `login_user_id`
+  (`INTEGER NULL`, FK to `users.id` with `ON DELETE SET NULL`) plus
+  `is_active` (DEFAULT 1). SQLite's table-recreation pattern wrapped
+  in `PRAGMA foreign_keys = OFF/ON` so cascade triggers don't fire
+  during the rename. Idempotent guards: skips when the table doesn't
+  exist (legacy-schema-only test path) or when both new columns are
+  already present.
+- `backend/app/db.py` — `create_schema` matches the new shape so
+  fresh installs skip migration #3 entirely. `seed_core_records`
+  switched from `INSERT OR IGNORE` (which relied on the now-dropped
+  `user_id UNIQUE`) to explicit SELECT-then-INSERT for idempotency
+  when re-seeding a parent that already has a child profile.
+- `backend/app/main.py` —
+  - `_require_authenticated_child(request)` dependency mirrors
+    `_require_authenticated_parent` from iter 13.
+  - `_resolve_active_child_profile(connection, request, user_row)`
+    returns the right `child_profiles` row for both roles. Child:
+    the unique row where `login_user_id` matches. Parent:
+    `session["active_child_profile_id"]` if it still belongs to the
+    caller, else the first owned active child; clears the session
+    field on stale ids; returns `None` if the parent owns no
+    children.
+  - `POST /api/parent/child-accounts` — parent-only, validates
+    pairing of `username` + `password` (both or neither), enforces
+    minimum lengths (username ≥3, password ≥8), 409 on duplicate
+    username, creates the `users` row (role `'child'`) and the
+    `child_profiles` row in one transaction, returns the new profile
+    shape + 201.
+  - `GET /api/parent/child-accounts` — lists the calling parent's
+    children with each child's optional login username (joined from
+    `users`).
+  - `POST /api/parent/active-child/{child_profile_id}` — parent-only,
+    validates ownership of the profile (404 otherwise), writes
+    `session["active_child_profile_id"]`.
+- `backend/tests/test_child_accounts.py` (new) — 13 cases:
+  - Migration shape (login_user_id + is_active columns present,
+    partial unique index on login_user_id, multiple NULL
+    login_user_id rows accepted under one parent).
+  - Profile-only create (no login).
+  - Login-bearing create with role propagated correctly to
+    `users.role`.
+  - Username/password pairing rule, min-length checks, duplicate
+    username (409).
+  - 403 for child caller.
+  - List returns only this parent's owned children (tenant
+    isolation with a manually inserted other-parent + stranger
+    profile).
+  - Set-active success, 404 on a profile owned by another parent.
+  - Newly-created child user can log in via `/api/auth/login` and
+    the session reports `role='child'`.
+  - Unit-level `_resolve_active_child_profile` for the parent path
+    picks the first owned child when nothing is preset.
+- `docs/CHILD_ACCOUNTS.md` — status line updated to reflect that
+  Iter N is implemented.
+
+**Tests run.**
+- `python3 -m pytest backend/tests -q` → 215 passed (13 new in
+  `test_child_accounts.py`; all 202 prior still green). No frontend
+  code touched; vitest unchanged.
+
+**Assumptions / scope decisions.**
+- **No role-gating flips on existing routes.** The brief's
+  `submit/coach/parent-progress/connectivity-check` switch to
+  child- or parent-only access is real work that breaks
+  `test_api_routes.py`, `test_ai_coach.py`, etc. Doing both the
+  new capabilities AND the gating in one iteration would either
+  produce a sprawling diff or require simultaneous test
+  rewrites. Splitting per the brief's "smallest safe
+  implementation" rule. Iter N+1's scope is now slightly larger
+  than the memo originally implied — the gating slice probably
+  needs to happen before frontend work so the UI is built against
+  the final behavior.
+- **Schema migration is destructive** (table recreation) but
+  preserves all data via `INSERT … SELECT`. The `PRAGMA
+  foreign_keys = OFF` toggle is contained to the migration
+  function and restored before returning, even on exception, via
+  the `try / finally`.
+- **Idempotency**: the migration checks for both new columns and
+  the absence of the table, so re-running on a fully-migrated DB,
+  a never-had-child_profiles DB (legacy test scenario), or a
+  partially-migrated DB is safe.
+- **Username constraints**: 3 character minimum, no whitespace
+  trimming beyond `.strip()`. The brief flagged this as an open
+  question; I picked the cheapest rule (length) and left further
+  validation for the frontend's input UX layer.
+- **Password constraints**: 8 character minimum, matching the
+  in-app parent password rotation rule from iter 11.
+
+**Definition of done check.**
+- App still starts locally: yes (migration runs on existing DBs,
+  preserves seed data, no behavior changes for existing routes).
+- Backend tests pass: 215/215.
+- No secrets or hardcoded credentials.
+- Data model changes: additive plus a constraint-loosening that
+  is migration-safe via the table-recreation pattern.
+- User-facing behavior preserved (existing routes unchanged in
+  this slice).
+
+**Next task: Iter N+1.** Two reasonable orderings:
+
+a. **Role-gating sweep first** — flip submit / coach /
+   parent-progress / connectivity-check to their target roles per
+   the route map. Touches the existing test suite (test_api_routes,
+   test_ai_coach, test_ai_connectivity). Backend-only, gives the
+   eventual frontend its final API surface.
+b. **Frontend child management first** — `/parent/children` page,
+   active-child selector, API client wiring. UI-only on top of
+   today's backend.
+
+My preference is (a) — frontend should be built against the final
+gating semantics, otherwise we'd wire the UI twice. Iter N+1 plan:
+update existing tests to log in as a child user where they need to
+submit, flip the gates, then re-run the suite to a green state.
+
+The deferred polish work (parent-initiated child password reset,
+`is_active` soft-delete end-to-end, "currently viewing" banner) is
+still Iter N+2 territory.
+
+---
+
 ## Iteration 19 — Design memo for per-user child accounts (docs only)
 
 **Scope chosen.** The remaining open item — per-user child-account

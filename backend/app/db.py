@@ -45,12 +45,21 @@ def create_schema(connection: sqlite3.Connection) -> None:
 
         CREATE TABLE IF NOT EXISTS child_profiles (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL UNIQUE,
+            user_id INTEGER NOT NULL,
+            login_user_id INTEGER,
             display_name TEXT NOT NULL,
             grade_level INTEGER NOT NULL DEFAULT 3,
+            is_active INTEGER NOT NULL DEFAULT 1,
             created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+            FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY(login_user_id) REFERENCES users(id) ON DELETE SET NULL
         );
+
+        CREATE INDEX IF NOT EXISTS idx_child_profiles_owner
+            ON child_profiles(user_id);
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_child_profiles_login_user_id
+            ON child_profiles(login_user_id)
+            WHERE login_user_id IS NOT NULL;
 
         CREATE TABLE IF NOT EXISTS activity_sessions (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -157,17 +166,26 @@ def seed_core_records(connection: sqlite3.Connection) -> dict[str, int]:
     )
     user_id = connection.execute("SELECT id FROM users WHERE username = ?", (username,)).fetchone()["id"]
 
-    connection.execute(
-        """
-        INSERT OR IGNORE INTO child_profiles (user_id, display_name, grade_level)
-        VALUES (?, ?, ?)
-        """,
-        (user_id, "Explorer Kid", 3),
-    )
-    child_profile_id = connection.execute(
-        "SELECT id FROM child_profiles WHERE user_id = ?",
+    # The user_id UNIQUE constraint was dropped in migration #3 so the
+    # parent can own multiple children; guard idempotency explicitly.
+    existing = connection.execute(
+        "SELECT id FROM child_profiles WHERE user_id = ? ORDER BY id LIMIT 1",
         (user_id,),
-    ).fetchone()["id"]
+    ).fetchone()
+    if existing is None:
+        connection.execute(
+            """
+            INSERT INTO child_profiles (user_id, display_name, grade_level)
+            VALUES (?, ?, ?)
+            """,
+            (user_id, "Explorer Kid", 3),
+        )
+        child_profile_id = connection.execute(
+            "SELECT id FROM child_profiles WHERE user_id = ? ORDER BY id LIMIT 1",
+            (user_id,),
+        ).fetchone()["id"]
+    else:
+        child_profile_id = existing["id"]
 
     connection.execute(
         """

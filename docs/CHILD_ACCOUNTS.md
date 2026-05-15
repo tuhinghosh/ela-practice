@@ -1,8 +1,11 @@
 # Design: per-user child-account login
 
-> Status: **design memo** — no code changes yet. The implementation
-> slices below are the planned next ralph iterations. Edit this doc
-> when assumptions change.
+> Status: **iter N implemented** (commit 71e126e memo, iter 20
+> backend foundation). Iter N+1 (frontend) and N+2 (polish) still
+> outstanding. The schema, route-gating-of-existing-routes, and
+> child-as-submitter flow remain partially open — see the
+> "Implementation slice plan" section for what each follow-up still
+> needs to do.
 
 ## Why
 

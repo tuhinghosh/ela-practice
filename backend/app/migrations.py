@@ -62,6 +62,61 @@ def _migration_002_add_ai_call_log(connection: sqlite3.Connection) -> None:
     )
 
 
+def _migration_003_child_profile_login_user_id(connection: sqlite3.Connection) -> None:
+    """Drop ``child_profiles.user_id UNIQUE`` and add ``login_user_id`` plus
+    ``is_active`` so a parent can own multiple children and each child can
+    optionally have their own login.
+
+    SQLite cannot drop a UNIQUE constraint in place; we use the standard
+    recreate-table pattern. ``PRAGMA foreign_keys`` is toggled around the
+    swap so the cascade triggers do not fire while the destination table
+    is partially populated. Foreign keys are re-enabled at the end so
+    later operations on this connection see them.
+    """
+    info = connection.execute("PRAGMA table_info(child_profiles)").fetchall()
+    if not info:
+        # Table does not exist on this DB; create_schema will have made the
+        # new-shape table for any normal install, so we have nothing to do.
+        return
+    columns = {row["name"] for row in info}
+    if "login_user_id" in columns and "is_active" in columns:
+        return  # migration already applied
+
+    connection.execute("PRAGMA foreign_keys = OFF")
+    try:
+        connection.executescript(
+            """
+            CREATE TABLE child_profiles__new (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                login_user_id INTEGER,
+                display_name TEXT NOT NULL,
+                grade_level INTEGER NOT NULL DEFAULT 3,
+                is_active INTEGER NOT NULL DEFAULT 1,
+                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+                FOREIGN KEY(login_user_id) REFERENCES users(id) ON DELETE SET NULL
+            );
+
+            INSERT INTO child_profiles__new
+                (id, user_id, display_name, grade_level, created_at)
+            SELECT id, user_id, display_name, grade_level, created_at
+            FROM child_profiles;
+
+            DROP TABLE child_profiles;
+            ALTER TABLE child_profiles__new RENAME TO child_profiles;
+
+            CREATE INDEX IF NOT EXISTS idx_child_profiles_owner
+                ON child_profiles(user_id);
+            CREATE UNIQUE INDEX IF NOT EXISTS idx_child_profiles_login_user_id
+                ON child_profiles(login_user_id)
+                WHERE login_user_id IS NOT NULL;
+            """
+        )
+    finally:
+        connection.execute("PRAGMA foreign_keys = ON")
+
+
 MIGRATIONS: List[Migration] = [
     Migration(
         id=1,
@@ -72,6 +127,11 @@ MIGRATIONS: List[Migration] = [
         id=2,
         name="add_ai_call_log",
         apply=_migration_002_add_ai_call_log,
+    ),
+    Migration(
+        id=3,
+        name="child_profile_login_user_id",
+        apply=_migration_003_child_profile_login_user_id,
     ),
 ]
 

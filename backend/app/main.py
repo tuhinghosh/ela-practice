@@ -99,6 +99,13 @@ class PasswordChangeRequest(BaseModel):
     new_password: str = Field(min_length=8, max_length=256)
 
 
+class ChildAccountCreateRequest(BaseModel):
+    display_name: str = Field(min_length=1, max_length=80)
+    grade_level: int = Field(default=3, ge=1, le=12)
+    username: Optional[str] = Field(default=None, max_length=64)
+    password: Optional[str] = Field(default=None, max_length=256)
+
+
 class SubmissionAnswer(BaseModel):
     question_id: str = Field(min_length=1)
     answer_choice: Optional[str] = None
@@ -175,6 +182,79 @@ def _require_authenticated_parent(request: Request) -> str:
     return username
 
 
+def _require_authenticated_child(request: Request) -> str:
+    """Same as ``_require_authenticated_username`` but additionally enforces
+    that the session's role is ``child``. Returns the username on success."""
+    username = _require_authenticated_username(request)
+    role = request.session.get("role")
+    if role != "child":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Child role required for this action.",
+        )
+    return username
+
+
+def _resolve_active_child_profile(
+    connection,
+    request: Request,
+    user_row,
+) -> Optional[dict]:
+    """Pick the child_profiles row the caller is currently focused on.
+
+    - **Child caller:** the unique profile where ``login_user_id`` matches
+      the caller's user id (always unambiguous; the partial unique index
+      from migration #3 enforces this).
+    - **Parent caller:** the profile id stored in
+      ``session["active_child_profile_id"]`` if it still belongs to the
+      parent; otherwise the parent's first owned active child by id.
+      Returns ``None`` when the parent owns no children.
+
+    Returns a dict mapping or ``None`` so callers can branch on
+    ``profile is None`` without sqlite3.Row truthiness surprises.
+    """
+    role = request.session.get("role")
+    user_id = int(user_row["id"])
+    if role == "child":
+        row = connection.execute(
+            """
+            SELECT id, user_id, login_user_id, display_name, grade_level, is_active
+            FROM child_profiles WHERE login_user_id = ? AND is_active = 1
+            LIMIT 1
+            """,
+            (user_id,),
+        ).fetchone()
+        return dict(row) if row is not None else None
+
+    # Parent path.
+    requested = request.session.get("active_child_profile_id")
+    if requested is not None:
+        row = connection.execute(
+            """
+            SELECT id, user_id, login_user_id, display_name, grade_level, is_active
+            FROM child_profiles
+            WHERE id = ? AND user_id = ? AND is_active = 1
+            """,
+            (int(requested), user_id),
+        ).fetchone()
+        if row is not None:
+            return dict(row)
+        # Stale id; clear so subsequent calls don't keep re-checking it.
+        request.session.pop("active_child_profile_id", None)
+
+    row = connection.execute(
+        """
+        SELECT id, user_id, login_user_id, display_name, grade_level, is_active
+        FROM child_profiles
+        WHERE user_id = ? AND is_active = 1
+        ORDER BY id
+        LIMIT 1
+        """,
+        (user_id,),
+    ).fetchone()
+    return dict(row) if row is not None else None
+
+
 def _client_ip(request: Request) -> str:
     if request.client and request.client.host:
         return request.client.host
@@ -197,6 +277,139 @@ def _enforce_ai_quota(user_id: int) -> Optional[JSONResponse]:
             headers={"Retry-After": "3600"},
         )
     return None
+
+
+@app.post("/api/parent/child-accounts")
+def create_child_account(
+    payload: ChildAccountCreateRequest,
+    username: str = Depends(_require_authenticated_parent),
+) -> JSONResponse:
+    """Parent creates a child profile, optionally backed by a child-role
+    user row with its own login."""
+    if (payload.username is None) != (payload.password is None):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Provide username and password together, or neither.",
+        )
+    child_username = payload.username.strip() if payload.username else None
+    if child_username is not None:
+        if len(child_username) < 3:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+                detail="Child username must be at least 3 characters.",
+            )
+        if payload.password is None or len(payload.password) < 8:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+                detail="Child password must be at least 8 characters.",
+            )
+
+    with get_connection() as connection:
+        parent = get_user_by_username(connection, username)
+        login_user_id: Optional[int] = None
+        if child_username is not None:
+            existing = connection.execute(
+                "SELECT id FROM users WHERE username = ?", (child_username,)
+            ).fetchone()
+            if existing is not None:
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail=f'Username "{child_username}" is already in use.',
+                )
+            password_hash = hash_password(payload.password)  # type: ignore[arg-type]
+            connection.execute(
+                "INSERT INTO users (username, password_hash, role) VALUES (?, ?, 'child')",
+                (child_username, password_hash),
+            )
+            login_user_id = int(
+                connection.execute(
+                    "SELECT id FROM users WHERE username = ?", (child_username,)
+                ).fetchone()["id"]
+            )
+        connection.execute(
+            """
+            INSERT INTO child_profiles (user_id, login_user_id, display_name, grade_level)
+            VALUES (?, ?, ?, ?)
+            """,
+            (int(parent["id"]), login_user_id, payload.display_name, payload.grade_level),
+        )
+        connection.commit()
+        new_profile = connection.execute(
+            """
+            SELECT id, user_id, login_user_id, display_name, grade_level, is_active
+            FROM child_profiles
+            WHERE user_id = ?
+            ORDER BY id DESC
+            LIMIT 1
+            """,
+            (int(parent["id"]),),
+        ).fetchone()
+
+    return JSONResponse(
+        {
+            "id": int(new_profile["id"]),
+            "display_name": new_profile["display_name"],
+            "grade_level": int(new_profile["grade_level"]),
+            "login_username": child_username,
+            "is_active": bool(new_profile["is_active"]),
+        },
+        status_code=status.HTTP_201_CREATED,
+    )
+
+
+@app.get("/api/parent/child-accounts")
+def list_child_accounts(
+    username: str = Depends(_require_authenticated_parent),
+) -> JSONResponse:
+    with get_connection() as connection:
+        parent = get_user_by_username(connection, username)
+        rows = connection.execute(
+            """
+            SELECT cp.id, cp.display_name, cp.grade_level, cp.is_active,
+                   cp.login_user_id, u.username AS login_username
+            FROM child_profiles cp
+            LEFT JOIN users u ON u.id = cp.login_user_id
+            WHERE cp.user_id = ?
+            ORDER BY cp.id
+            """,
+            (int(parent["id"]),),
+        ).fetchall()
+
+    return JSONResponse(
+        {
+            "children": [
+                {
+                    "id": int(row["id"]),
+                    "display_name": row["display_name"],
+                    "grade_level": int(row["grade_level"]),
+                    "is_active": bool(row["is_active"]),
+                    "login_username": row["login_username"],
+                }
+                for row in rows
+            ]
+        }
+    )
+
+
+@app.post("/api/parent/active-child/{child_profile_id}")
+def set_active_child_profile(
+    child_profile_id: int,
+    request: Request,
+    username: str = Depends(_require_authenticated_parent),
+) -> JSONResponse:
+    with get_connection() as connection:
+        parent = get_user_by_username(connection, username)
+        row = connection.execute(
+            "SELECT id FROM child_profiles WHERE id = ? AND user_id = ? AND is_active = 1",
+            (child_profile_id, int(parent["id"])),
+        ).fetchone()
+    if row is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Child profile not found for this parent.",
+        )
+    request.session["active_child_profile_id"] = child_profile_id
+    return JSONResponse({"active_child_profile_id": child_profile_id})
 
 
 @app.post("/api/admin/content/reload")
