@@ -5,6 +5,35 @@ server. This doc covers the bits that aren't obvious from `README` or
 `CLAUDE.md`: where data lives, how schema changes are applied, and how to
 back up the database.
 
+## Behind a reverse proxy (Railway, Fly, nginx, Cloudflare)
+
+If anything terminates TLS in front of the container — Railway, Fly,
+an nginx in front, Cloudflare, etc. — the container sees every request
+as coming from the proxy's IP. That breaks the per-IP login rate
+limiter (everyone shares one bucket; 10 wrong attempts from anyone
+locks out everyone). Set:
+
+```
+TRUSTED_PROXY_IPS=*
+```
+
+The app installs uvicorn's `ProxyHeadersMiddleware` as the outermost
+layer; with the trust set, it rewrites `request.client.host` from
+`X-Forwarded-For` so the rate limiter sees real client IPs again.
+
+**Only use `*` when the operator controls every network path to the
+container** (Railway, Fly: yes — direct internet access is blocked by
+the platform). When the container is reachable directly from the
+internet, narrow the value to specific proxy IPs or leave it unset.
+
+Leaving `TRUSTED_PROXY_IPS` empty (the default) means the middleware
+is installed but never rewrites — identical to having no proxy
+middleware at all. Home-server installs without a proxy in front
+should keep it empty.
+
+---
+
+
 ## Database location
 
 The SQLite database is the single source of truth for accounts, sessions,

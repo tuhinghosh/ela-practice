@@ -43,6 +43,7 @@ class Settings:
     log_level: str
     ai_calls_per_user_per_day: int
     ai_call_log_retention_days: int
+    trusted_proxy_ips: str
 
     @property
     def is_prod(self) -> bool:
@@ -205,6 +206,8 @@ def load_settings(env: Optional[Mapping[str, str]] = None) -> Settings:
         field_name="AI_CALL_LOG_RETENTION_DAYS",
     )
 
+    trusted_proxy_ips = (source.get("TRUSTED_PROXY_IPS") or "").strip()
+
     return Settings(
         env=app_env,
         session_secret=session_secret,
@@ -220,6 +223,7 @@ def load_settings(env: Optional[Mapping[str, str]] = None) -> Settings:
         log_level=log_level,
         ai_calls_per_user_per_day=ai_calls_per_user_per_day,
         ai_call_log_retention_days=ai_call_log_retention_days,
+        trusted_proxy_ips=trusted_proxy_ips,
     )
 
 

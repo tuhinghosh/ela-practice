@@ -7,6 +7,7 @@ from fastapi import Depends, FastAPI, HTTPException, Query, Request, status
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from pydantic import BaseModel, Field
 from starlette.middleware.sessions import SessionMiddleware
+from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 from backend.app.ai_client import (
     MissingOpenRouterKeyError,
@@ -83,6 +84,14 @@ app.add_middleware(
     session_cookie=settings.session_cookie_name,
     same_site=settings.session_cookie_samesite,
     https_only=settings.session_cookie_secure,
+)
+# Outermost layer: rewrite request.client.host from X-Forwarded-For when
+# the immediate hop is a trusted proxy. Empty TRUSTED_PROXY_IPS means
+# the middleware is installed but never rewrites — identical to having
+# no proxy middleware at all.
+app.add_middleware(
+    ProxyHeadersMiddleware,
+    trusted_hosts=settings.trusted_proxy_ips or "",
 )
 
 PROTECTED_ROUTE_PREFIXES = ("", "activity", "results", "parent")

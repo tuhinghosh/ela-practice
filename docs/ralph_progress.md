@@ -2,6 +2,121 @@
 
 Tracks each loop iteration against `docs/RALPH_BRIEF.md`. Newest first.
 
+## Iteration 22 — Railway-readiness #1: X-Forwarded-For via ProxyHeadersMiddleware
+
+**Scope chosen.** The Railway-readiness assessment ranked
+"`X-Forwarded-For` handling" as a hard blocker: without it, behind any
+reverse proxy (Railway, Fly, nginx, Cloudflare) the per-IP login rate
+limiter collapses to one bucket because every request looks like it
+came from the proxy's IP. Picked it as the first Railway-readiness
+slice because it's the highest-leverage single change — it's the
+difference between "the rate limiter is a defense" and "the rate
+limiter is theatre that locks out the whole world after 10 bad
+attempts".
+
+**Changes.**
+- `backend/app/config.py` — adds `Settings.trusted_proxy_ips`
+  (string, default `""`). Accepts `"*"` for trust-all-hops or a
+  comma-separated list of proxy IPs. Empty means "no trust" and the
+  middleware never rewrites.
+- `backend/app/main.py` —
+  - Imports `uvicorn.middleware.proxy_headers.ProxyHeadersMiddleware`
+    (already shipped via `uvicorn[standard]` in requirements; no new
+    dependency).
+  - Installs it as the **outermost** middleware (added LAST so
+    Starlette's LIFO ordering makes it the first thing the request
+    hits). That way every downstream piece — CSRF, session, request
+    logging, the rate-limiter dependency — sees the rewritten
+    `request.client.host`.
+  - The middleware is *always* installed; whether it rewrites is
+    driven by `trusted_hosts=settings.trusted_proxy_ips or ""`.
+    Empty trust = no rewrite = behavior identical to today.
+- `backend/tests/test_proxy_headers.py` (new) — 8 cases:
+  - Tiny standalone echo app: with `trusted_hosts="*"`,
+    `X-Forwarded-For: 203.0.113.7` shows up as `request.client.host`.
+  - Same app with `trusted_hosts=""`: header ignored.
+  - Multi-hop chain: leftmost entry wins (convention: original
+    client first, proxies after).
+  - **Headline guarantee**: against the real app, flipping the live
+    middleware to trust `*` and issuing 11 failed logins from 11
+    different forwarded IPs returns 11x 401 (no rate-limit
+    collapse). The test pokes the middleware kwargs at runtime via
+    monkeypatch and rebuilds `app.middleware_stack`, then restores
+    the original empty trust in `finally` to keep state clean for
+    other tests.
+  - Counterpoint: with trust on, 10 failures from the *same*
+    forwarded IP followed by an 11th does trip 429 with
+    `Retry-After`. Proves the rewrite is per-call, not a blanket
+    bypass.
+  - Config: default empty, accepts `"*"`, accepts comma-separated
+    IPs.
+- `.env.example` — documents `TRUSTED_PROXY_IPS` with the security
+  caveat about not setting `"*"` when the container is reachable
+  directly from the internet.
+- `docs/DEPLOYMENT.md` — new "Behind a reverse proxy" section at the
+  top covering Railway / Fly / nginx / Cloudflare scenarios with the
+  exact env var and the rationale.
+
+**Tests run.**
+- `python3 -m pytest backend/tests -q` → 228 passed (8 new; all 220
+  prior still green).
+
+**Assumptions / scope decisions.**
+- **No new dependency.** Uvicorn already ships
+  `ProxyHeadersMiddleware`; we just import it. Avoids pulling in
+  `python-ipware` or similar.
+- **Trust model**: `TRUSTED_PROXY_IPS=*` is the right default for
+  PaaS deploys where the platform guarantees direct internet access
+  to the container is blocked (Railway, Fly). For self-hosted nginx
+  / Caddy / Traefik in front, narrowing to the proxy's IP is safer.
+  The default empty value forces home-server installs to opt in
+  explicitly — fail-safe.
+- **Always-installed middleware**: simpler than conditional
+  installation. The trust-empty path short-circuits inside
+  `ProxyHeadersMiddleware`'s own check; performance impact is one
+  string membership test per request.
+- **Headline test pokes kwargs in place**: the alternative was a
+  second `app` instance built for tests, which would duplicate the
+  whole middleware stack and drift from production behavior. The
+  monkeypatch + `build_middleware_stack()` round-trip keeps the
+  real app under test.
+
+**Definition of done check.**
+- App still starts locally: yes (empty TRUSTED_PROXY_IPS = no
+  observable change).
+- Backend tests pass: 228/228.
+- No secrets or hardcoded credentials.
+- Data model changes: none.
+- User-facing behavior preserved: existing single-server installs
+  unaffected. Operators behind a proxy can now flip one env var and
+  get correct per-client rate limiting.
+
+**Railway-readiness scorecard (from the assessment).**
+
+| # | Blocker | Status |
+|---|---------|--------|
+| 1 | X-Forwarded-For handling | ✓ this iteration |
+| 2 | Volume mount documented for Railway | partial (DEPLOYMENT.md covers home Docker; Railway-specific note still owed) |
+| 3 | Backups stay on same volume | open |
+| 4 | No scheduled jobs (cron) | open |
+| 5 | Bootstrap credential sticky / no rotation prompt | open |
+| 6 | HTTPS proxy + cookie `Secure` | not blocking with current code, but worth a note |
+| 7 | Per-family AI cap | open |
+| 8 | Healthcheck wiring in Railway settings | doc-only |
+| 9 | Outbound network audit | doc-only |
+| 10 | First-login rotation banner | open |
+
+**Recommended next task.** Railway-readiness blocker #2 (volume
+mount + healthcheck guidance) and #5 (bootstrap rotation enforcement)
+are both small, doc-or-banner work. The bigger functional gaps —
+off-volume backups and family-wide AI cap — each warrant their own
+slice. My weak preference for the next ralph slice is the volume +
+healthcheck doc, paired with a `railway.toml` / Procfile if needed,
+because it unblocks a green-light deploy attempt that would surface
+any remaining surprises empirically.
+
+---
+
 ## Iteration 21 — Iter N+1: parent-only gates + active-child resolver wiring
 
 **Scope chosen.** Continues the child-accounts work. The memo
