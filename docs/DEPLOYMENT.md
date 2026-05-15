@@ -92,7 +92,27 @@ a host cron entry:
 15 3 * * * /path/to/repo/scripts/backup-db.sh >> /var/log/ela-backup.log 2>&1
 ```
 
-Prune old backups with your tool of choice (e.g. `find ... -mtime +30 -delete`).
+### Pruning old backups
+
+`scripts/prune-backups.sh` (defaults: `backups/`, keep 30) deletes the
+oldest files by mtime in a backup directory so the disk does not fill
+up:
+
+```bash
+scripts/prune-backups.sh                                    # backups/, keep 30
+scripts/prune-backups.sh /var/backups/ela --keep 14         # custom dir, keep 14
+python3 -m backend.app.backup_prune backups/ --keep 30      # direct CLI
+```
+
+The script prints a one-line summary with the deletion count and
+remaining count for log scraping. Example crontab pairing backup +
+prune:
+
+```cron
+# Daily backup at 03:15, prune to last 30 at 03:30.
+15 3 * * * /path/to/repo/scripts/backup-db.sh    >> /var/log/ela-backup.log 2>&1
+30 3 * * * /path/to/repo/scripts/prune-backups.sh >> /var/log/ela-backup.log 2>&1
+```
 
 ## CSRF
 

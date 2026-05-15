@@ -2,6 +2,101 @@
 
 Tracks each loop iteration against `docs/RALPH_BRIEF.md`. Newest first.
 
+## Iteration 16 — Backup rotation + prune CLI
+
+**Scope chosen.** Pattern-symmetric with iter 15. `scripts/backup-db.sh`
+appends a timestamped file to `backups/` on every run; without a
+rotation step the disk fills slowly forever. This slice adds a
+prune CLI + shell wrapper that mirrors `ai_quota_prune` so the ops
+story for both growing tables/dirs is uniform.
+
+**Changes.**
+- `backend/app/backup.py` — `prune_backups(directory, *, keep,
+  pattern='*.sqlite3')` lists files in the directory matching the
+  glob, sorts by mtime newest-first, deletes everything after the
+  first `keep`. Returns the list of deleted paths. Missing directory
+  → empty list (no error). Rejects negative `keep` with `ValueError`.
+- `backend/app/backup_prune.py` (new) — stdlib-only CLI runnable as
+  `python3 -m backend.app.backup_prune DIR --keep N [--pattern G]`.
+  Prints a one-line summary (`removed N file(s) from DIR (kept M,
+  pattern=..., keep=N)`) for log scraping. Exit 2 on negative `--keep`
+  or on `OSError` from `unlink()`.
+- `scripts/prune-backups.sh` (new, executable) — thin wrapper that
+  defaults to `backups/` and `--keep 30`. Symmetric layout with
+  `scripts/backup-db.sh`. Accepts positional directory + `--keep N`.
+- `backend/tests/test_backup_prune.py` (new) — 10 cases:
+  - Keeps newest N by mtime, deletes the rest.
+  - `keep=0` deletes everything.
+  - `keep > count` is a no-op.
+  - Missing directory returns `[]`.
+  - Non-matching files (README, log.txt) are left alone.
+  - Negative `keep` raises `ValueError`.
+  - Custom pattern (`*.db`) used, unrelated `*.sqlite3` untouched.
+  - CLI reports correct deletion and kept counts.
+  - CLI rejects negative `--keep` (exit 2 with message).
+  - CLI on missing directory exits 0 with zero counts.
+- `docs/DEPLOYMENT.md` — new "Pruning old backups" subsection with
+  CLI usage + paired backup-and-prune crontab example.
+
+**Tests run.**
+- `python3 -m pytest backend/tests -q` → 195 passed (10 new in
+  `test_backup_prune.py`; all 185 prior still green).
+- Manual: `python3 -m backend.app.backup_prune /tmp/.../ --keep 2`
+  prints `removed 3 file(s) ... kept 2` and leaves the two
+  newest-by-mtime files.
+
+**Test isolation note.** The autouse `isolated_database` conftest
+fixture creates `tmp_path / "ela-shared-test.sqlite3"` for every
+test. My first pass used `tmp_path` directly as the prune target,
+which picked up that DB file and broke the assertions. Fixed by
+using `tmp_path / "backups"` as the prune directory — also more
+realistic, and a useful reminder that conftest fixtures share the
+test's tmp_path.
+
+**Assumptions / scope decisions.**
+- mtime, not filename timestamps. Backup filenames embed a UTC
+  timestamp (e.g. `ela-20260515T093000Z.sqlite3`), but mtime is
+  what survives a `cp` / `mv` and matches what `find ... -mtime`
+  would use. Filename ordering happens to agree with mtime for our
+  own backups, but mtime is the safer choice.
+- Glob default `*.sqlite3` matches what `backup-db.sh` writes.
+  Configurable for users who script differently.
+- No automatic prune-after-backup hook. Kept the two CLIs separate
+  so each is independently testable and so the operator can pick
+  retention separately from backup cadence.
+- No retention-by-age option (only by count). Count is simpler,
+  predictable, and matches the family-server threat model. An
+  `--older-than` flag is a five-line follow-up if needed.
+
+**Definition of done check.**
+- App still starts locally: yes (CLI-only addition; no app code path
+  changed).
+- Backend tests pass: 195/195.
+- No secrets or hardcoded credentials.
+- Data model changes: none.
+- User-facing behavior preserved.
+
+**Recommended next task.** The two remaining adjacent slices from
+iter 15's options list:
+
+- **Streak surface in parent UI.** The streak count is in
+  `/api/dashboard.rewards.streak_days` but parents only see it on
+  the child dashboard. Adding one card to `/parent/progress` would
+  let parents track streak trend alongside the per-skill stats.
+- **AI usage card in parent view.** Surface today's
+  `ai_call_log` count + remaining budget so parents can sanity-check
+  cost without reading logs. A small `/api/parent/ai-usage` endpoint
+  plus a card on the progress page.
+
+The streak one is slightly smaller (no new endpoint, just plumb an
+existing field through the parent response). My pick.
+
+The deferred item 5 (per-user child-account login) is still open and
+still needs a dedicated design pass before being safe to take on as
+a ralph slice.
+
+---
+
 ## Iteration 15 — AI call log retention + pruning
 
 **Scope chosen.** Item 5 (per-user child-account login) was next on the

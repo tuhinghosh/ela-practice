@@ -11,7 +11,7 @@ import argparse
 import sqlite3
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional
 
 from backend.app.db import get_database_path
 
@@ -58,6 +58,32 @@ def backup_database(
         src_conn.close()
 
     return dst
+
+
+def prune_backups(
+    directory: Path,
+    *,
+    keep: int,
+    pattern: str = "*.sqlite3",
+) -> List[Path]:
+    """Delete the oldest backup files in ``directory`` until at most ``keep``
+    remain, matched by ``pattern`` and ranked by mtime (newest first).
+
+    Returns the list of deleted paths in the order they were deleted. A
+    missing directory is treated as empty (no error). ``keep`` must be ``>= 0``.
+    """
+    if keep < 0:
+        raise ValueError("keep must be >= 0.")
+    if not directory.exists():
+        return []
+    candidates = [path for path in directory.glob(pattern) if path.is_file()]
+    candidates.sort(key=lambda path: path.stat().st_mtime, reverse=True)
+    to_delete = candidates[keep:]
+    deleted: List[Path] = []
+    for path in to_delete:
+        path.unlink()
+        deleted.append(path)
+    return deleted
 
 
 def _build_parser() -> argparse.ArgumentParser:
