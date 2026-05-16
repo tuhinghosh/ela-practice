@@ -2,6 +2,103 @@
 
 Tracks each loop iteration against `docs/RALPH_BRIEF.md`. Newest first.
 
+## Iteration 24 — HOTFIX: legacy DB upgrade fails at startup
+
+**Why hotfix.** The user tried to run the app locally after iter 23
+and hit `sqlite3.OperationalError: no such column: login_user_id`
+during `ensure_database()` on the lifespan event. Blocked all manual
+testing. The bug was in code from iter 20 — iter 23's smoke test
+caught it for in-image DBs (fixed via `.dockerignore`) but never
+exercised the legacy on-disk-DB upgrade path that real users have.
+
+**Root cause.** `ensure_database()` ordering was wrong for legacy
+DBs:
+
+```python
+create_schema(connection)        # ← CREATE INDEX on login_user_id
+                                 #    runs BEFORE the column exists
+run_migrations(connection)       # ← migration #3 adds the column
+seed_core_records(connection)
+```
+
+On a pre-iter-20 DB, `CREATE TABLE IF NOT EXISTS child_profiles`
+short-circuits because the table already exists (with the old
+shape). The subsequent `CREATE INDEX IF NOT EXISTS
+idx_child_profiles_login_user_id ON child_profiles(login_user_id) …`
+then fails because the column isn't there yet — migration #3 hasn't
+run.
+
+The deeper invariant the old code violated: indexes inherently
+target the *final* schema shape; they shouldn't live with the table
+DDL when later migrations can reshape the table.
+
+**Fix.** Split index DDL out of `create_schema` into a new
+`apply_indexes()` step that runs *after* migrations:
+
+```python
+def ensure_database(db_path=None):
+    target = db_path or get_database_path()
+    with get_connection(target) as connection:
+        create_schema(connection)   # tables only
+        run_migrations(connection)  # column adds + table recreations
+        apply_indexes(connection)   # all indexes (idempotent)
+        seed_core_records(connection)
+    return target
+```
+
+`apply_indexes()` is `CREATE INDEX IF NOT EXISTS` for both the
+owner index and the partial unique index on `login_user_id`, safe
+to run after migration #3 has brought the table to the current
+shape.
+
+**Changes.**
+- `backend/app/db.py` — removed index DDL from `create_schema`,
+  added new `apply_indexes()` function, wired it into
+  `ensure_database()` between migrations and seed.
+- `backend/tests/test_migrations.py` — new regression test
+  `test_ensure_database_upgrades_legacy_child_profiles_without_login_user_id`
+  manually builds a pre-iter-20 `child_profiles` shape (no
+  `login_user_id`, no `is_active`, `UNIQUE` on `user_id`), seeds a
+  row, runs `ensure_database()`, asserts: it succeeds, the new
+  columns are present, the seeded row survived the table
+  recreation, and the partial unique index exists. Confirmed by
+  reproducing the bug first (red), then fixing (green).
+
+**Tests run.**
+- Regression test red before fix → green after.
+- `python3 -m pytest backend/tests -q` → 229 passed (1 new; all 228
+  prior still green).
+- **End-to-end reproduction of the user's scenario**: build a
+  legacy DB by hand at `/tmp/ela-legacy-smoke/legacy.sqlite3`,
+  point `DATABASE_PATH` at it, call `ensure_database()` →
+  succeeds; `child_profiles` columns now include `login_user_id`
+  and `is_active`; the pre-existing "Explorer Kid" row is
+  preserved; `schema_migrations` shows ids `[1, 2, 3]` applied.
+
+**Assumptions / scope decisions.**
+- The fix is a non-destructive refactor: behavior for fresh DBs
+  and for already-upgraded DBs is identical to before. Only the
+  failure case (legacy DB with a stale schema) changes.
+- Could have alternatively guarded the CREATE INDEX with a
+  PRAGMA check or moved it inside migration #3. Splitting indexes
+  into a dedicated step is the more general fix — future
+  migrations that reshape tables won't trip the same bug because
+  indexes are reapplied after every startup.
+
+**Definition of done check.**
+- App still starts locally: yes (verified via the legacy-DB
+  reproduction script).
+- Backend tests pass: 229/229.
+- No secrets or hardcoded credentials.
+- Data model changes: none (refactor only — same end-state schema).
+- User-facing behavior preserved.
+
+**Action for the user.** Re-run `./scripts/start-mac.sh` (no DB
+restore needed; the legacy upgrade now works in place). The
+spot-check plan from the previous turn picks up from step 2.
+
+---
+
 ## Iteration 23 — Railway-readiness #2: deploy doc + Dockerfile fixes
 
 **Scope chosen.** The recommended next slice from iter 22: volume +

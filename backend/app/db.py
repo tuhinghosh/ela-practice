@@ -55,12 +55,6 @@ def create_schema(connection: sqlite3.Connection) -> None:
             FOREIGN KEY(login_user_id) REFERENCES users(id) ON DELETE SET NULL
         );
 
-        CREATE INDEX IF NOT EXISTS idx_child_profiles_owner
-            ON child_profiles(user_id);
-        CREATE UNIQUE INDEX IF NOT EXISTS idx_child_profiles_login_user_id
-            ON child_profiles(login_user_id)
-            WHERE login_user_id IS NOT NULL;
-
         CREATE TABLE IF NOT EXISTS activity_sessions (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             session_uuid TEXT NOT NULL UNIQUE,
@@ -146,6 +140,26 @@ def create_schema(connection: sqlite3.Connection) -> None:
     connection.commit()
 
 
+def apply_indexes(connection: sqlite3.Connection) -> None:
+    """Create every required index. Idempotent.
+
+    Lives separate from ``create_schema`` because some indexes (notably the
+    partial UNIQUE on ``child_profiles.login_user_id``) reference columns
+    that migrations add — so this must run AFTER ``run_migrations`` has
+    brought legacy DBs to the current schema head.
+    """
+    connection.executescript(
+        """
+        CREATE INDEX IF NOT EXISTS idx_child_profiles_owner
+            ON child_profiles(user_id);
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_child_profiles_login_user_id
+            ON child_profiles(login_user_id)
+            WHERE login_user_id IS NOT NULL;
+        """
+    )
+    connection.commit()
+
+
 def seed_core_records(connection: sqlite3.Connection) -> dict[str, int]:
     settings = get_settings()
     username = settings.bootstrap_username
@@ -203,6 +217,7 @@ def ensure_database(db_path: Optional[Path] = None) -> Path:
     with get_connection(target) as connection:
         create_schema(connection)
         run_migrations(connection)
+        apply_indexes(connection)
         seed_core_records(connection)
     return target
 

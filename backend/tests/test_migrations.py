@@ -71,6 +71,71 @@ def test_run_migrations_applies_missing_columns_on_legacy_schema(tmp_path: Path)
         assert legacy_row["role"] == "parent"
 
 
+def test_ensure_database_upgrades_legacy_child_profiles_without_login_user_id(
+    tmp_path: Path,
+) -> None:
+    """Regression: an on-disk DB created before iter 20 has child_profiles
+    without ``login_user_id``. ``ensure_database()`` must add that column
+    via migration #3 — and must not fail upstream because create_schema's
+    index DDL referenced a column the legacy table doesn't have yet."""
+    from backend.app.db import ensure_database
+
+    db_path = tmp_path / "legacy.sqlite3"
+    # Build the pre-iter-20 shape by hand: users with auth columns (post
+    # migration #1) plus child_profiles with the original UNIQUE-on-user_id
+    # shape and no login_user_id / is_active.
+    with get_connection(db_path) as connection:
+        connection.executescript(
+            """
+            CREATE TABLE users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT NOT NULL UNIQUE,
+                password_hash TEXT,
+                role TEXT NOT NULL DEFAULT 'parent',
+                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            );
+            CREATE TABLE child_profiles (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL UNIQUE,
+                display_name TEXT NOT NULL,
+                grade_level INTEGER NOT NULL DEFAULT 3,
+                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+            );
+            """
+        )
+        # Seed a single parent + child the way the old code would have.
+        connection.execute("INSERT INTO users (username) VALUES (?)", ("legacy",))
+        connection.execute(
+            "INSERT INTO child_profiles (user_id, display_name, grade_level) VALUES (1, ?, ?)",
+            ("Legacy Kid", 3),
+        )
+        connection.commit()
+
+    # The thing under test: must not raise. Without the fix it raises
+    # sqlite3.OperationalError("no such column: login_user_id") during
+    # create_schema's CREATE INDEX step.
+    ensure_database(db_path)
+
+    with get_connection(db_path) as connection:
+        cols = {row["name"] for row in connection.execute("PRAGMA table_info(child_profiles)").fetchall()}
+        assert "login_user_id" in cols
+        assert "is_active" in cols
+
+        # The pre-existing row survived the table recreation.
+        row = connection.execute(
+            "SELECT display_name FROM child_profiles WHERE display_name = ?",
+            ("Legacy Kid",),
+        ).fetchone()
+        assert row is not None
+
+        # The post-migration indexes are present.
+        indexes = {row["name"] for row in connection.execute(
+            "SELECT name FROM sqlite_master WHERE type='index' AND tbl_name='child_profiles'"
+        ).fetchall()}
+        assert "idx_child_profiles_login_user_id" in indexes
+
+
 def test_ensure_database_smoke_from_empty(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     """End-to-end: a brand-new file becomes a usable DB with seed user + migrations recorded."""
     db_path = tmp_path / "smoke.sqlite3"
