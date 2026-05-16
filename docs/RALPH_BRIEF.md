@@ -1,124 +1,153 @@
-Your job is to make the app safely deployable and more useful for parent-guided ELA practice. Do not rewrite the app from scratch. Improve it incrementally, preserve working behavior, and leave the repo in a better tested state after every loop.
+You are Claude Code running inside a Ralph loop for the ELA reading/writing practice app for a third grader (soon to be fourth grader).
 
-Current app summary:
-- Single Docker container: FastAPI backend + static NextJS export + SQLite, served on port 8000
-- OpenRouter used for post-submission AI coaching
-- Current features: hardcoded login, seeded activities, deterministic scoring, AI coach panel, rewards, child dashboard, parent progress view, SQLite schema, pytest/Vitest/Playwright tests
-- Main gaps:
-  1. No real user management
-  2. Insecure auth/secrets posture
-  3. Container-bound SQLite with no volume/migrations/backups
-  4. Shallow progress tracking and incorrect streak logic
-  5. No operability/observability/cost guardrails/content workflow
+The original deployability backlog has been completed. Do not redo that work unless you find a regression.
 
-Operating rules:
-1. Work in small, shippable vertical slices.
-2. At the start of each run, inspect the repo, git status, tests, and any existing progress files.
-3. Maintain or create `RALPH_PROGRESS.md`.
-4. Pick exactly one meaningful task per run unless a task is tiny and tightly coupled to another.
-5. Do not break existing tests. Add tests for every behavior change.
-6. Prefer simple, boring, maintainable solutions.
-7. Do not introduce cloud dependencies unless absolutely necessary.
-8. Do not expose child data externally except for the existing OpenRouter coaching flow.
-9. Do not log child free-text responses or secrets.
-10. Do not claim completion unless tests pass or you clearly document what failed and why.
+Current app state:
+- FastAPI + static Next.js export + SQLite + OpenRouter AI coaching served from one Docker container on port 8000
+- Real hashed login with parent/child roles
+- Env-driven session/cookie/secrets config
+- CSRF origin/referer checks
+- Login/password-change rate limits
+- Prod startup config validation
+- SQLite migrations and backup script
+- /api/health and /api/ready
+- Structured logging without request bodies or child responses
+- Per-user daily AI call cap
+- Streaks based on submitted learning activity dates
+- Parent progress includes 7-day / 30-day / all-time skill summaries, practice-next recommendation, and recent question history
+- Backend-owned canonical content with manifest/sync/validation workflow
+- Backend pytest + frontend vitest green
 
-Primary product constraint:
-This is currently a family app, not a public SaaS product. Build toward safe private deployment first: real auth, persistent data, backups, config hygiene, and parent-visible progress. Avoid over-engineering enterprise multi-tenancy unless needed for parent/child separation and data isolation.
+Your job in this phase is to move the app from “technically deployable” to “safe, durable, useful, and engaging for a real child and parent using it every week.”
 
-Backlog priority order:
+Do not rewrite the app. Work in small vertical slices. Each Ralph iteration should produce one coherent improvement, tests, updated progress notes, and a commit.
 
-P0: Deployment safety foundation
-A. Replace hardcoded auth with real local user management:
-   - Password hashing using a standard library
-   - Parent and child roles
-   - Seed/admin bootstrap flow via environment variable or first-run setup
-   - Remove hardcoded `user/password`
-   - Ensure child profile belongs to a parent/account
-   - Tests for login success/failure, role access, and tenant isolation
+Maintain or create `RALPH_PROGRESS.md`.
 
-B. Secure config/secrets:
-   - No insecure default `SESSION_SECRET`
-   - Validate required env vars at startup
-   - Server-only OpenRouter key handling
-   - Secure cookie settings configurable by environment
-   - Basic CSRF protection for state-changing routes if cookie auth is used
-   - Rate limit login attempts
-   - Add `.env.example` with safe placeholders
-   - Ensure `.env` is ignored by git
-   - Tests for missing config and login rate limiting where practical
+Phase 2 priorities, in order:
 
-C. Persistent SQLite and migrations:
-   - Make database path configurable
-   - Add Docker volume guidance / docker-compose setup
-   - Add migrations using a simple migration tool or a clear versioned migration runner
-   - Preserve existing schema/data
-   - Add backup/export command or documented script
-   - Add migration tests or at minimum a smoke test from empty DB to usable DB
+P0: Deployment proof and durability
 
-P1: Parent-useful learning progress
-D. Fix streak logic:
-   - Streak should be based on completed learning activity dates, not generic `updated_at`
-   - Define what counts as a learning day
-   - Add tests for same-day activity, consecutive days, skipped day, and timezone handling
+1. Add a deployment readiness checklist
+   - Document required env vars
+   - Document local production-like run
+   - Document Railway-style deployment assumptions
+   - Document volume/database path requirements
+   - Document backup and restore commands
+   - Document health/readiness checks
+   - Document what data is and is not logged
+   - Add a “first deploy smoke test” checklist
 
-E. Improve progress tracking:
-   - Track per-skill performance over time
-   - Add time-windowed summaries: 7-day, 30-day, all-time
-   - Add parent-facing “what to practice next”
-   - Surface recent question history and common growth areas
-   - Keep it simple and explainable, not a black-box mastery model unless justified
-   - Add backend tests and at least one frontend test for parent progress display
+2. Add backup restore verification
+   - Create or improve a script/test that:
+     - creates a small DB
+     - inserts sample user/activity/progress data
+     - runs backup
+     - restores to a fresh DB path
+     - verifies expected records exist
+   - Make this runnable locally and in CI if practical
 
-P2: Operability and content workflow
-F. Observability:
-   - Add structured logging
-   - Add `/health` and `/ready`
-   - Add basic request/error logging without child response text
-   - Add AI call logging for count/cost/latency without sensitive content
-   - Add guardrails for max AI calls per session/day
+3. Make AI usage guardrails more durable
+   - Review the current in-memory daily AI call cap
+   - Either persist daily usage in SQLite or explicitly document why in-memory is acceptable for private single-container deployment
+   - If persistence is simple, implement a SQLite-backed usage table keyed by user/date
+   - Add tests for daily reset, cap exceeded, and no prompt/response logging
 
-G. Content workflow:
-   - Move seeded activities out of the frontend bundle if currently bundled there
-   - Create versioned JSON/YAML activity files or backend seed files
-   - Add validation for activities
-   - Add a repeatable content import/update command
-   - Add tests to validate all seeded activities
+4. Add production smoke test script
+   - A maintainer should be able to run one command after deployment to check:
+     - health endpoint
+     - readiness endpoint
+     - login
+     - fetch activities
+     - submit one deterministic non-AI activity if possible
+   - Do not require exposing secrets in logs
+
+P1: Learning loop quality
+
+5. Build a simple “Today’s Practice” engine
+   - Parent/child dashboard should recommend 2–4 activities for today
+   - Use recent performance, skill gaps, and variety
+   - Avoid over-optimizing; use explainable rules
+   - Example explanation: “Recommended because inference was your lowest 30-day skill and you have not practiced it in 5 days.”
+   - Add backend tests for recommendation logic
+   - Add frontend tests for display
+
+6. Add difficulty bands
+   - Introduce simple difficulty levels for activities: easy, medium, challenge
+   - Ensure existing content has a default difficulty or is migrated cleanly
+   - Recommendation logic should avoid giving only hard activities
+   - Add content validation so every activity has difficulty
+
+7. Improve writing feedback usefulness
+   - Review current short-response scoring and AI coach output
+   - Add parent-safe summary of writing growth areas without echoing child text
+   - Add specific writing skills such as:
+     - complete sentence
+     - evidence from text
+     - clear explanation
+     - grammar/mechanics
+   - Add tests for deterministic scoring where possible
+
+8. Add child motivation improvements
+   - Add lightweight weekly goals
+   - Example: “Complete 4 activities this week” or “Practice inference twice”
+   - Keep it fun and non-punitive
+   - Do not create shame-based failure states
+   - Add tests for goal progress calculations
+
+P2: Content workflow and maintainability
+
+9. Add content authoring guide
+   - Explain how to add a new activity
+   - Explain required fields
+   - Explain skill tags
+   - Explain cue-presence validation
+   - Explain how to run validate/manifest/sync
+   - Include one good example and one bad example
+
+10. Add richer content seed set
+   - Add 10–15 new high-quality activities
+   - Prioritize inference, summarization, vocabulary-in-context, and evidence-based writing
+   - Make them fun for a 3rd grader
+   - Include varied themes: mystery, animals, space, sports, friendship, fantasy, science
+   - Validate all content
+   - Do not add bland worksheet-style content
+
+11. Add parent weekly report
+   - Generate a simple weekly parent summary:
+     - activities completed
+     - strongest skill
+     - growth area
+     - suggested next practice
+     - streak/goal status
+   - Keep it deterministic first
+   - AI-generated report can be optional later, not required
 
 Per-run workflow:
-1. Read `RALPH_PROGRESS.md` if it exists.
-2. Inspect relevant files before editing.
-3. Choose the highest-priority incomplete task from the backlog.
-4. Write a short implementation plan in your own working notes.
-5. Make the change.
-6. Run the smallest relevant tests first, then the broader suite if feasible:
-   - backend pytest
-   - frontend unit tests
-   - Playwright E2E when auth/progress/frontend flows change
-7. Fix failures caused by your changes.
-8. Update `RALPH_PROGRESS.md` with:
-   - What you changed
-   - Files touched
-   - Tests run and results
-   - Remaining gaps
-   - Recommended next task
-9. Commit the change with a clear commit message.
-10. Stop after one coherent completed slice.
+1. Read `RALPH_PROGRESS.md`.
+2. Inspect the repo and current git status.
+3. Pick the highest-priority incomplete Phase 2 task.
+4. Implement one coherent vertical slice.
+5. Add or update tests.
+6. Run relevant tests.
+7. Update `RALPH_PROGRESS.md` with:
+   - task completed
+   - files changed
+   - tests run
+   - known limitations
+   - recommended next task
+8. Commit with a clear message.
+9. Stop.
 
-Definition of done for each loop:
-- App still starts locally
+Definition of done:
+- Existing behavior preserved
 - Relevant tests pass
-- No secrets committed
-- No hardcoded credentials introduced
-- Data model changes are migration-safe
-- User-facing behavior is preserved or intentionally improved
-- `RALPH_PROGRESS.md` is updated
-- Git commit created
+- No secrets or child free-text responses are logged
+- Any new data model changes are migration-safe
+- Any parent/child-facing UX is simple and age-appropriate
+- Progress file updated
+- Commit created
 
-When uncertain:
-- Prefer the smallest safe implementation.
-- Make assumptions explicit in `RALPH_PROGRESS.md`.
-- Do not block waiting for human input unless continuing would risk data loss or major architecture churn.
+Important guidance:
+The app is for a real child, not a generic SaaS demo. Favor trustworthy, warm, and useful learning experiences over complex platform architecture. The next big win is not more infrastructure. The next big win is making the app tell a third grader what to practice today and helping the parent understand what is improving.
 
-First recommended task:
-Start with P0-B if it is small and self-contained: secure config/secrets posture. Then proceed to P0-A auth, then P0-C persistence/migrations. Do not start progress dashboards until deployment safety is addressed.
