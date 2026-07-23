@@ -98,3 +98,13 @@ npm run build
 npm run test:unit
 npm run test:e2e
 ```
+
+Production Docker smoke:
+
+```bash
+./scripts/smoke-docker.sh
+```
+
+This builds the packaged application, completes one real activity against its
+FastAPI API, replaces the container, verifies SQLite persistence, and removes
+its disposable image, containers, and temporary database.
