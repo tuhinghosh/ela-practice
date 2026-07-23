@@ -9,6 +9,7 @@ import { ButtonLink } from "@/components/button";
 import { Card } from "@/components/card";
 import { Icon } from "@/components/icon";
 import { Split } from "@/components/layout";
+import { Tag } from "@/components/tag";
 import { ApiError, getAICoachFeedback, getSessionResult, type AICoachResponse, type SessionResultResponse } from "@/lib/api";
 import { coachSample, recentSessions } from "@/lib/mock-data";
 
@@ -16,6 +17,18 @@ import styles from "../../screens.module.css";
 
 type Props = {
   initialSessionId: string;
+};
+
+const REYANA_MISSION_IDS = [
+  "pilot-mystery-cat-01",
+  "pilot-space-mars-01",
+  "pilot-world-japan-01",
+] as const;
+
+const REYANA_MISSION_TITLES: Record<(typeof REYANA_MISSION_IDS)[number], string> = {
+  "pilot-mystery-cat-01": "A Day Called a Sol",
+  "pilot-space-mars-01": "Japan: One Country, Many Islands",
+  "pilot-world-japan-01": "Mission Home",
 };
 
 function cleanText(value: string | null | undefined, fallback: string): string {
@@ -67,6 +80,13 @@ function ScoreRing({ percent }: { percent: number }) {
       <span className={styles.scoreCircleValue}>{Math.round(percent)}%</span>
     </div>
   );
+}
+
+function formatSkill(skill: string): string {
+  return skill
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 }
 
 export default function ResultsClient({ initialSessionId }: Props) {
@@ -141,6 +161,7 @@ export default function ResultsClient({ initialSessionId }: Props) {
         sessionId: result.session_id,
         rubric: result.rubric,
         rewardSnapshot: result.reward_snapshot,
+        questionResults: result.question_results ?? [],
       }
     : {
         activityTitle: fallback.activityTitle,
@@ -150,7 +171,13 @@ export default function ResultsClient({ initialSessionId }: Props) {
         sessionId: fallback.id,
         rubric: null,
         rewardSnapshot: null,
+        questionResults: [],
       };
+
+  const pilotIndex = result ? REYANA_MISSION_IDS.indexOf(result.activity_id as (typeof REYANA_MISSION_IDS)[number]) : -1;
+  const nextPilotId = pilotIndex >= 0 ? REYANA_MISSION_IDS[pilotIndex + 1] : undefined;
+  const nextDestination = nextPilotId ? `/activity/${nextPilotId}` : "/";
+  const nextLabel = nextPilotId ? `Next: ${REYANA_MISSION_TITLES[result!.activity_id as (typeof REYANA_MISSION_IDS)[number]]}` : "Back to mission home";
 
   return (
     <AppShell
@@ -164,6 +191,82 @@ export default function ResultsClient({ initialSessionId }: Props) {
           <Icon name="message-circle" size={16} />
           {error} Your progress is still saved.
         </p>
+      ) : null}
+      <Card className={styles.resultReviewCard}>
+        <div className={styles.cardHeader}>
+          <span className={styles.cardIcon} style={{ ["--icon-color" as string]: "var(--brand)" }}>
+            <Icon name="target" size={18} />
+          </span>
+          <div>
+            <h2>Skills from this mission</h2>
+            <p className={styles.muted}>Each score comes from the question that measured that skill.</p>
+          </div>
+        </div>
+        <div className={styles.skillResultGrid}>
+          {Object.entries(result?.skill_breakdown ?? {}).map(([skill, score]) => (
+            <div key={skill} className={styles.skillResult}>
+              <span>{formatSkill(skill)}</span>
+              <strong>{Math.round(score)}%</strong>
+            </div>
+          ))}
+          {!result ? <p className={styles.muted}>Skill details will appear with live results.</p> : null}
+        </div>
+      </Card>
+
+      {resolved.questionResults.length > 0 ? (
+        <Card className={styles.resultReviewCard}>
+          <div className={styles.cardHeader}>
+            <span className={styles.cardIcon} style={{ ["--icon-color" as string]: "var(--success)" }}>
+              <Icon name="check-circle" size={18} />
+            </span>
+            <div>
+              <h2>Review your answers</h2>
+              <p className={styles.muted}>Use the explanation to see which passage clue matters.</p>
+            </div>
+          </div>
+          <ol className={styles.answerReviewList}>
+            {resolved.questionResults.map((question, index) => (
+              <li key={question.question_id} className={styles.answerReviewItem}>
+                <div className={styles.answerReviewHeading}>
+                  <span className={styles.questionNumber}>Q{index + 1}</span>
+                  <Tag>{formatSkill(question.skill_tag)}</Tag>
+                  <span
+                    className={`${styles.answerStatus} ${
+                      question.is_correct === true
+                        ? styles.answerCorrect
+                        : question.is_correct === false
+                          ? styles.answerNeedsReview
+                          : styles.answerWritten
+                    }`}
+                  >
+                    {question.is_correct === true
+                      ? "Correct"
+                      : question.is_correct === false
+                        ? "Review this one"
+                        : "Written response"}
+                  </span>
+                </div>
+                <p className={styles.answerPrompt}>{question.prompt}</p>
+                <div className={styles.answerDetailGrid}>
+                  <div>
+                    <span className={styles.answerLabel}>Your answer</span>
+                    <p>{question.child_answer}</p>
+                  </div>
+                  {question.is_correct === false && question.correct_answer ? (
+                    <div>
+                      <span className={styles.answerLabel}>Best answer</span>
+                      <p>{question.correct_answer}</p>
+                    </div>
+                  ) : null}
+                </div>
+                <p className={styles.answerExplanation}>
+                  <Icon name="book" size={15} />
+                  <span>{question.explanation}</span>
+                </p>
+              </li>
+            ))}
+          </ol>
+        </Card>
       ) : null}
       <Split>
         <Card>
@@ -256,9 +359,9 @@ export default function ResultsClient({ initialSessionId }: Props) {
               <strong>{coach.celebration}</strong>
             </p>
           ) : null}
-          <ButtonLink href="/" tone="secondary">
-            <Icon name="home" size={16} />
-            Back to mission home
+          <ButtonLink href={nextDestination} tone={nextPilotId ? "primary" : "secondary"}>
+            <Icon name={nextPilotId ? "arrow-right" : "home"} size={16} />
+            {nextLabel}
           </ButtonLink>
         </Card>
         <AICoachPanel

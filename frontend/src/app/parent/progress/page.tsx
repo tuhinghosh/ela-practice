@@ -37,6 +37,7 @@ export default function ParentProgressPage() {
   const growth = progress?.summary.skill_summary?.struggle ?? parentProgressHighlights.growthArea;
   const trend = progress?.summary.trend ?? "starting";
   const practiceNext = progress?.practice_next ?? [];
+  const adaptive = progress?.adaptive_recommendation;
   const thirtyDay = progress?.skill_history?.["30_day"] ?? {};
   const thirtyDayEntries = Object.entries(thirtyDay)
     .map(([skill, stats]) => ({ skill, attempts: stats.attempts, avg: stats.avg_score }))
@@ -221,6 +222,49 @@ export default function ParentProgressPage() {
                 </li>
               ))}
             </ul>
+          )}
+        </Card>
+
+        <Card as="article" className={styles.cardWithHeader} aria-label="Adaptive recommendation">
+          <div className={styles.cardHeader}>
+            <span className={styles.cardIcon} style={{ ["--icon-color" as string]: "var(--brand)" }}>
+              <Icon name="target" size={18} />
+            </span>
+            <h2>How the next mission was chosen</h2>
+          </div>
+          {adaptive ? (
+            <div className={styles.adaptiveDetail}>
+              <p className={styles.adaptiveTitle}>{adaptive.activity_title ?? "More reviewed content needed"}</p>
+              <dl className={styles.adaptiveFacts}>
+                <div>
+                  <dt>Phase</dt>
+                  <dd>{adaptive.phase}</dd>
+                </div>
+                <div>
+                  <dt>Decision</dt>
+                  <dd>{adaptive.decision}</dd>
+                </div>
+                <div>
+                  <dt>Target skill</dt>
+                  <dd>{adaptive.target_skill ?? "starter baseline"}</dd>
+                </div>
+                <div>
+                  <dt>Evidence</dt>
+                  <dd>
+                    {adaptive.attempts} observation{adaptive.attempts === 1 ? "" : "s"}
+                    {adaptive.avg_score === null ? "" : ` at ${Math.round(adaptive.avg_score)}%`}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Difficulty</dt>
+                  <dd>{adaptive.difficulty}</dd>
+                </div>
+              </dl>
+              <p className={styles.muted}>{adaptive.reason}</p>
+              <p className={styles.ruleText}>{adaptive.rule}</p>
+            </div>
+          ) : (
+            <p className={styles.muted}>Recommendation details are loading…</p>
           )}
         </Card>
 

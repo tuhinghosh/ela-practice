@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from typing import Optional
 from zoneinfo import ZoneInfo
 
 import pytest
@@ -13,9 +14,13 @@ from backend.app.db import (
 )
 from backend.app.main import app
 from backend.app.skill_progress import (
+    PILOT_ACTIVITY_IDS,
+    build_adaptive_recommendation,
+    classify_skill_evidence,
     compute_skill_windows,
     recommend_practice_next,
 )
+from backend.app.content_schema import list_seed_activities
 
 
 def _insert_scored_session(
@@ -172,6 +177,92 @@ def test_recommend_practice_next_respects_ceiling() -> None:
     # With ceiling = 90, only summary remains.
     recs = recommend_practice_next(windows, score_ceiling=90.0)
     assert [r["skill"] for r in recs] == ["summary"]
+
+
+@pytest.mark.parametrize(
+    ("attempts", "average", "decision", "difficulty"),
+    [
+        (0, None, "gather-evidence", "medium"),
+        (2, 100.0, "gather-evidence", "medium"),
+        (3, 59.9, "step-down", "easy"),
+        (3, 60.0, "hold", "medium"),
+        (3, 85.0, "hold", "medium"),
+        (3, 85.1, "step-up", "difficult"),
+    ],
+)
+def test_adaptive_thresholds_are_explicit(
+    attempts: int,
+    average: Optional[float],
+    decision: str,
+    difficulty: str,
+) -> None:
+    result = classify_skill_evidence(attempts, average)
+    assert result["decision"] == decision
+    assert result["target_difficulty"] == difficulty
+
+
+def test_adaptive_recommendation_completes_baseline_in_order() -> None:
+    recommendation = build_adaptive_recommendation(
+        {}, list_seed_activities(), {PILOT_ACTIVITY_IDS[0]}
+    )
+    assert recommendation["phase"] == "baseline"
+    assert recommendation["activity_id"] == PILOT_ACTIVITY_IDS[1]
+    assert recommendation["decision"] == "complete-baseline"
+
+
+def test_adaptive_recommendation_explains_step_down() -> None:
+    windows = {
+        "30_day": {
+            "main-idea": {"attempts": 3, "avg_score": 90.0},
+            "vocabulary": {"attempts": 3, "avg_score": 90.0},
+            "inference": {"attempts": 4, "avg_score": 55.0},
+            "reading-comprehension": {"attempts": 3, "avg_score": 80.0},
+            "summary": {"attempts": 3, "avg_score": 80.0},
+        }
+    }
+    recommendation = build_adaptive_recommendation(
+        windows, list_seed_activities(), set(PILOT_ACTIVITY_IDS)
+    )
+    assert recommendation["phase"] == "adaptive"
+    assert recommendation["target_skill"] == "inference"
+    assert recommendation["decision"] == "step-down"
+    assert recommendation["difficulty"] == "easy"
+    assert "below the 60%" in str(recommendation["reason"])
+
+
+def test_pilot_submission_creates_question_level_observations() -> None:
+    with TestClient(app) as client:
+        assert client.post(
+            "/api/auth/login", json={"username": "user", "password": "password"}
+        ).status_code == 200
+        response = client.post(
+            "/api/activities/pilot-mystery-cat-01/submit",
+            json={
+                "responses": [
+                    {
+                        "question_id": "q1",
+                        "answer_choice": "Pixel's cushion is empty and the ribbon resembles the bookmark's tassel.",
+                    },
+                    {
+                        "question_id": "q2",
+                        "answer_choice": "She compares where the paw prints and ribbon were found.",
+                    },
+                    {"question_id": "q3", "answer_choice": "Certain that an idea is true"},
+                    {
+                        "question_id": "q4",
+                        "answer_text": "Mateo learns that every clue must fit because his first guess was wrong.",
+                    },
+                ]
+            },
+        )
+        assert response.status_code == 200
+        parent = client.get("/api/progress/parent").json()
+
+    thirty_day = parent["skill_history"]["30_day"]
+    assert thirty_day["reading-comprehension"]["attempts"] == 1
+    assert thirty_day["inference"]["attempts"] == 1
+    assert thirty_day["vocabulary"]["attempts"] == 1
+    assert thirty_day["summary"]["attempts"] == 1
 
 
 def test_parent_progress_recent_questions_includes_mc_correctness_no_text(

@@ -4,9 +4,10 @@ This document defines the file-based seeded content model for MVP Part 5.
 
 ## Seed file locations
 
-- `frontend/src/content/activities.json`
-- `frontend/src/content/skill-tags.json`
-- `frontend/src/content/themes.json`
+- `backend/content/activities.json` (canonical)
+- `backend/content/skill-tags.json` (canonical)
+- `backend/content/themes.json` (canonical)
+- `frontend/src/content/` contains the build-time mirror maintained by the content sync workflow
 
 Seeded content remains in local versioned files for MVP and is not stored as the source-of-truth library in SQLite.
 
@@ -24,6 +25,7 @@ Each activity entry contains:
 - `passageText` (string)
 - `questions` (array, at least 2 items)
 - `skillTags` (array, at least 1 tag)
+- `sourceUrls` (optional array of factual-review sources; required by the pilot harness for informational pilot activities)
 
 ## Question schema
 
@@ -33,6 +35,8 @@ Each question entry contains:
 - `type` (`multiple-choice` or `short-response`)
 - `prompt` (string)
 - `choices` (required for `multiple-choice`, omitted for `short-response`)
+- `correctChoice` (required for `multiple-choice`, omitted for `short-response`)
+- `skillTag` (optional during legacy-content migration; identifies the one primary skill measured by the question)
 
 Validation constraints:
 
@@ -40,10 +44,24 @@ Validation constraints:
 - Short-response items must not include choice arrays
 - Activity IDs must be unique
 - Skill tags must come from the allowed list
+- A question-level `skillTag`, when present, must also appear in its activity's `skillTags`
+
+## Skill evidence and migration rule
+
+Skill reporting is based on question-level evidence, not the activity's overall
+score. Questions with an explicit `skillTag` contribute only to that skill's
+score. Untagged legacy questions are reported under `overall-reading`; the app
+must not copy an overall activity percentage onto every activity tag. This
+allows existing content to remain usable while reviewed activities are tagged
+gradually.
+
+Only activities where every question has a `skillTag` are eligible for
+adaptive selection. See `docs/ADAPTIVE_RECOMMENDATIONS.md` for the selection
+rules and thresholds.
 
 ## Skill tag schema
 
-Allowed MVP tags are defined in `frontend/src/content/skill-tags.json`:
+Allowed MVP tags are defined in `backend/content/skill-tags.json`:
 
 - `reading-comprehension`
 - `main-idea`
@@ -80,7 +98,7 @@ Allowed difficulty tiers:
 ## Passage length guidance
 
 - Child-facing reading passages should render at roughly 10 to 15 sentences for consistent practice depth.
-- If a seeded passage is shorter, the app applies deterministic enrichment text at load time to reach minimum reading length while preserving activity theme and skill focus.
+- Non-poetry passages that fail the minimum structural checks are rejected during content validation; the app does not pad or rewrite them at load time.
 
 ## Deterministic short-writing rubric (MVP v1)
 

@@ -183,4 +183,7 @@ frontend/out/
 backend/data/*.sqlite3
 backend/data/*.sqlite3-*
 
+# Local database backups (may contain child/account data)
+backups/
+
 CLAUDE.md

@@ -1,4 +1,4 @@
-from backend.app.content_schema import get_seed_activity
+from backend.app.content_schema import ActivityModel, get_seed_activity
 from backend.app.scoring import score_activity_submission
 
 
@@ -17,7 +17,7 @@ def test_scoring_returns_expected_shape() -> None:
     assert "rubric" in result
     assert "question_feedback" in result
     assert result["score_percent"] >= 0
-    assert set(result["skill_breakdown"].keys()) == set(activity.skillTags)
+    assert result["skill_breakdown"] == {"overall-reading": result["score_percent"]}
 
 
 def test_scoring_is_deterministic_for_same_payload() -> None:
@@ -33,3 +33,49 @@ def test_scoring_is_deterministic_for_same_payload() -> None:
 
     assert first["score_percent"] == second["score_percent"]
     assert first["rubric"] == second["rubric"]
+
+
+def test_skill_breakdown_uses_question_level_evidence() -> None:
+    activity = ActivityModel.model_validate(
+        {
+            "id": "skill-evidence",
+            "title": "Skill evidence",
+            "theme": "nature",
+            "passageType": "informational",
+            "missionLabel": "Practice two skills",
+            "passageTitle": "A short passage",
+            "passageText": "A short passage used for a scoring unit test.",
+            "skillTags": ["main-idea", "vocabulary"],
+            "questions": [
+                {
+                    "id": "main",
+                    "type": "multiple-choice",
+                    "prompt": "What is the main idea?",
+                    "choices": ["Correct", "Incorrect"],
+                    "correctChoice": "Correct",
+                    "skillTag": "main-idea",
+                },
+                {
+                    "id": "vocab",
+                    "type": "multiple-choice",
+                    "prompt": "What does the word mean?",
+                    "choices": ["Correct", "Incorrect"],
+                    "correctChoice": "Correct",
+                    "skillTag": "vocabulary",
+                },
+            ],
+        }
+    )
+
+    result = score_activity_submission(
+        activity,
+        {
+            "main": {"answer_choice": "Correct", "answer_text": None},
+            "vocab": {"answer_choice": "Incorrect", "answer_text": None},
+        },
+    )
+
+    assert result["skill_breakdown"] == {"main-idea": 100.0, "vocabulary": 0.0}
+    assert result["question_feedback"]["main"]["skill_tag"] == "main-idea"
+    assert result["question_feedback"]["main"]["score_percent"] == 100.0
+    assert result["question_feedback"]["vocab"]["score_percent"] == 0.0

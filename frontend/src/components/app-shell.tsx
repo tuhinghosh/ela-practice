@@ -16,9 +16,7 @@ type ShellProps = {
 };
 
 const navItems: Array<{ href: string; label: string; icon: IconName }> = [
-  { href: "/", label: "Mission Home", icon: "home" },
-  { href: "/activity/nature-01", label: "Activity", icon: "book" },
-  { href: "/results/session-001", label: "Results", icon: "trophy" },
+  { href: "/", label: "Missions", icon: "home" },
   { href: "/parent/progress", label: "Parent View", icon: "users" },
 ];
 

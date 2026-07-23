@@ -65,6 +65,7 @@ def score_activity_submission(
     total_score = 0.0
     max_score = float(len(activity.questions))
     details: dict[str, Any] = {}
+    skill_scores: dict[str, list[float]] = {}
 
     for question in activity.questions:
         response = submitted_responses.get(question.id, {})
@@ -72,8 +73,12 @@ def score_activity_submission(
             score, detail = _score_multiple_choice(question, response.get("answer_choice"))
         else:
             score, detail = _score_short_response(activity, response.get("answer_text"))
+        skill = question.skillTag or "overall-reading"
+        detail["skill_tag"] = skill
+        detail["score_percent"] = round(score * 100, 2)
         details[question.id] = detail
         total_score += score
+        skill_scores.setdefault(skill, []).append(score)
 
     score_percent = (total_score / max_score) * 100 if max_score else 0.0
 
@@ -100,5 +105,11 @@ def score_activity_submission(
         "score_percent": round(score_percent, 2),
         "question_feedback": details,
         "rubric": rubric,
-        "skill_breakdown": {tag: round(score_percent, 2) for tag in activity.skillTags},
+        # Only claim skill-level evidence when a question explicitly names the
+        # skill it measures. Untagged legacy questions remain an honest overall
+        # reading result while the content library is migrated gradually.
+        "skill_breakdown": {
+            skill: round((sum(scores) / len(scores)) * 100, 2)
+            for skill, scores in skill_scores.items()
+        },
     }

@@ -36,7 +36,11 @@ def _build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(argv: Optional[list[str]] = None) -> int:
+def main(
+    argv: Optional[list[str]] = None,
+    *,
+    now: Optional[datetime] = None,
+) -> int:
     args = _build_parser().parse_args(argv)
     settings = get_settings()
     days = args.days if args.days is not None else settings.ai_call_log_retention_days
@@ -48,7 +52,10 @@ def main(argv: Optional[list[str]] = None) -> int:
         print("ai_quota_prune: retention=0 (disabled), nothing pruned")
         return 0
 
-    cutoff = datetime.now(timezone.utc) - timedelta(days=days)
+    reference_time = now or datetime.now(timezone.utc)
+    if reference_time.tzinfo is None:
+        raise ValueError("now must be timezone-aware")
+    cutoff = reference_time.astimezone(timezone.utc) - timedelta(days=days)
     store = SQLiteQuotaStore(get_connection)
     removed = store.prune_older_than(cutoff)
     print(

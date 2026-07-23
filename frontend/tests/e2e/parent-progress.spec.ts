@@ -34,6 +34,18 @@ test("parent progress shows trend skill summary and writing highlights", async (
             summary: "Completion: meets; Relevance: meets; Sentence completeness: needs_work; Skill checks: evidence reference.",
           },
         ],
+        adaptive_recommendation: {
+          phase: "adaptive",
+          activity_id: "pilot-mystery-cat-01",
+          activity_title: "The Case of the Library Paw Prints",
+          difficulty: "easy",
+          target_skill: "inference",
+          decision: "step-down",
+          attempts: 4,
+          avg_score: 55,
+          reason: "Recent accuracy is 55%, below the 60% support threshold.",
+          rule: "<3 observations: gather evidence; <60%: easier; 60–85%: hold; >85%: harder.",
+        },
       }),
     });
   });
@@ -44,4 +56,7 @@ test("parent progress shows trend skill summary and writing highlights", async (
   await expect(page.getByText("improving")).toBeVisible();
   await expect(page.getByText(/Writing feedback highlights/)).toBeVisible();
   await expect(page.getByText(/Sentence completeness: needs_work/)).toBeVisible();
+  await expect(page.getByRole("heading", { name: "How the next mission was chosen" })).toBeVisible();
+  await expect(page.getByText("step-down", { exact: true })).toBeVisible();
+  await expect(page.getByText(/below the 60% support threshold/)).toBeVisible();
 });

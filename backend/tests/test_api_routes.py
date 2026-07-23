@@ -72,6 +72,8 @@ def test_activity_and_progress_routes(client: TestClient) -> None:
     dashboard = client.get("/api/dashboard")
     assert dashboard.status_code == 200
     assert "mission" in dashboard.json()
+    assert dashboard.json()["recommendation"]["decision"] == "complete-baseline"
+    assert dashboard.json()["mission"]["activity_id"] == "pilot-mystery-cat-01"
 
     activities = client.get("/api/activities")
     assert activities.status_code == 200
@@ -108,6 +110,9 @@ def test_activity_and_progress_routes(client: TestClient) -> None:
     assert session_result.json()["session_id"] == session_id
     assert session_result.json()["score_percent"] >= 0
     assert session_result.json()["reward_snapshot"]["stars_after"] >= stars_before
+    assert len(session_result.json()["question_results"]) == len(_nature_01_payload()["responses"])
+    assert all(item["skill_tag"] for item in session_result.json()["question_results"])
+    assert all(item["explanation"] for item in session_result.json()["question_results"])
 
     parent = client.get("/api/progress/parent")
     assert parent.status_code == 200
@@ -116,6 +121,8 @@ def test_activity_and_progress_routes(client: TestClient) -> None:
     assert parent.json()["summary"]["skill_summary"]["struggle"] != ""
     assert parent.json()["summary"]["trend"] in {"starting", "improving", "steady", "needs-support"}
     assert isinstance(parent.json()["writing_feedback_summaries"], list)
+    assert parent.json()["adaptive_recommendation"]["reason"]
+    assert parent.json()["adaptive_recommendation"]["rule"]
 
     rewards = client.get("/api/rewards")
     assert rewards.status_code == 200

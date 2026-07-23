@@ -431,6 +431,19 @@ def get_recent_sessions(connection: sqlite3.Connection, child_profile_id: int, l
     return list(rows)
 
 
+def get_completed_activity_ids(connection: sqlite3.Connection, child_profile_id: int) -> list[str]:
+    rows = connection.execute(
+        """
+        SELECT DISTINCT activity_id
+        FROM activity_sessions
+        WHERE child_profile_id = ? AND status = 'submitted'
+        ORDER BY activity_id
+        """,
+        (child_profile_id,),
+    ).fetchall()
+    return [str(row["activity_id"]) for row in rows]
+
+
 def get_recent_score_history(connection: sqlite3.Connection, child_profile_id: int, limit: int = 5) -> list[float]:
     rows = connection.execute(
         """
@@ -536,7 +549,11 @@ def create_submission(
         (session_uuid,),
     ).fetchone()["id"]
 
+    feedback_by_question = scoring_payload.get("question_feedback", {})
+    if not isinstance(feedback_by_question, dict):
+        feedback_by_question = {}
     for response in responses:
+        question_evidence = feedback_by_question.get(response["question_id"], {})
         connection.execute(
             """
             INSERT INTO responses (session_id, question_id, question_type, answer_text, answer_choice, evidence_json)
@@ -548,7 +565,12 @@ def create_submission(
                 response["question_type"],
                 response.get("answer_text"),
                 response.get("answer_choice"),
-                json.dumps({}),
+                json.dumps(
+                    {
+                        "skill_tag": question_evidence.get("skill_tag", "overall-reading"),
+                        "score_percent": question_evidence.get("score_percent", 0.0),
+                    }
+                ),
             ),
         )
 

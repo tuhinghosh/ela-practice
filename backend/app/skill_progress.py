@@ -18,9 +18,24 @@ from datetime import datetime, time, timedelta, timezone
 from typing import Dict, Iterable, List, Optional
 from zoneinfo import ZoneInfo
 
+from backend.app.content_schema import ActivityModel
+
 from backend.app.streak import _parse_sqlite_utc_timestamp
 
 DEFAULT_WINDOWS = (("7_day", 7), ("30_day", 30), ("all_time", None))
+PILOT_ACTIVITY_IDS = (
+    "pilot-mystery-cat-01",
+    "pilot-space-mars-01",
+    "pilot-world-japan-01",
+)
+ADAPTIVE_SKILLS = (
+    "main-idea",
+    "vocabulary",
+    "inference",
+    "reading-comprehension",
+    "summary",
+)
+DIFFICULTY_RANK = {"easy": 0, "medium": 1, "difficult": 2}
 
 
 def _window_cutoffs_utc(
@@ -62,9 +77,13 @@ def compute_skill_windows(
 
     rows = connection.execute(
         """
-        SELECT sc.skill_breakdown_json, s.submitted_at
+        SELECT s.id AS session_id,
+               sc.skill_breakdown_json,
+               s.submitted_at,
+               r.evidence_json
         FROM activity_sessions s
         JOIN scores sc ON sc.session_id = s.id
+        LEFT JOIN responses r ON r.session_id = s.id
         WHERE s.child_profile_id = ?
           AND s.status = 'submitted'
           AND s.submitted_at IS NOT NULL
@@ -72,23 +91,46 @@ def compute_skill_windows(
         (child_profile_id,),
     ).fetchall()
 
-    accumulators: Dict[str, Dict[str, Dict[str, float]]] = {name: {} for name, _ in windows}
+    sessions: Dict[int, Dict[str, object]] = {}
     for row in rows:
-        raw_breakdown = row["skill_breakdown_json"]
-        if not raw_breakdown:
+        session = sessions.setdefault(
+            int(row["session_id"]),
+            {
+                "submitted_at": row["submitted_at"],
+                "skill_breakdown_json": row["skill_breakdown_json"],
+                "observations": [],
+            },
+        )
+        raw_evidence = row["evidence_json"]
+        if not raw_evidence:
             continue
         try:
-            breakdown = json.loads(raw_breakdown)
-        except ValueError:
+            evidence = json.loads(raw_evidence)
+            skill = evidence.get("skill_tag")
+            score = float(evidence.get("score_percent"))
+        except (AttributeError, TypeError, ValueError):
             continue
-        if not isinstance(breakdown, dict) or not breakdown:
+        if isinstance(skill, str) and skill:
+            session["observations"].append((skill, score))  # type: ignore[union-attr]
+
+    accumulators: Dict[str, Dict[str, Dict[str, float]]] = {name: {} for name, _ in windows}
+    for session in sessions.values():
+        observations = session["observations"]
+        if not observations:
+            try:
+                breakdown = json.loads(str(session["skill_breakdown_json"] or "{}"))
+            except ValueError:
+                breakdown = {}
+            if isinstance(breakdown, dict):
+                observations = list(breakdown.items())
+        if not observations:
             continue
-        submitted_utc = _parse_sqlite_utc_timestamp(row["submitted_at"])
+        submitted_utc = _parse_sqlite_utc_timestamp(str(session["submitted_at"]))
         for name, cutoff in cutoffs.items():
             if cutoff is not None and submitted_utc < cutoff:
                 continue
             window_bucket = accumulators[name]
-            for tag, value in breakdown.items():
+            for tag, value in observations:
                 try:
                     score = float(value)
                 except (TypeError, ValueError):
@@ -134,3 +176,119 @@ def recommend_practice_next(
     ]
     candidates.sort(key=lambda entry: (entry["avg_score"], entry["skill"]))
     return candidates[:max_results]
+
+
+def classify_skill_evidence(attempts: int, avg_score: Optional[float]) -> Dict[str, object]:
+    """Apply the deliberately small, parent-readable adaptation rule."""
+    if attempts < 3 or avg_score is None:
+        return {
+            "decision": "gather-evidence",
+            "target_difficulty": "medium",
+            "reason": f"We have {attempts} of 3 observations needed before changing difficulty.",
+        }
+    if avg_score < 60:
+        return {
+            "decision": "step-down",
+            "target_difficulty": "easy",
+            "reason": f"Recent accuracy is {round(avg_score)}%, below the 60% support threshold.",
+        }
+    if avg_score <= 85:
+        return {
+            "decision": "hold",
+            "target_difficulty": "medium",
+            "reason": f"Recent accuracy is {round(avg_score)}%, inside the 60–85% productive range.",
+        }
+    return {
+        "decision": "step-up",
+        "target_difficulty": "difficult",
+        "reason": f"Recent accuracy is {round(avg_score)}%, above the 85% challenge threshold.",
+    }
+
+
+def build_adaptive_recommendation(
+    skill_windows: Dict[str, Dict[str, Dict[str, float]]],
+    activities: Iterable[ActivityModel],
+    completed_activity_ids: Iterable[str],
+    *,
+    window: str = "30_day",
+) -> Dict[str, object]:
+    """Return one recommendation plus the evidence and exact rule behind it.
+
+    Only activities whose questions all declare a primary skill are eligible;
+    this prevents legacy content from pretending to collect targeted evidence.
+    """
+    activity_list = list(activities)
+    completed = set(completed_activity_ids)
+    by_id = {activity.id: activity for activity in activity_list}
+
+    for activity_id in PILOT_ACTIVITY_IDS:
+        if activity_id not in completed and activity_id in by_id:
+            activity = by_id[activity_id]
+            return {
+                "phase": "baseline",
+                "activity_id": activity.id,
+                "activity_title": activity.title,
+                "difficulty": activity.difficulty,
+                "target_skill": None,
+                "decision": "complete-baseline",
+                "attempts": 0,
+                "avg_score": None,
+                "reason": "Complete the three starter missions before difficulty adapts.",
+                "rule": "Starter missions run in order: cat mystery → Mars → Japan.",
+            }
+
+    bucket = skill_windows.get(window, {})
+    states = []
+    for skill in ADAPTIVE_SKILLS:
+        stats = bucket.get(skill, {})
+        attempts = int(stats.get("attempts", 0))
+        avg_score = float(stats["avg_score"]) if "avg_score" in stats else None
+        classification = classify_skill_evidence(attempts, avg_score)
+        states.append(
+            {
+                "skill": skill,
+                "attempts": attempts,
+                "avg_score": avg_score,
+                **classification,
+            }
+        )
+
+    decision_priority = {"step-down": 0, "gather-evidence": 1, "hold": 2, "step-up": 3}
+    states.sort(
+        key=lambda item: (
+            decision_priority[str(item["decision"])],
+            item["attempts"],
+            item["avg_score"] if item["avg_score"] is not None else -1,
+            ADAPTIVE_SKILLS.index(str(item["skill"])),
+        )
+    )
+    target = states[0]
+    target_skill = str(target["skill"])
+    target_difficulty = str(target["target_difficulty"])
+    eligible = [
+        activity
+        for activity in activity_list
+        if activity.questions
+        and all(question.skillTag is not None for question in activity.questions)
+        and any(question.skillTag == target_skill for question in activity.questions)
+    ]
+    eligible.sort(
+        key=lambda activity: (
+            activity.id in completed,
+            abs(DIFFICULTY_RANK[str(activity.difficulty)] - DIFFICULTY_RANK[target_difficulty]),
+            activity.id,
+        )
+    )
+    selected = eligible[0] if eligible else None
+    return {
+        "phase": "adaptive",
+        "activity_id": selected.id if selected else None,
+        "activity_title": selected.title if selected else None,
+        "difficulty": selected.difficulty if selected else target_difficulty,
+        "target_skill": target_skill,
+        "decision": target["decision"],
+        "attempts": target["attempts"],
+        "avg_score": target["avg_score"],
+        "reason": target["reason"],
+        "rule": "<3 observations: gather evidence; <60%: easier; 60–85%: hold; >85%: harder.",
+    }

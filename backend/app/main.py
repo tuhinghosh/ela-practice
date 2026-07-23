@@ -23,7 +23,11 @@ from backend.app.csrf import CSRFOriginMiddleware
 from backend.app.logging_config import configure_logging
 from backend.app.rate_limit import SlidingWindowLimiter
 from backend.app.request_logging import RequestLoggingMiddleware
-from backend.app.skill_progress import compute_skill_windows, recommend_practice_next
+from backend.app.skill_progress import (
+    build_adaptive_recommendation,
+    compute_skill_windows,
+    recommend_practice_next,
+)
 from backend.app.content_schema import (
     get_seed_activity,
     list_seed_activities,
@@ -37,6 +41,7 @@ from backend.app.db import (
     fetch_parent_progress_projection,
     fetch_session_result_by_uuid,
     get_child_profile_for_user,
+    get_completed_activity_ids,
     get_connection,
     get_latest_progress_snapshot,
     get_recent_responses_with_activity,
@@ -572,6 +577,17 @@ def get_dashboard(
         rewards = get_reward_state(connection, int(user["id"]))
         progress = get_latest_progress_snapshot(connection, int(user["id"]), int(child["id"]))
         recent = get_recent_sessions(connection, int(child["id"]), limit=3)
+        skill_windows = compute_skill_windows(
+            connection, int(child["id"]), tz=settings.learning_day_timezone
+        )
+        completed_activity_ids = get_completed_activity_ids(connection, int(child["id"]))
+
+    recommendation = build_adaptive_recommendation(
+        skill_windows, activities, completed_activity_ids
+    )
+    recommended_activity = next(
+        (item for item in activities if item.id == recommendation.get("activity_id")), mission
+    )
 
     return JSONResponse(
         {
@@ -580,11 +596,12 @@ def get_dashboard(
                 "grade_level": child["grade_level"],
             },
             "mission": {
-                "activity_id": mission.id,
-                "title": mission.title,
-                "mission_label": mission.missionLabel,
-                "skill_tags": mission.skillTags,
+                "activity_id": recommended_activity.id,
+                "title": recommended_activity.title,
+                "mission_label": recommended_activity.missionLabel,
+                "skill_tags": recommended_activity.skillTags,
             },
+            "recommendation": recommendation,
             "rewards": {
                 "stars": rewards["stars"],
                 "streak_days": rewards["streak_days"],
@@ -791,7 +808,11 @@ def get_parent_progress(
             connection, int(child["id"]), limit=8
         )
         rewards = get_reward_state(connection, int(user["id"]))
+        completed_activity_ids = get_completed_activity_ids(connection, int(child["id"]))
     practice_next = recommend_practice_next(skill_windows)
+    adaptive_recommendation = build_adaptive_recommendation(
+        skill_windows, list_seed_activities(), completed_activity_ids
+    )
     recent_questions = _hydrate_recent_questions(recent_response_rows)
     ai_usage = ai_quota.check(int(user["id"]))
 
@@ -842,6 +863,7 @@ def get_parent_progress(
             "writing_feedback_summaries": writing_feedback,
             "skill_history": skill_windows,
             "practice_next": practice_next,
+            "adaptive_recommendation": adaptive_recommendation,
             "recent_questions": recent_questions,
             "rewards": {
                 "stars": rewards["stars"],
@@ -911,6 +933,50 @@ def get_session_result(session_id: str, username: str = Depends(_require_authent
 
     metadata = json.loads(session["metadata_json"]) if session["metadata_json"] else {}
     reward_snapshot = metadata.get("reward_snapshot", {})
+    rubric = json.loads(session["rubric_json"])
+    activity = get_seed_activity(session["activity_id"])
+    with get_connection() as connection:
+        stored_responses = get_session_responses(connection, int(session["id"]))
+    response_by_question = {row["question_id"]: row for row in stored_responses}
+    question_results = []
+    for question in activity.questions:
+        response = response_by_question.get(question.id)
+        child_answer = ""
+        if response is not None:
+            child_answer = response["answer_choice"] or response["answer_text"] or ""
+        if question.type == "multiple-choice":
+            is_correct = child_answer == (question.correctChoice or "")
+            explanation = question.answerExplanation or (
+                f'The best answer is "{question.correctChoice}". '
+                "Look back for the passage detail that directly supports it."
+            )
+        else:
+            is_correct = None
+            needs = []
+            if rubric.get("relevance") != "meets":
+                needs.append("connect your answer more directly to the passage")
+            if rubric.get("sentence_completeness") != "meets":
+                needs.append("write at least one complete sentence")
+            deterministic_note = (
+                "Your response was complete and connected to the passage."
+                if not needs
+                else "Next time, " + " and ".join(needs) + "."
+            )
+            explanation = " ".join(
+                part for part in [deterministic_note, question.responseGuidance or "Use two precise passage details."] if part
+            )
+        question_results.append(
+            {
+                "question_id": question.id,
+                "question_type": question.type,
+                "prompt": question.prompt,
+                "skill_tag": question.skillTag or "overall-reading",
+                "child_answer": child_answer,
+                "correct_answer": question.correctChoice,
+                "is_correct": is_correct,
+                "explanation": explanation,
+            }
+        )
 
     return JSONResponse(
         {
@@ -921,8 +987,9 @@ def get_session_result(session_id: str, username: str = Depends(_require_authent
             "total_score": session["total_score"],
             "max_score": session["max_score"],
             "score_percent": session["score_percent"],
-            "rubric": json.loads(session["rubric_json"]),
+            "rubric": rubric,
             "skill_breakdown": json.loads(session["skill_breakdown_json"]),
+            "question_results": question_results,
             "reward_snapshot": reward_snapshot,
         }
     )

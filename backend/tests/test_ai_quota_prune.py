@@ -144,7 +144,7 @@ def test_prune_cli_reports_deletion_count(
             )
         connection.commit()
 
-    code = prune_cli_main(["--days", "30"])
+    code = prune_cli_main(["--days", "30"], now=today)
     assert code == 0
     out = capsys.readouterr().out
     assert "removed 5 rows" in out

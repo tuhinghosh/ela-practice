@@ -52,6 +52,20 @@ export type DashboardResponse = {
     score_percent: number;
     submitted_at: string;
   }>;
+  recommendation?: AdaptiveRecommendation;
+};
+
+export type AdaptiveRecommendation = {
+  phase: "baseline" | "adaptive";
+  activity_id: string | null;
+  activity_title: string | null;
+  difficulty: "easy" | "medium" | "difficult";
+  target_skill: string | null;
+  decision: "complete-baseline" | "gather-evidence" | "step-down" | "hold" | "step-up";
+  attempts: number;
+  avg_score: number | null;
+  reason: string;
+  rule: string;
 };
 
 export type ActivitiesResponse = {
@@ -143,6 +157,7 @@ export type ParentProgressResponse = {
     Record<string, { attempts: number; avg_score: number }>
   >;
   practice_next?: Array<{ skill: string; avg_score: number; attempts: number }>;
+  adaptive_recommendation?: AdaptiveRecommendation;
   recent_questions?: Array<{
     session_id: string;
     activity_id: string;
@@ -185,6 +200,16 @@ export type SessionResultResponse = {
     skill_specific_checks: string[];
   };
   skill_breakdown: Record<string, number>;
+  question_results: Array<{
+    question_id: string;
+    question_type: "multiple-choice" | "short-response";
+    prompt: string;
+    skill_tag: string;
+    child_answer: string;
+    correct_answer: string | null;
+    is_correct: boolean | null;
+    explanation: string;
+  }>;
   reward_snapshot?: {
     stars_before: number;
     stars_after: number;

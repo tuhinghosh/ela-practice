@@ -20,9 +20,16 @@ JSON text columns are used for:
 
 - Flexible metadata payloads (`metadata_json`, `evidence_json`)
 - Deterministic rubric detail payloads (`rubric_json`)
-- Skill-level detail maps (`skill_breakdown_json`)
+- Question-evidence-based skill detail maps (`skill_breakdown_json`); untagged
+  legacy questions are grouped under `overall-reading`
 - Strength/growth lists (`strengths_json`, `growth_areas_json`)
 - Badge arrays (`badges_json`)
+
+`responses.evidence_json` stores the question's primary `skill_tag` and its
+deterministic `score_percent`. Adaptive recommendations aggregate these
+question-level observations. Legacy sessions without response evidence fall
+back to their session-level `skill_breakdown_json` so existing history remains
+usable.
 
 This keeps query-critical data normalized while allowing MVP iteration without repeated migrations.
 

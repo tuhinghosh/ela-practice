@@ -56,6 +56,7 @@ export type Question = {
   type: QuestionType;
   prompt: string;
   choices?: string[];
+  skillTag?: SkillTag;
 };
 
 export type Activity = {
@@ -69,6 +70,7 @@ export type Activity = {
   passageText: string;
   questions: Question[];
   skillTags: SkillTag[];
+  sourceUrls: string[];
 };
 
 function isObject(value: unknown): value is Record<string, unknown> {
@@ -117,6 +119,7 @@ function parseQuestion(value: unknown, activityId: string): Question {
   const type = value.type;
   const prompt = value.prompt;
   const choices = value.choices;
+  const skillTag = value.skillTag;
 
   if (!isNonEmptyString(id)) {
     throw new Error(`Question in activity "${activityId}" has an invalid id.`);
@@ -127,15 +130,18 @@ function parseQuestion(value: unknown, activityId: string): Question {
   if (!isNonEmptyString(prompt)) {
     throw new Error(`Question "${id}" in "${activityId}" has an empty prompt.`);
   }
+  if (skillTag !== undefined && (!isNonEmptyString(skillTag) || !skillTags.includes(skillTag as SkillTag))) {
+    throw new Error(`Question "${id}" in "${activityId}" has an invalid skillTag.`);
+  }
 
   if (type === "multiple-choice") {
     if (!Array.isArray(choices) || choices.length < 2 || !choices.every(isNonEmptyString)) {
       throw new Error(`Multiple-choice question "${id}" in "${activityId}" needs at least two choices.`);
     }
-    return { id, type, prompt, choices };
+    return { id, type, prompt, choices, skillTag: skillTag as SkillTag | undefined };
   }
 
-  return { id, type, prompt };
+  return { id, type, prompt, skillTag: skillTag as SkillTag | undefined };
 }
 
 function parseActivity(value: unknown): Activity {
@@ -153,6 +159,7 @@ function parseActivity(value: unknown): Activity {
   const passageText = value.passageText;
   const questionsRaw = value.questions;
   const tagsRaw = value.skillTags;
+  const sourceUrlsRaw = value.sourceUrls ?? [];
 
   if (!isNonEmptyString(id)) throw new Error("Activity id is required.");
   if (!isNonEmptyString(title)) throw new Error(`Activity "${id}" is missing title.`);
@@ -204,6 +211,9 @@ function parseActivity(value: unknown): Activity {
   if (!Array.isArray(tagsRaw) || tagsRaw.length === 0) {
     throw new Error(`Activity "${id}" must include skill tags.`);
   }
+  if (!Array.isArray(sourceUrlsRaw) || !sourceUrlsRaw.every(isNonEmptyString)) {
+    throw new Error(`Activity "${id}" has malformed source URLs.`);
+  }
 
   const questions = questionsRaw.map((question) => parseQuestion(question, id));
   const tags = tagsRaw.filter(isNonEmptyString);
@@ -214,6 +224,14 @@ function parseActivity(value: unknown): Activity {
   tags.forEach((tag) => {
     if (!skillTags.includes(tag as SkillTag)) {
       throw new Error(`Activity "${id}" has unsupported skill tag "${tag}".`);
+    }
+  });
+
+  questions.forEach((question) => {
+    if (question.skillTag !== undefined && !tags.includes(question.skillTag)) {
+      throw new Error(
+        `Question "${question.id}" in "${id}" uses skillTag "${question.skillTag}" not listed on the activity.`,
+      );
     }
   });
 
@@ -230,6 +248,7 @@ function parseActivity(value: unknown): Activity {
     passageText,
     questions,
     skillTags: tags as SkillTag[],
+    sourceUrls: sourceUrlsRaw as string[],
   };
 }
 

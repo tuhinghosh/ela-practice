@@ -140,3 +140,91 @@ def test_seed_passages_do_not_include_coaching_meta_text() -> None:
     for activity in activities:
         lowered = activity.passageText.lower()
         assert all(phrase not in lowered for phrase in banned_phrases)
+
+
+PILOT_ACTIVITY_IDS = {
+    "pilot-space-mars-01",
+    "pilot-mystery-cat-01",
+    "pilot-world-japan-01",
+}
+
+REVIEWED_ADAPTIVE_ACTIVITY_IDS = PILOT_ACTIVITY_IDS | {
+    "adaptive-animals-dog-signals-01",
+    "adaptive-friendship-lunch-table-01",
+    "adaptive-body-sleep-cycles-01",
+    "adaptive-logic-game-testers-01",
+    "adaptive-space-exoplanet-shadow-01",
+    "adaptive-world-brazil-map-01",
+}
+
+
+def test_reyana_pilot_pack_has_question_level_skill_evidence() -> None:
+    pilots = {activity.id: activity for activity in load_seed_activities() if activity.id in PILOT_ACTIVITY_IDS}
+    assert set(pilots) == PILOT_ACTIVITY_IDS
+
+    for activity in pilots.values():
+        assert len(activity.questions) == 4
+        assert all(question.skillTag is not None for question in activity.questions)
+        assert {question.skillTag for question in activity.questions}.issubset(set(activity.skillTags))
+        for question in activity.questions:
+            if question.type == "multiple-choice":
+                assert question.answerExplanation, f"{activity.id}/{question.id} needs an answer explanation"
+            else:
+                assert question.responseGuidance, f"{activity.id}/{question.id} needs response guidance"
+
+
+def test_reyana_pilot_multiple_choice_options_are_distinct() -> None:
+    pilots = [activity for activity in load_seed_activities() if activity.id in PILOT_ACTIVITY_IDS]
+    for activity in pilots:
+        for question in activity.questions:
+            if question.type != "multiple-choice":
+                continue
+            assert question.choices is not None
+            normalized = {choice.strip().casefold() for choice in question.choices}
+            assert len(normalized) == len(question.choices), f"duplicate choice in {activity.id}/{question.id}"
+
+
+def test_informational_pilot_activities_record_sources() -> None:
+    pilots = [activity for activity in load_seed_activities() if activity.id in PILOT_ACTIVITY_IDS]
+    for activity in pilots:
+        if activity.passageType == "informational":
+            assert activity.sourceUrls, f"{activity.id} must record fact-checking sources"
+            assert all(url.startswith("https://") for url in activity.sourceUrls)
+
+
+def test_reviewed_adaptive_pool_has_authored_question_feedback() -> None:
+    reviewed = {
+        activity.id: activity
+        for activity in load_seed_activities()
+        if activity.id in REVIEWED_ADAPTIVE_ACTIVITY_IDS
+    }
+    assert set(reviewed) == REVIEWED_ADAPTIVE_ACTIVITY_IDS
+    for activity in reviewed.values():
+        assert all(question.skillTag is not None for question in activity.questions)
+        for question in activity.questions:
+            if question.type == "multiple-choice":
+                assert question.answerExplanation, f"{activity.id}/{question.id} needs an explanation"
+            else:
+                assert question.responseGuidance, f"{activity.id}/{question.id} needs writing guidance"
+        if activity.passageType == "informational":
+            assert activity.sourceUrls, f"{activity.id} needs fact-checking sources"
+
+
+def test_adaptive_skills_have_easy_medium_and_difficult_coverage() -> None:
+    core_skills = {
+        "main-idea",
+        "vocabulary",
+        "inference",
+        "reading-comprehension",
+        "summary",
+    }
+    expected_difficulties = {"easy", "medium", "difficult"}
+    coverage = {skill: set() for skill in core_skills}
+    for activity in load_seed_activities():
+        if activity.id not in REVIEWED_ADAPTIVE_ACTIVITY_IDS:
+            continue
+        question_skills = {question.skillTag for question in activity.questions}
+        for skill in core_skills.intersection(question_skills):
+            coverage[skill].add(str(activity.difficulty))
+
+    assert coverage == {skill: expected_difficulties for skill in core_skills}

@@ -52,7 +52,29 @@ test("results screen shows updated reward celebration after submit", async ({ pa
           sentence_completeness: "meets",
           skill_specific_checks: ["evidence reference"],
         },
-        skill_breakdown: { inference: 90 },
+        skill_breakdown: { "main-idea": 100, inference: 80 },
+        question_results: [
+          {
+            question_id: "q1",
+            question_type: "multiple-choice",
+            prompt: "What is the main idea of this story?",
+            skill_tag: "main-idea",
+            child_answer: "The birds show teamwork while building a nest.",
+            correct_answer: "The birds show teamwork while building a nest.",
+            is_correct: true,
+            explanation: "The birds repeatedly work together to finish the nest.",
+          },
+          {
+            question_id: "q2",
+            question_type: "short-response",
+            prompt: "Write 2-3 sentences explaining one clue that shows the birds did not give up.",
+            skill_tag: "inference",
+            child_answer: "The bird came back because it did not give up.",
+            correct_answer: null,
+            is_correct: null,
+            explanation: "Your response was complete and connected to the passage.",
+          },
+        ],
         reward_snapshot: {
           stars_before: 6,
           stars_after: 8,
@@ -87,7 +109,29 @@ test("results screen shows updated reward celebration after submit", async ({ pa
           sentence_completeness: "meets",
           skill_specific_checks: ["evidence reference"],
         },
-        skill_breakdown: { inference: 90 },
+        skill_breakdown: { "main-idea": 100, inference: 80 },
+        question_results: [
+          {
+            question_id: "q1",
+            question_type: "multiple-choice",
+            prompt: "What is the main idea of this story?",
+            skill_tag: "main-idea",
+            child_answer: "The birds show teamwork while building a nest.",
+            correct_answer: "The birds show teamwork while building a nest.",
+            is_correct: true,
+            explanation: "The birds repeatedly work together to finish the nest.",
+          },
+          {
+            question_id: "q2",
+            question_type: "short-response",
+            prompt: "Write 2-3 sentences explaining one clue that shows the birds did not give up.",
+            skill_tag: "inference",
+            child_answer: "The bird came back because it did not give up.",
+            correct_answer: null,
+            is_correct: null,
+            explanation: "Your response was complete and connected to the passage.",
+          },
+        ],
         reward_snapshot: {
           stars_before: 6,
           stars_after: 8,
@@ -113,4 +157,8 @@ test("results screen shows updated reward celebration after submit", async ({ pa
   await expect(page.getByText("You earned +2 stars")).toBeVisible();
   await expect(page.getByText("Total points: 80")).toBeVisible();
   await expect(page.getByText("New badge unlocked: Three Mission Starter.")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Skills from this mission" })).toBeVisible();
+  await expect(page.getByText("Main Idea", { exact: true }).first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Review your answers" })).toBeVisible();
+  await expect(page.getByText("The birds repeatedly work together to finish the nest.")).toBeVisible();
 });

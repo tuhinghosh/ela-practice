@@ -82,6 +82,9 @@ class QuestionModel(BaseModel):
     prompt: str = Field(min_length=1)
     choices: Optional[list[str]] = None
     correctChoice: Optional[str] = None
+    skillTag: Optional[SkillTag] = None
+    answerExplanation: Optional[str] = None
+    responseGuidance: Optional[str] = None
 
 
 class ActivityModel(BaseModel):
@@ -95,6 +98,7 @@ class ActivityModel(BaseModel):
     passageText: str = Field(min_length=1)
     questions: list[QuestionModel] = Field(min_length=2)
     skillTags: list[SkillTag] = Field(min_length=1)
+    sourceUrls: list[str] = Field(default_factory=list)
 
 
 class DeterministicWritingRubricModel(BaseModel):
@@ -225,6 +229,11 @@ def load_seed_activities() -> list[ActivityModel]:
                 raise ValueError(f'Activity "{activity.id}" must include outcome/reflection cues in the passage.')
 
         for question in activity.questions:
+            if question.skillTag is not None and question.skillTag not in activity.skillTags:
+                raise ValueError(
+                    f'Question "{question.id}" in activity "{activity.id}" uses skill tag '
+                    f'"{question.skillTag}" that is not listed on the activity.'
+                )
             if question.type == "multiple-choice":
                 if question.choices is None or len(question.choices) < 2:
                     raise ValueError(
