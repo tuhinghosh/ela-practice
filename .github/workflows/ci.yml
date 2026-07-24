@@ -82,3 +82,18 @@ jobs:
           name: playwright-report
           path: frontend/playwright-report/
           retention-days: 7
+
+  production-smoke:
+    name: Production Docker smoke
+    needs:
+      - backend-tests
+      - frontend-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+
+      - name: Run production Docker smoke harness
+        run: ./scripts/smoke-docker.sh
