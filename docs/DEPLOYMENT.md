@@ -5,6 +5,9 @@ server. This doc covers the bits that aren't obvious from `README` or
 `CLAUDE.md`: where data lives, how schema changes are applied, and how to
 back up the database.
 
+The verified Reyana private-pilot deployment has a separate practical
+operator guide in [`RAILWAY_RUNBOOK.md`](RAILWAY_RUNBOOK.md).
+
 ## Deploying to Railway
 
 End-to-end recipe. Skip ahead to the "Behind a reverse proxy" section
