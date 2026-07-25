@@ -211,14 +211,20 @@ def build_adaptive_recommendation(
     completed_activity_ids: Iterable[str],
     *,
     window: str = "30_day",
+    review_statuses: Optional[Dict[str, str]] = None,
 ) -> Dict[str, object]:
     """Return one recommendation plus the evidence and exact rule behind it.
 
-    Only activities whose questions all declare a primary skill are eligible;
-    this prevents legacy content from pretending to collect targeted evidence.
+    Only editorially reviewed activities whose questions all declare a primary
+    skill are eligible. This prevents draft content from becoming targeted
+    evidence merely because it happens to contain tags.
     """
     activity_list = list(activities)
     completed = set(completed_activity_ids)
+    if review_statuses is None:
+        from backend.app.content_schema import load_review_statuses
+
+        review_statuses = load_review_statuses()
     by_id = {activity.id: activity for activity in activity_list}
 
     for activity_id in PILOT_ACTIVITY_IDS:
@@ -269,6 +275,7 @@ def build_adaptive_recommendation(
         activity
         for activity in activity_list
         if activity.questions
+        and review_statuses.get(activity.id) == "reviewed"
         and all(question.skillTag is not None for question in activity.questions)
         and any(question.skillTag == target_skill for question in activity.questions)
     ]

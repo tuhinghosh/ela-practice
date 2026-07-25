@@ -230,6 +230,31 @@ def test_adaptive_recommendation_explains_step_down() -> None:
     assert "below the 60%" in str(recommendation["reason"])
 
 
+def test_adaptive_recommendation_excludes_tagged_draft_content() -> None:
+    activities = list(list_seed_activities())
+    statuses = {activity.id: "draft" for activity in activities}
+    windows = {
+        "30_day": {
+            "main-idea": {"attempts": 4, "avg_score": 55.0},
+            "vocabulary": {"attempts": 3, "avg_score": 80.0},
+            "inference": {"attempts": 3, "avg_score": 80.0},
+            "reading-comprehension": {"attempts": 3, "avg_score": 80.0},
+            "summary": {"attempts": 3, "avg_score": 80.0},
+        }
+    }
+
+    recommendation = build_adaptive_recommendation(
+        windows,
+        activities,
+        set(PILOT_ACTIVITY_IDS),
+        review_statuses=statuses,
+    )
+
+    assert recommendation["phase"] == "adaptive"
+    assert recommendation["target_skill"] == "main-idea"
+    assert recommendation["activity_id"] is None
+
+
 def test_pilot_submission_creates_question_level_observations() -> None:
     with TestClient(app) as client:
         assert client.post(
