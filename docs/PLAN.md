@@ -11,6 +11,9 @@ Important planning notes:
 - Seeded reading content should live in local files first; SQLite should persist attempts, progress, rewards/streaks, and chat/session history
 - The MVP test stack is fixed: backend `pytest` + `httpx`, frontend unit/component `vitest` + React Testing Library, and end-to-end/integration `playwright`
 
+The post-MVP content quality audit and reviewed-library expansion plan is in
+[`CONTENT_AUDIT_AND_EXPANSION_BLUEPRINT.md`](CONTENT_AUDIT_AND_EXPANSION_BLUEPRINT.md).
+
 ## Locked MVP decisions
 
 These decisions are intentionally locked for MVP implementation unless explicitly changed later:
