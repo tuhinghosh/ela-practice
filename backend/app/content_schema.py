@@ -19,6 +19,7 @@ SkillTag = Literal[
 PassageType = Literal["literary", "informational", "poetry"]
 QuestionType = Literal["multiple-choice", "short-response"]
 DifficultyTier = Literal["easy", "medium", "difficult"]
+ReviewStatus = Literal["reviewed", "draft", "rewrite-required"]
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 BACKEND_CONTENT_DIR = Path(__file__).resolve().parent.parent / "content"
@@ -34,6 +35,7 @@ ACTIVITIES_FILE = CONTENT_DIR / "activities.json"
 SKILL_TAGS_FILE = CONTENT_DIR / "skill-tags.json"
 THEMES_FILE = CONTENT_DIR / "themes.json"
 MANIFEST_FILE = CONTENT_DIR / "MANIFEST.json"
+REVIEW_STATUS_FILE = CONTENT_DIR / "review-status.json"
 MIN_PASSAGE_SENTENCES = 8
 MIN_PASSAGE_PARAGRAPHS = 2
 MIN_PARAGRAPH_SENTENCES = 2
@@ -83,6 +85,7 @@ class QuestionModel(BaseModel):
     choices: Optional[list[str]] = None
     correctChoice: Optional[str] = None
     skillTag: Optional[SkillTag] = None
+    writingSkillTags: list[SkillTag] = Field(default_factory=list)
     answerExplanation: Optional[str] = None
     responseGuidance: Optional[str] = None
 
@@ -183,12 +186,42 @@ def _apply_default_difficulties(activities: list[ActivityModel]) -> None:
             activity.difficulty = tiers[index % len(tiers)]
 
 
+def load_review_statuses() -> dict[str, ReviewStatus]:
+    """Load the explicit editorial status for every canonical activity."""
+    import json
+
+    raw = json.loads(REVIEW_STATUS_FILE.read_text(encoding="utf-8"))
+    if not isinstance(raw, dict):
+        raise ValueError("review-status.json must be a JSON object.")
+    allowed: tuple[ReviewStatus, ...] = ("reviewed", "draft", "rewrite-required")
+    statuses: dict[str, ReviewStatus] = {}
+    for status in allowed:
+        ids = raw.get(status)
+        if not isinstance(ids, list):
+            raise ValueError(f'review-status.json needs a "{status}" array.')
+        for activity_id in ids:
+            if not isinstance(activity_id, str) or not activity_id:
+                raise ValueError(f'review-status.json "{status}" entries must be non-empty strings.')
+            if activity_id in statuses:
+                raise ValueError(f'Duplicate review status for activity "{activity_id}".')
+            statuses[activity_id] = status
+    extra = sorted(set(raw) - set(allowed))
+    if extra:
+        raise ValueError(f"Unsupported review status groups: {', '.join(extra)}")
+    return statuses
+
+
 def load_seed_activities() -> list[ActivityModel]:
     import json
 
     allowed_themes = json.loads(THEMES_FILE.read_text(encoding="utf-8"))
     raw = json.loads(ACTIVITIES_FILE.read_text(encoding="utf-8"))
     activities = [ActivityModel.model_validate(item) for item in raw]
+    statuses = load_review_statuses()
+    reviewed_ids = {activity_id for activity_id, status in statuses.items() if status == "reviewed"}
+    for activity in activities:
+        if activity.id in reviewed_ids and activity.difficulty is None:
+            raise ValueError(f'Reviewed activity "{activity.id}" needs explicit difficulty.')
     _apply_default_difficulties(activities)
 
     seen_ids: set[str] = set()
@@ -252,6 +285,11 @@ def load_seed_activities() -> list[ActivityModel]:
                     raise ValueError(
                         f'Short-response question "{question.id}" in activity "{activity.id}" should not define correctChoice.'
                     )
+            if question.type != "short-response" and question.writingSkillTags:
+                raise ValueError(
+                    f'Question "{question.id}" in activity "{activity.id}" may only define '
+                    "writingSkillTags for a short response."
+                )
 
     return activities
 

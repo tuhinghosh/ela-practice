@@ -7,6 +7,7 @@ Subcommands:
   validation failure.
 - ``manifest`` — recomputes SHA256 checksums for the canonical files and
   writes MANIFEST.json. Use after editing content.
+- ``audit`` — runs reviewed-library quality gates and prints a deterministic report.
 - ``sync``   — copies the canonical JSON files from ``backend/content`` to
   ``frontend/src/content`` so the Next.js bundle stays aligned. Use after
   ``manifest``.
@@ -26,16 +27,18 @@ from backend.app.content_schema import (
     BACKEND_CONTENT_DIR,
     FRONTEND_CONTENT_DIR,
     MANIFEST_FILE,
+    REVIEW_STATUS_FILE,
     SKILL_TAGS_FILE,
     THEMES_FILE,
     _hash_file,
     list_seed_activities,
     list_seed_themes,
+    load_review_statuses,
     load_content_manifest,
     verify_content_manifest,
 )
 
-CANONICAL_FILES = (ACTIVITIES_FILE, SKILL_TAGS_FILE, THEMES_FILE)
+CANONICAL_FILES = (ACTIVITIES_FILE, SKILL_TAGS_FILE, THEMES_FILE, REVIEW_STATUS_FILE)
 
 
 def cmd_validate(_args: argparse.Namespace) -> int:
@@ -73,6 +76,30 @@ def cmd_manifest(_args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_audit(_args: argparse.Namespace) -> int:
+    from backend.app.content_audit import audit_content
+
+    list_seed_activities.cache_clear()  # type: ignore[attr-defined]
+    try:
+        report = audit_content(list_seed_activities(), load_review_statuses())
+    except Exception as exc:
+        print(f"content audit failed: {exc}", file=sys.stderr)
+        return 1
+    print(f"review statuses: {report.status_counts}")
+    print(f"reviewed difficulty tiers: {report.tier_counts}")
+    print(f"correct-answer positions: {report.answer_position_counts}")
+    for warning in report.warnings:
+        print(f"warning: {warning}")
+    for error in report.errors:
+        print(f"error: {error}", file=sys.stderr)
+    print(
+        f"{'ok' if report.passed else 'failed'}: "
+        f"{report.reviewed_count} reviewed activities, "
+        f"{len(report.errors)} errors, {len(report.warnings)} warnings"
+    )
+    return 0 if report.passed else 1
+
+
 def cmd_sync(_args: argparse.Namespace) -> int:
     FRONTEND_CONTENT_DIR.mkdir(parents=True, exist_ok=True)
     for path in CANONICAL_FILES:
@@ -91,6 +118,9 @@ def main(argv: Optional[list[str]] = None) -> int:
     subparsers.add_parser(
         "manifest", help="Recompute SHA256 checksums and rewrite MANIFEST.json"
     ).set_defaults(func=cmd_manifest)
+    subparsers.add_parser(
+        "audit", help="Run deterministic reviewed-content quality gates"
+    ).set_defaults(func=cmd_audit)
     subparsers.add_parser(
         "sync", help="Copy backend/content files to frontend/src/content"
     ).set_defaults(func=cmd_sync)

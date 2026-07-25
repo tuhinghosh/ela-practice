@@ -7,6 +7,7 @@ This document defines the file-based seeded content model for MVP Part 5.
 - `backend/content/activities.json` (canonical)
 - `backend/content/skill-tags.json` (canonical)
 - `backend/content/themes.json` (canonical)
+- `backend/content/review-status.json` (canonical editorial status registry)
 - `frontend/src/content/` contains the build-time mirror maintained by the content sync workflow
 
 Seeded content remains in local versioned files for MVP and is not stored as the source-of-truth library in SQLite.

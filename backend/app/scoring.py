@@ -75,6 +75,8 @@ def score_activity_submission(
             score, detail = _score_short_response(activity, response.get("answer_text"))
         skill = question.skillTag or "overall-reading"
         detail["skill_tag"] = skill
+        detail["reading_skill_tag"] = skill
+        detail["writing_skill_tags"] = list(question.writingSkillTags)
         detail["score_percent"] = round(score * 100, 2)
         details[question.id] = detail
         total_score += score
@@ -105,6 +107,13 @@ def score_activity_submission(
         "score_percent": round(score_percent, 2),
         "question_feedback": details,
         "rubric": rubric,
+        "writing_evidence": {
+            skill: {
+                "score_percent": round(writing_details.get("score_percent", 0.0), 2),
+                "rubric": rubric,
+            }
+            for skill in writing_details.get("writing_skill_tags", [])
+        },
         # Only claim skill-level evidence when a question explicitly names the
         # skill it measures. Untagged legacy questions remain an honest overall
         # reading result while the content library is migrated gradually.

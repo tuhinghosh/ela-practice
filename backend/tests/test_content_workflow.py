@@ -25,7 +25,12 @@ from backend.app.content_schema import (
 )
 
 
-CANONICAL_FILENAMES = ("activities.json", "skill-tags.json", "themes.json")
+CANONICAL_FILENAMES = (
+    "activities.json",
+    "skill-tags.json",
+    "themes.json",
+    "review-status.json",
+)
 
 
 def test_all_canonical_files_are_present() -> None:
@@ -90,6 +95,10 @@ def test_frontend_mirror_matches_backend_canonical() -> None:
 def test_content_cli_validate_returns_zero_on_clean_state() -> None:
     code = main(["validate"])
     assert code == 0
+
+
+def test_content_cli_audit_returns_zero_for_reviewed_pool() -> None:
+    assert main(["audit"]) == 0
 
 
 def test_content_cli_validate_returns_one_when_manifest_drifts(

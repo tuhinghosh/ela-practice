@@ -14,6 +14,18 @@ Important planning notes:
 The post-MVP content quality audit and reviewed-library expansion plan is in
 [`CONTENT_AUDIT_AND_EXPANSION_BLUEPRINT.md`](CONTENT_AUDIT_AND_EXPANSION_BLUEPRINT.md).
 
+## Post-MVP content expansion
+
+### Batch 0 — Content quality guardrails
+
+- [x] Add an explicit reviewed/draft/rewrite-required registry
+- [x] Add a deterministic content-audit command
+- [x] Gate reviewed difficulty, question tags, feedback, and informational sources
+- [x] Check answer-position predictability and duplicate language
+- [x] Keep reviewed adaptation separate from legacy/draft content
+- [x] Model reading and writing evidence separately for constructed responses
+- [x] Pass backend, frontend, and production Docker verification
+
 ## Locked MVP decisions
 
 These decisions are intentionally locked for MVP implementation unless explicitly changed later:

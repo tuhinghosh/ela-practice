@@ -57,6 +57,7 @@ export type Question = {
   prompt: string;
   choices?: string[];
   skillTag?: SkillTag;
+  writingSkillTags: SkillTag[];
 };
 
 export type Activity = {
@@ -120,6 +121,7 @@ function parseQuestion(value: unknown, activityId: string): Question {
   const prompt = value.prompt;
   const choices = value.choices;
   const skillTag = value.skillTag;
+  const writingSkillTagsRaw = value.writingSkillTags ?? [];
 
   if (!isNonEmptyString(id)) {
     throw new Error(`Question in activity "${activityId}" has an invalid id.`);
@@ -133,15 +135,40 @@ function parseQuestion(value: unknown, activityId: string): Question {
   if (skillTag !== undefined && (!isNonEmptyString(skillTag) || !skillTags.includes(skillTag as SkillTag))) {
     throw new Error(`Question "${id}" in "${activityId}" has an invalid skillTag.`);
   }
+  if (
+    !Array.isArray(writingSkillTagsRaw) ||
+    !writingSkillTagsRaw.every(
+      (tag) => isNonEmptyString(tag) && skillTags.includes(tag as SkillTag),
+    )
+  ) {
+    throw new Error(`Question "${id}" in "${activityId}" has invalid writingSkillTags.`);
+  }
+  if (type !== "short-response" && writingSkillTagsRaw.length > 0) {
+    throw new Error(`Question "${id}" in "${activityId}" may not define writingSkillTags.`);
+  }
+  const writingSkillTags = writingSkillTagsRaw as SkillTag[];
 
   if (type === "multiple-choice") {
     if (!Array.isArray(choices) || choices.length < 2 || !choices.every(isNonEmptyString)) {
       throw new Error(`Multiple-choice question "${id}" in "${activityId}" needs at least two choices.`);
     }
-    return { id, type, prompt, choices, skillTag: skillTag as SkillTag | undefined };
+    return {
+      id,
+      type,
+      prompt,
+      choices,
+      skillTag: skillTag as SkillTag | undefined,
+      writingSkillTags,
+    };
   }
 
-  return { id, type, prompt, skillTag: skillTag as SkillTag | undefined };
+  return {
+    id,
+    type,
+    prompt,
+    skillTag: skillTag as SkillTag | undefined,
+    writingSkillTags,
+  };
 }
 
 function parseActivity(value: unknown): Activity {
