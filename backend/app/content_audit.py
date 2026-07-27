@@ -14,6 +14,29 @@ MIN_REVIEWED_ACTIVITIES = 9
 MIN_REVIEWED_PER_TIER = 3
 MAX_ANSWER_POSITION_SHARE = 0.60
 MIN_ANSWER_POSITIONS_USED = 3
+TARGET_ACTIVITIES_PER_SKILL_TIER = 4
+DIFFICULTY_TIERS = ("easy", "medium", "difficult")
+CORE_READING_SKILLS = (
+    "reading-comprehension",
+    "main-idea",
+    "inference",
+    "sequence",
+    "summary",
+    "vocabulary",
+)
+
+# This is the verified nine-activity Batch 0 baseline. New reviewed releases
+# may increase these cells but may not silently remove existing adaptive
+# coverage. Raise a baseline only in the same change that adds and reviews the
+# corresponding activities.
+MIN_SKILL_TIER_COVERAGE = {
+    "reading-comprehension": {"easy": 3, "medium": 2, "difficult": 1},
+    "main-idea": {"easy": 1, "medium": 2, "difficult": 2},
+    "inference": {"easy": 3, "medium": 3, "difficult": 3},
+    "sequence": {"easy": 1, "medium": 1, "difficult": 0},
+    "summary": {"easy": 2, "medium": 2, "difficult": 3},
+    "vocabulary": {"easy": 2, "medium": 2, "difficult": 3},
+}
 
 
 @dataclass
@@ -23,6 +46,8 @@ class ContentAuditReport:
     reviewed_count: int = 0
     status_counts: dict[str, int] = field(default_factory=dict)
     tier_counts: dict[str, int] = field(default_factory=dict)
+    skill_tier_coverage: dict[str, dict[str, int]] = field(default_factory=dict)
+    skill_tier_target_gaps: dict[str, dict[str, int]] = field(default_factory=dict)
     answer_position_counts: dict[int, int] = field(default_factory=dict)
 
     @property
@@ -73,7 +98,7 @@ def audit_content(
 
     tier_counts = Counter(activity.difficulty for activity in reviewed)
     report.tier_counts = {
-        tier: int(tier_counts.get(tier, 0)) for tier in ("easy", "medium", "difficult")
+        tier: int(tier_counts.get(tier, 0)) for tier in DIFFICULTY_TIERS
     }
     for tier, count in report.tier_counts.items():
         if count < MIN_REVIEWED_PER_TIER:
@@ -84,6 +109,7 @@ def audit_content(
     answer_positions: Counter[int] = Counter()
     prompts: defaultdict[str, list[str]] = defaultdict(list)
     sentences: defaultdict[str, list[str]] = defaultdict(list)
+    covered_activity_ids: defaultdict[tuple[str, str], set[str]] = defaultdict(set)
     for activity in reviewed:
         if activity.difficulty is None:
             report.errors.append(f"{activity.id}: reviewed activity needs explicit difficulty.")
@@ -97,6 +123,8 @@ def audit_content(
             prompts[_normalized(question.prompt)].append(key)
             if question.skillTag is None:
                 report.errors.append(f"{key}: reviewed question needs a primary reading skill tag.")
+            elif question.skillTag in CORE_READING_SKILLS and activity.difficulty is not None:
+                covered_activity_ids[(question.skillTag, activity.difficulty)].add(activity.id)
             if question.type == "multiple-choice":
                 multiple_choice_count += 1
                 if not question.answerExplanation:
@@ -122,6 +150,33 @@ def audit_content(
                     report.errors.append(f"{activity.id}: source must be a valid HTTPS URL: {url}")
         for sentence in _passage_sentences(activity.passageText):
             sentences[sentence].append(activity.id)
+
+    report.skill_tier_coverage = {
+        skill: {
+            tier: len(covered_activity_ids[(skill, tier)]) for tier in DIFFICULTY_TIERS
+        }
+        for skill in CORE_READING_SKILLS
+    }
+    report.skill_tier_target_gaps = {
+        skill: {
+            tier: max(
+                0,
+                TARGET_ACTIVITIES_PER_SKILL_TIER
+                - report.skill_tier_coverage[skill][tier],
+            )
+            for tier in DIFFICULTY_TIERS
+        }
+        for skill in CORE_READING_SKILLS
+    }
+    for skill in CORE_READING_SKILLS:
+        for tier in DIFFICULTY_TIERS:
+            count = report.skill_tier_coverage[skill][tier]
+            minimum = MIN_SKILL_TIER_COVERAGE[skill][tier]
+            if count < minimum:
+                report.errors.append(
+                    f'Reviewed "{skill}" / "{tier}" coverage regressed to '
+                    f"{count} activities; baseline is {minimum}."
+                )
 
     report.answer_position_counts = dict(sorted(answer_positions.items()))
     total_answers = sum(answer_positions.values())
