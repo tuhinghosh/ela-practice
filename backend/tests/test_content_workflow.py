@@ -97,8 +97,16 @@ def test_content_cli_validate_returns_zero_on_clean_state() -> None:
     assert code == 0
 
 
-def test_content_cli_audit_returns_zero_for_reviewed_pool() -> None:
+def test_content_cli_audit_reports_coverage_and_returns_zero_for_reviewed_pool(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
     assert main(["audit"]) == 0
+    output = capsys.readouterr().out
+    assert "reviewed skill x difficulty coverage" in output
+    rows = [line.split() for line in output.splitlines()]
+    assert ["reading-comprehension", "3", "2", "1"] in rows
+    assert ["sequence", "1", "1", "0"] in rows
+    assert "sequence/difficult=+4" in output
 
 
 def test_content_cli_validate_returns_one_when_manifest_drifts(

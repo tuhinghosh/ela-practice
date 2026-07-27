@@ -87,6 +87,20 @@ def cmd_audit(_args: argparse.Namespace) -> int:
         return 1
     print(f"review statuses: {report.status_counts}")
     print(f"reviewed difficulty tiers: {report.tier_counts}")
+    print("reviewed skill x difficulty coverage (activities; target >= 4):")
+    print(f"{'skill':<24} {'easy':>5} {'medium':>7} {'difficult':>10}")
+    for skill, tiers in report.skill_tier_coverage.items():
+        print(
+            f"{skill:<24} "
+            f"{tiers['easy']:>5} {tiers['medium']:>7} {tiers['difficult']:>10}"
+        )
+    gaps = [
+        f"{skill}/{tier}=+{gap}"
+        for skill, tiers in report.skill_tier_target_gaps.items()
+        for tier, gap in tiers.items()
+        if gap
+    ]
+    print(f"remaining target gaps: {', '.join(gaps) if gaps else 'none'}")
     print(f"correct-answer positions: {report.answer_position_counts}")
     for warning in report.warnings:
         print(f"warning: {warning}")

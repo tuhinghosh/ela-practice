@@ -28,6 +28,13 @@ The 27-activity production specification for the reviewed-core expansion is in
 - [x] Model reading and writing evidence separately for constructed responses
 - [x] Pass backend, frontend, and production Docker verification
 
+### Reviewed-core expansion reporting
+
+- [x] Report reviewed activity coverage by reading skill and difficulty
+- [x] Show remaining gaps to the four-activities-per-cell target
+- [x] Fail CI when any verified coverage cell regresses
+- [ ] Author and review the first content release
+
 ## Locked MVP decisions
 
 These decisions are intentionally locked for MVP implementation unless explicitly changed later:
