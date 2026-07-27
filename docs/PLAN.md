@@ -13,6 +13,8 @@ Important planning notes:
 
 The post-MVP content quality audit and reviewed-library expansion plan is in
 [`CONTENT_AUDIT_AND_EXPANSION_BLUEPRINT.md`](CONTENT_AUDIT_AND_EXPANSION_BLUEPRINT.md).
+The 27-activity production specification for the reviewed-core expansion is in
+[`CONTENT_PRODUCTION_MATRIX_27.md`](CONTENT_PRODUCTION_MATRIX_27.md).
 
 ## Post-MVP content expansion
 

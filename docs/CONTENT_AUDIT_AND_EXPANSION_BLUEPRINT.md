@@ -432,6 +432,10 @@ Reyana's observed question-level evidence are sufficient.
 
 ## Prioritized execution plan
 
+The exact 27-activity topic, tier, skill, evidence, answer-position, and source
+plan for Batches 1–3 is in
+[`CONTENT_PRODUCTION_MATRIX_27.md`](CONTENT_PRODUCTION_MATRIX_27.md).
+
 ### Batch 0 — Guardrails
 
 - Add a content-audit command and regression tests.
