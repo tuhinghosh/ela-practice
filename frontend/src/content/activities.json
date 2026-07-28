@@ -4577,5 +4577,604 @@
     ],
     "skillTags":["main-idea","vocabulary","inference","summary"],
     "sourceUrls":["https://www.cia.gov/the-world-factbook/about/archives/2021/countries/brazil/"]
+  },
+  {
+    "id": "expansion-animals-cat-whiskers-01",
+    "title": "Whiskers Measure the Way",
+    "theme": "animals",
+    "difficulty": "easy",
+    "passageType": "informational",
+    "missionLabel": "Investigate how Comet solves the box-maze challenge",
+    "passageTitle": "Whiskers Measure the Way",
+    "passageText": "A tower of delivery boxes turned Mina's hallway into an accidental maze. Her cat, Comet, charged toward an open box, stopped with his nose near the narrow entrance, and backed away. A minute later, he slipped through a wider gap without slowing down. Mina had a question: had Comet's whiskers helped him investigate the openings?\n\nShe watched without touching or directing him. At the first box, several whiskers brushed the cardboard and bent backward. At the wider gap, fewer whiskers touched the sides. Comet also lowered his head, sniffed, and looked into each space, so Mina knew whiskers were not his only source of information.\n\nWhiskers are specialized hairs rooted more deeply than ordinary fur. Each grows from a follicle, a tiny pocket in the skin surrounded by nerves. When a whisker bends against an object or vibrates in moving air, those nerves send a signal toward the brain. The signals provide information about objects close to a cat's face, where its eyes do not focus as clearly. Whiskers are useful sensors, but they do not act like perfect rulers or make decisions for the cat.\n\nMina changed her first explanation. She could not claim that Comet's whiskers alone told him whether he would fit. The touches gave his brain clues, while sight, smell, body position, and past experience could add more. By the end, Mina had solved a better mystery: not \"Do whiskers measure a doorway?\" but \"How does a cat combine several clues before choosing its next move?\"",
+    "questions": [
+      {
+        "id": "q1",
+        "type": "multiple-choice",
+        "prompt": "What is the main idea of the passage?",
+        "choices": [
+          "Comet chooses boxes by using only his sense of smell.",
+          "A cat's whiskers act as exact rulers for every opening.",
+          "Whiskers provide nearby sensory clues that a cat can combine with other information.",
+          "Mina teaches Comet to follow a path through the boxes."
+        ],
+        "correctChoice": "Whiskers provide nearby sensory clues that a cat can combine with other information.",
+        "skillTag": "main-idea",
+        "answerExplanation": "The passage connects whisker movement with nerve signals while showing that Comet also uses sight, smell, body position, and experience."
+      },
+      {
+        "id": "q2",
+        "type": "multiple-choice",
+        "prompt": "What does \"sensors\" mean when the passage calls whiskers useful sensors?",
+        "choices": [
+          "Hairs that grow into exact measuring rulers",
+          "Muscles that push a cat through an opening",
+          "Decorations that reveal a cat's age",
+          "Parts that detect and provide information"
+        ],
+        "correctChoice": "Parts that detect and provide information",
+        "skillTag": "vocabulary",
+        "answerExplanation": "The surrounding sentences explain that whiskers detect bending or air movement and send information toward the brain."
+      },
+      {
+        "id": "q3",
+        "type": "multiple-choice",
+        "prompt": "Which sequence best explains how Comet could use a cardboard touch?",
+        "choices": [
+          "Comet chooses a move, the box appears, and then a whisker grows.",
+          "Cardboard bends a whisker, nerves signal the brain, and Comet combines clues before moving.",
+          "Comet stops using his other senses, and the whisker measures the exact gap.",
+          "Mina moves the box, and Comet's brain sends a signal into the cardboard."
+        ],
+        "correctChoice": "Cardboard bends a whisker, nerves signal the brain, and Comet combines clues before moving.",
+        "skillTag": "sequence",
+        "answerExplanation": "The passage describes contact first, a nerve signal second, and Comet's use of several clues before his movement choice."
+      },
+      {
+        "id": "q4",
+        "type": "short-response",
+        "prompt": "Why does Mina reject her first idea that whiskers alone told Comet whether he would fit? Use two details from her observation and the explanation.",
+        "skillTag": "inference",
+        "responseGuidance": "A strong response uses the whisker touches and nerve signals plus evidence that Comet also looked, sniffed, changed body position, or used experience before choosing how to move.",
+        "writingSkillTags": ["short-writing", "sentence-quality"]
+      }
+    ],
+    "skillTags": ["main-idea", "vocabulary", "sequence", "inference"],
+    "sourceUrls": [
+      "https://vcahospitals.com/know-your-pet/why-do-cats-have-whiskers",
+      "https://feline.vet.cornell.edu/inside-the-mind-of-a-cat"
+    ]
+  },
+  {
+    "id": "expansion-friendship-quiet-mapmaker-01",
+    "title": "The Quiet Mapmaker",
+    "theme": "friendship",
+    "difficulty": "easy",
+    "passageType": "literary",
+    "missionLabel": "Crack the map clue before the final bell",
+    "passageTitle": "The Quiet Mapmaker",
+    "passageText": "At 2:35, a gold envelope slid under Room 14's door. Inside, a note announced the final challenge of Mystery Map Day: \"Find the brass owl before the 2:55 bell. Begin where a dragon drinks, pass the room with no walls, and stop beneath the clock that never tells time.\" The winning team would choose Friday's class game. Omar grabbed the clue. Liv shouted three guesses. Priya quietly opened her notebook.\n\nOmar raced to the dragon mural beside the water fountain. Liv checked the library because books could be \"rooms with no walls.\" Neither place held the owl. With twelve minutes left, their team had collected exciting guesses but no route connecting them.\n\nPriya turned her notebook around. She had sketched the school and marked every dragon, clock, and unusual \"room.\" A line connected the fountain mural to the outdoor classroom, which had tables but no walls. From there, the nearest broken clock was painted above the old auditorium doors. \"The clue says pass the room,\" Priya pointed out. \"The library would make us stop inside it.\"\n\nThe three sprinted past the outdoor classroom. Under the painted clock, Omar spotted a brass wing poking from a planter. Liv lifted the owl with thirty seconds left.\n\nBack in class, Omar started to say that Priya had solved everything. Priya shook her head. His fountain idea found the starting point, and Liv had noticed the phrase about a room. Priya had mapped how the clues fit together. By the end, their victory belonged to the guesses, the map, and the teammate who knew when to stop racing and connect them.",
+    "questions": [
+      {
+        "id": "q1",
+        "type": "multiple-choice",
+        "prompt": "What is the main idea of the story?",
+        "choices": [
+          "The fastest runner should solve every clue alone.",
+          "A mystery is impossible without a library.",
+          "Quiet teammates should keep their ideas secret.",
+          "Different kinds of thinking help the team connect clues and succeed."
+        ],
+        "correctChoice": "Different kinds of thinking help the team connect clues and succeed.",
+        "skillTag": "main-idea",
+        "answerExplanation": "The team wins by combining Omar's starting point, Liv's attention to wording, and Priya's map-based reasoning."
+      },
+      {
+        "id": "q2",
+        "type": "multiple-choice",
+        "prompt": "What happens immediately after Priya explains why the library cannot be the room in the clue?",
+        "choices": [
+          "Omar hides the map in a planter.",
+          "The team runs past the outdoor classroom toward the painted clock.",
+          "The final bell rings before they move.",
+          "Priya returns the clue to the envelope."
+        ],
+        "correctChoice": "The team runs past the outdoor classroom toward the painted clock.",
+        "skillTag": "sequence",
+        "answerExplanation": "After Priya distinguishes passing a room from stopping inside one, the team follows her route toward the auditorium clock."
+      },
+      {
+        "id": "q3",
+        "type": "multiple-choice",
+        "prompt": "Why does Priya disagree when Omar says that she solved everything?",
+        "choices": [
+          "She wants to return the class-game prize.",
+          "She believes the brass owl is still missing.",
+          "She recognizes that Omar and Liv contributed useful parts of the solution.",
+          "She thinks Mystery Map Day should end early."
+        ],
+        "correctChoice": "She recognizes that Omar and Liv contributed useful parts of the solution.",
+        "skillTag": "inference",
+        "answerExplanation": "Priya names Omar's fountain idea and Liv's attention to the wording, showing that her map connected contributions from the whole team."
+      },
+      {
+        "id": "q4",
+        "type": "short-response",
+        "prompt": "Summarize how the team moves from scattered guesses to finding the brass owl. Include at least two key events.",
+        "skillTag": "summary",
+        "responseGuidance": "A strong response explains that Omar and Liv first chase separate guesses, then Priya maps and connects the clues so the team can follow the route to the owl.",
+        "writingSkillTags": ["short-writing", "sentence-quality"]
+      }
+    ],
+    "skillTags": ["main-idea", "sequence", "inference", "summary"],
+    "sourceUrls": []
+  },
+  {
+    "id": "expansion-world-netherlands-water-01",
+    "title": "The Red Light on the Water Map",
+    "theme": "world-geography",
+    "difficulty": "easy",
+    "passageType": "informational",
+    "missionLabel": "Respond when a storm warning lights the control map",
+    "passageTitle": "The Red Light on the Water Map",
+    "passageText": "The Netherlands is a low-lying country in northwestern Europe with a coast on the North Sea and land shaped by the deltas of major rivers. A red warning flashes on a water-control map: a North Sea storm is pushing toward the country while river levels are already high. The challenge is deciding which team acts first—and what any one team can actually do. The answer is not \"build one giant wall.\" Dutch water safety depends on several authorities using different tools before, during, and after high water.\n\nThe first move is information. Rijkswaterstaat monitors major waters and sends timely warnings when high water or a sea storm is expected. A warning can trigger inspections of dikes and dunes, which help hold water away from communities. Operators may also prepare dams, floodgates, or storm-surge barriers that control water at particular locations.\n\nNow imagine the map zooming from the whole country to one district and then one city. Regional water authorities manage local water systems and flood defenses. Municipalities handle rainwater and wastewater in towns. Provinces have other regional responsibilities. A blocked city drain and a threatened national barrier appear on the same map, but they do not belong to the same crew.\n\nWhen the storm passes, the mission is not over. Workers inspect structures, repair damage, review water levels, and prepare for the next event. Longer projects can give rivers more room instead of relying only on higher barriers. By the end, the red light has revealed the real strategy: warnings, structures, local action, national coordination, and repeated maintenance work as one connected system.",
+    "questions": [
+      {
+        "id": "q1",
+        "type": "multiple-choice",
+        "prompt": "What is the main idea of the passage?",
+        "choices": [
+          "Every Dutch town uses exactly the same flood structure.",
+          "One wall permanently removed flood risk from the Netherlands.",
+          "Dutch water safety depends on continuing work shared by several authorities.",
+          "Only municipalities manage rivers and the sea."
+        ],
+        "correctChoice": "Dutch water safety depends on continuing work shared by several authorities.",
+        "skillTag": "main-idea",
+        "answerExplanation": "The passage emphasizes different responsibilities and a repeating process of monitoring, maintenance, action, and planning."
+      },
+      {
+        "id": "q2",
+        "type": "multiple-choice",
+        "prompt": "Which action comes first in the high-water cycle described in the third paragraph?",
+        "choices": [
+          "Experts monitor weather and water levels.",
+          "Workers build an entirely new town.",
+          "Municipalities take over every national waterway.",
+          "The cycle ends permanently."
+        ],
+        "correctChoice": "Experts monitor weather and water levels.",
+        "skillTag": "sequence",
+        "answerExplanation": "Monitoring comes before warnings, inspections, operation of structures, and continued checking."
+      },
+      {
+        "id": "q3",
+        "type": "multiple-choice",
+        "prompt": "Which detail explains one responsibility of Rijkswaterstaat?",
+        "choices": [
+          "It chooses every family's water use.",
+          "It runs all schools near canals.",
+          "It replaces regional and city governments.",
+          "It manages major waters and maintains national water structures."
+        ],
+        "correctChoice": "It manages major waters and maintains national water structures.",
+        "skillTag": "reading-comprehension",
+        "answerExplanation": "The second paragraph directly states that Rijkswaterstaat manages major waters and maintains many national structures."
+      },
+      {
+        "id": "q4",
+        "type": "short-response",
+        "prompt": "Summarize why Dutch water management is continuing work rather than a one-time fix. Use two details.",
+        "skillTag": "summary",
+        "responseGuidance": "A strong response explains that conditions keep changing and supports this with monitoring, warnings, maintenance, operation of structures, shared responsibilities, or long-term planning.",
+        "writingSkillTags": ["short-writing", "sentence-quality"]
+      }
+    ],
+    "skillTags": ["main-idea", "sequence", "reading-comprehension", "summary"],
+    "sourceUrls": [
+      "https://www.government.nl/themes/nature-and-the-environment/water-management/water-management-in-the-netherlands",
+      "https://www.government.nl/themes/government-and-democracy/public-administration/provinces-municipalities-and-water-authorities",
+      "https://biodiversity.europa.eu/countries/netherlands"
+    ]
+  },
+  {
+    "id": "expansion-animals-conservation-dogs-01",
+    "title": "Nooch and the Hidden Nests",
+    "theme": "animals",
+    "difficulty": "medium",
+    "passageType": "informational",
+    "missionLabel": "Follow Nooch from hidden scent to protected turtle nest",
+    "passageTitle": "Nooch and the Hidden Nests",
+    "passageText": "Nooch is a dog with an unusual conservation job: helping biologists find western pond turtle nests hidden in grass and soil. These turtles lay eggs on land, where predators may discover the nests before the young hatch. Biologists had a challenge. To protect more nests, they first had to locate them without chasing or capturing the adult turtles.\n\nNooch works with a human handler as one trained team. Before searching outdoors, conservation dogs learn to recognize a target odor and complete odor tests and field trials. They also learn a trained alert—a particular behavior that tells the handler, \"I detect the target smell here.\" An alert might involve stopping or focusing on one spot; the handler must know the signal that their own dog was taught.\n\nDuring a survey, Nooch searches while the handler guides her and watches her behavior. When she alerts, the team marks the area for closer examination. A biologist then checks whether a turtle nest is actually present and records what is found. At National Park Service sites, confirmed nests can be protected with wire mesh and stakes to make them harder for digging predators to reach.\n\nBy the end, Nooch's alert has started an investigation, not finished one. It identifies a promising place, but it does not prove the nest's exact location, contents, or condition. The dog, handler, and biologist each perform a different step. Together they support non-invasive research—gathering useful information without needing to capture the animal being studied.",
+    "questions": [
+      {
+        "id": "q1",
+        "type": "multiple-choice",
+        "prompt": "What is the main idea of the passage?",
+        "choices": [
+          "A dog's alert always proves the identity of a sample.",
+          "Wildlife research should depend on dogs without human guidance.",
+          "Conservation dog teams combine trained scent work with careful confirmation and handling.",
+          "Every conservation dog searches for the same animal."
+        ],
+        "correctChoice": "Conservation dog teams combine trained scent work with careful confirmation and handling.",
+        "skillTag": "main-idea",
+        "answerExplanation": "The passage presents detection as one part of a process that also includes handlers, confirmation, records, clean collection, and analysis."
+      },
+      {
+        "id": "q2",
+        "type": "multiple-choice",
+        "prompt": "What does \"non-invasive\" mean as used in the final paragraph?",
+        "choices": [
+          "Completed without any training",
+          "Limited to work inside a laboratory",
+          "Guaranteed to identify every animal",
+          "Gathering information without capturing or directly handling the target animal"
+        ],
+        "correctChoice": "Gathering information without capturing or directly handling the target animal",
+        "skillTag": "vocabulary",
+        "answerExplanation": "The passage defines non-invasive directly as gathering information without capturing or directly handling the animal being studied."
+      },
+      {
+        "id": "q3",
+        "type": "multiple-choice",
+        "prompt": "Which sequence best represents the field process in the passage?",
+        "choices": [
+          "Biologists protect a nest, hide it again, and then begin training.",
+          "Nooch searches and alerts, the team marks and checks the area, and a confirmed nest is recorded and protected.",
+          "The handler guesses a location, Nooch captures a turtle, and the team skips confirmation.",
+          "A nest is declared present before Nooch or the biologist examines the area."
+        ],
+        "correctChoice": "Nooch searches and alerts, the team marks and checks the area, and a confirmed nest is recorded and protected.",
+        "skillTag": "sequence",
+        "answerExplanation": "This choice follows the passage from the dog's search and alert through marking, biological confirmation, recording, and nest protection."
+      },
+      {
+        "id": "q4",
+        "type": "short-response",
+        "prompt": "Why is a trained dog's alert useful evidence but not a final conclusion? Use two details.",
+        "skillTag": "inference",
+        "responseGuidance": "A strong response explains that the alert identifies a promising place, while the handler and biologist must mark, examine, confirm, record, and protect an actual nest.",
+        "writingSkillTags": ["short-writing", "sentence-quality"]
+      }
+    ],
+    "skillTags": ["main-idea", "vocabulary", "sequence", "inference"],
+    "sourceUrls": [
+      "https://www.nps.gov/articles/000/sfanblog_biologists-enlist-best-noses-in-town-to-protect-at-risk-turtles.htm"
+    ]
+  },
+  {
+    "id": "expansion-nature-maglev-train-01",
+    "title": "The Train That Rises Off the Track",
+    "theme": "nature",
+    "difficulty": "medium",
+    "passageType": "informational",
+    "missionLabel": "Discover how a train can move without wheels touching rails",
+    "passageTitle": "The Train That Rises Off the Track",
+    "passageText": "Hold two toy magnets close together and you may feel them pull toward each other or push apart without touching. That invisible push or pull is a magnetic force. Now imagine using it to lift an entire train. A maglev train does exactly that: its name is short for magnetic levitation, or rising with magnetic force. The challenge is keeping a heavy vehicle floating steadily instead of letting it snap upward or drop down.\n\nMaglev engineers use electromagnets. Unlike a refrigerator magnet that stays magnetic, an electromagnet becomes magnetic when electricity flows through wire wrapped into a coil. Changing the electricity changes the magnet's strength. In one train design, electromagnets on the vehicle pull upward toward iron parts under a special track called a guideway.\n\nThe train must keep a small, steady gap above that guideway. Sensors measure the gap again and again, much like a ruler that checks without touching. If the train moves too close, a control system weakens the magnetic pull. If it drops too far, the system strengthens the pull. These quick corrections keep gravity and magnetic force in balance.\n\nFloating is only half the puzzle because the train must also move forward. Coils along the guideway switch their magnetic pull in a controlled sequence—one section pulls the train ahead, then the next section takes over. Changing that sequence can speed up or slow down the vehicle. By the end, the train's smooth motion comes from a constant teamwork of electricity, magnets, sensors, and carefully timed adjustments.",
+    "questions": [
+      {
+        "id": "q1",
+        "type": "multiple-choice",
+        "prompt": "Which part of the system helps keep the train from rising too high or dropping too low?",
+        "choices": [
+          "Passengers shift their weight inside the train.",
+          "Ordinary wheels grip the guideway more tightly.",
+          "Gravity turns off whenever the vehicle rises.",
+          "Sensors measure the gap while controls change the magnets' strength."
+        ],
+        "correctChoice": "Sensors measure the gap while controls change the magnets' strength.",
+        "skillTag": "reading-comprehension",
+        "answerExplanation": "The passage says sensors measure the gap and controls weaken or strengthen the magnetic pull when the train moves."
+      },
+      {
+        "id": "q2",
+        "type": "multiple-choice",
+        "prompt": "Which sequence best explains how an electromagnet helps lift and steady the train?",
+        "choices": [
+          "Electricity flows through a wire coil, magnetic force pulls upward, and controls adjust that pull using sensor measurements.",
+          "The train turns off gravity, rolls forward, and then produces electricity.",
+          "A sensor becomes a magnet, iron disappears, and wheels measure the gap.",
+          "The guideway moves upward, the coils switch off, and the train floats without forces."
+        ],
+        "correctChoice": "Electricity flows through a wire coil, magnetic force pulls upward, and controls adjust that pull using sensor measurements.",
+        "skillTag": "sequence",
+        "answerExplanation": "The passage traces electricity through the coil to magnetic pull, then explains how sensor measurements guide strength adjustments."
+      },
+      {
+        "id": "q3",
+        "type": "multiple-choice",
+        "prompt": "Why are separate coils switched on in sequence along the guideway?",
+        "choices": [
+          "They make gravity disappear around the passengers.",
+          "They replace every sensor that controls the gap.",
+          "Each section pulls the train ahead before the next section takes over.",
+          "They allow ordinary wheels to grip rails more tightly."
+        ],
+        "correctChoice": "Each section pulls the train ahead before the next section takes over.",
+        "skillTag": "inference",
+        "answerExplanation": "The passage explains that timed guideway sections take turns pulling the train forward, creating motion in addition to lift."
+      },
+      {
+        "id": "q4",
+        "type": "short-response",
+        "prompt": "Summarize how a maglev system both lifts and moves the train. Use at least two connected details.",
+        "skillTag": "summary",
+        "responseGuidance": "A strong response explains that adjustable electromagnets and sensors maintain the gap, while guideway coils switch in sequence to pull the vehicle forward.",
+        "writingSkillTags": ["short-writing", "sentence-quality"]
+      }
+    ],
+    "skillTags": ["reading-comprehension", "sequence", "inference", "summary"],
+    "sourceUrls": [
+      "https://www.fra.dot.gov/necfuture/tier1_eis/feis/volume_2/chapter_04.aspx",
+      "https://railroads.fra.dot.gov/sites/fra.dot.gov/files/fra_net/1180/fra0206.pdf"
+    ]
+  },
+  {
+    "id": "expansion-history-rosetta-stone-01",
+    "title": "The Stone With Three Voices",
+    "theme": "history",
+    "difficulty": "medium",
+    "passageType": "informational",
+    "missionLabel": "Use one readable script to unlock two lost writing systems",
+    "passageTitle": "The Stone With Three Voices",
+    "passageText": "In July 1799, soldiers repairing a fort near Rashid, Egypt, pulled a broken dark stone from the rubble. Its surface carried three bands of writing. The bottom looked like Ancient Greek, which scholars could still read. Above it were picture-like hieroglyphs and Demotic, a faster Egyptian script once used for everyday writing. Knowledge of how to read both Egyptian scripts had been lost. The stone presented a thrilling question: could one readable message unlock the other two?\n\nThe object, now called the Rosetta Stone, was carved more than 2,200 years ago, in 196 BCE. Its text was a decree—an official public statement—about King Ptolemy V. Most importantly, all three scripts recorded the same decree. Scholars could begin with the Greek meaning, then compare repeated names and patterns across the unfamiliar writing.\n\nThe solution took years and more than one researcher. Thomas Young showed that some hieroglyphs represented sounds in the royal name Ptolemy. Jean-François Champollion compared more names and studied Coptic, a later form of the Egyptian language written with an alphabet scholars understood. He realized that hieroglyphs could represent sounds in Egyptian words, not only pictures or ideas. In 1822, he announced a major breakthrough.\n\nBy the end, the stone had not acted like a magical dictionary with every answer printed beside it. It provided matching evidence that scholars tested against other texts and languages. Deciphering hieroglyphs opened access to records of ancient Egyptian history, beliefs, government, and daily life that had been unreadable for centuries.",
+    "questions": [
+      {
+        "id": "q1",
+        "type": "multiple-choice",
+        "prompt": "What is the main idea of the passage?",
+        "choices": [
+          "The Rosetta Stone helped scholars decipher Egyptian writing because it preserved the same message in three scripts.",
+          "The Rosetta Stone contained a complete dictionary of every Egyptian word.",
+          "Ancient Greek became unreadable before hieroglyphs did.",
+          "One soldier translated all three scripts immediately in 1799."
+        ],
+        "correctChoice": "The Rosetta Stone helped scholars decipher Egyptian writing because it preserved the same message in three scripts.",
+        "skillTag": "main-idea",
+        "answerExplanation": "The passage focuses on how a shared decree allowed scholars to compare readable Greek with Demotic and hieroglyphic writing."
+      },
+      {
+        "id": "q2",
+        "type": "multiple-choice",
+        "prompt": "What does \"deciphering\" mean as used in the final paragraph?",
+        "choices": [
+          "Carving a new message into stone",
+          "Moving an object from one museum to another",
+          "Changing a decree into a royal law",
+          "Working out how to read and understand a writing system"
+        ],
+        "correctChoice": "Working out how to read and understand a writing system",
+        "skillTag": "vocabulary",
+        "answerExplanation": "The passage describes scholars using comparisons and language knowledge to work out how hieroglyphs recorded meaning and sound."
+      },
+      {
+        "id": "q3",
+        "type": "multiple-choice",
+        "prompt": "Why was the Ancient Greek section especially useful to scholars?",
+        "choices": [
+          "It was the only section carved into the stone.",
+          "It described a different event from the Egyptian sections.",
+          "Scholars could read it and compare its message with the two unfamiliar scripts.",
+          "It included drawings showing how the stone was discovered."
+        ],
+        "correctChoice": "Scholars could read it and compare its message with the two unfamiliar scripts.",
+        "skillTag": "reading-comprehension",
+        "answerExplanation": "Because all three scripts recorded the same decree, readable Greek supplied meanings and patterns that could be compared with Demotic and hieroglyphs."
+      },
+      {
+        "id": "q4",
+        "type": "short-response",
+        "prompt": "Summarize how the Rosetta Stone contributed to deciphering hieroglyphs. Include at least two steps or pieces of evidence.",
+        "skillTag": "summary",
+        "responseGuidance": "A strong response explains that scholars compared the readable Greek decree with matching Egyptian scripts and used repeated royal names, sound patterns, other texts, or Coptic to test their ideas.",
+        "writingSkillTags": ["short-writing", "sentence-quality"]
+      }
+    ],
+    "skillTags": ["main-idea", "vocabulary", "reading-comprehension", "summary"],
+    "sourceUrls": [
+      "https://www.britishmuseum.org/blog/everything-you-ever-wanted-know-about-rosetta-stone",
+      "https://www.britishmuseum.org/exhibitions/hieroglyphs-unlocking-ancient-egypt/egyptian-hieroglyphs-decipherment-timeline"
+    ]
+  },
+  {
+    "id": "expansion-history-antikythera-mechanism-01",
+    "title": "The Gears Beneath the Sea",
+    "theme": "history",
+    "difficulty": "difficult",
+    "passageType": "informational",
+    "missionLabel": "Reconstruct a machine from clues hidden for 2,000 years",
+    "passageTitle": "The Gears Beneath the Sea",
+    "passageText": "In 1900, Greek sponge divers discovered the remains of an ancient ship near the small island of Antikythera, between mainland Greece and Crete. Among statues and jars, they raised an unimpressive lump of corroded bronze. Corroded means damaged by a slow chemical reaction with air or water. The mystery began with a question: what could be hidden inside that lump?\n\nMonths later, the object split apart. Tiny gear teeth appeared inside. Scholars eventually determined that the device had been built more than 2,000 years ago. Turning a handle would have moved connected bronze gears and pointers across marked dials. The surviving parts show that the machine tracked calendars and cycles of the Sun and Moon. Its back dials could also predict eclipses. Inscriptions—small written labels and directions—suggest that its front displayed the five planets known to ancient Greek astronomers.\n\nYet most of the machine is missing. Only 82 damaged fragments survive, including 30 bronze gears. Some clues are buried beneath crust or squeezed inside pieces that cannot simply be pulled apart. In 2005, researchers used X-ray computed tomography, a scanning method that reveals layers inside an object. The scans exposed gear teeth and thousands of faint characters that ordinary photographs could not show.\n\nResearchers now build models that must fit several kinds of evidence: the surviving gears, the space inside the original case, and the instructions hidden in the inscriptions. These models show what the machine may have looked like and how its parts may have worked together. But a model is not the recovered original. When evidence is missing, more than one reconstruction can seem possible. The Antikythera Mechanism therefore reveals two things at once: ancient engineers could build an astonishing astronomical calculator, and modern investigators must separate what the fragments prove from what a careful model proposes.",
+    "questions": [
+      {
+        "id": "q1",
+        "type": "multiple-choice",
+        "prompt": "Which discovery most directly allowed researchers to examine clues hidden inside the fragments?",
+        "choices": [
+          "Divers found statues and jars near the wreck.",
+          "The mechanism had once been operated with a handle.",
+          "X-ray scans revealed internal gear teeth and faint writing.",
+          "The wreck lay between mainland Greece and Crete."
+        ],
+        "correctChoice": "X-ray scans revealed internal gear teeth and faint writing.",
+        "skillTag": "reading-comprehension",
+        "answerExplanation": "The passage says X-ray computed tomography exposed features inside pieces that researchers could not simply pull apart."
+      },
+      {
+        "id": "q2",
+        "type": "multiple-choice",
+        "prompt": "What does \"corroded\" mean as used in the first paragraph?",
+        "choices": [
+          "Carefully polished until it shines",
+          "Marked with instructions for its user",
+          "Broken deliberately into equal pieces",
+          "Damaged slowly through a reaction with air or water"
+        ],
+        "correctChoice": "Damaged slowly through a reaction with air or water",
+        "skillTag": "vocabulary",
+        "answerExplanation": "The passage defines corroded immediately after using the word."
+      },
+      {
+        "id": "q3",
+        "type": "multiple-choice",
+        "prompt": "Which event happened first?",
+        "choices": [
+          "Sponge divers raised a corroded bronze object from the shipwreck.",
+          "Researchers used X-ray scans to reveal hidden characters.",
+          "Scholars built models constrained by the surviving evidence.",
+          "Investigators identified eclipse-prediction dials."
+        ],
+        "correctChoice": "Sponge divers raised a corroded bronze object from the shipwreck.",
+        "skillTag": "sequence",
+        "answerExplanation": "The divers recovered the object in 1900, before later study, scanning, and reconstruction."
+      },
+      {
+        "id": "q4",
+        "type": "short-response",
+        "prompt": "Why does the author say a reconstruction is not the same as the recovered original? Use two details from the passage.",
+        "skillTag": "inference",
+        "responseGuidance": "A strong response explains that most of the mechanism is missing or damaged, so researchers combine surviving gears, available space, inscriptions, and scans to propose how it worked. Because missing evidence can allow more than one possibility, a model includes reasoned conclusions that the original fragments do not directly prove.",
+        "writingSkillTags": ["short-writing", "sentence-quality"]
+      }
+    ],
+    "skillTags": ["reading-comprehension", "vocabulary", "sequence", "inference"],
+    "sourceUrls": [
+      "https://www.whoi.edu/ocean-learning-hub/ocean-topics/ocean-human-lives/underwater-archaeology/antikythera-shipwreck/",
+      "https://www.nature.com/articles/s41550-017-0347-2",
+      "https://www.nature.com/articles/s41598-021-84310-w"
+    ]
+  },
+  {
+    "id": "expansion-community-changing-instructions-01",
+    "title": "Three Messages, One Bridge",
+    "theme": "community",
+    "difficulty": "difficult",
+    "passageType": "literary",
+    "missionLabel": "Rebuild the requirements before inspection begins",
+    "passageTitle": "Three Messages, One Bridge",
+    "passageText": "The paper bridge was standing, the washer cup was ready, and inspection began in eight minutes. Then Jalen looked at the class message board and pulled the labeled diagram from their display. \"The newest post says forty centimeters of tape,\" he told Mina. \"Maybe that replaces the whole assignment.\" Mina stared at three messages with three timestamps. Their challenge was no longer just keeping the bridge upright; they had to reconstruct the current rules.\n\nThe Monday 8:05 post was the original assignment: build and test a bridge by Wednesday using no more than twenty sheets of paper and sixty centimeters of tape. Teams also had to submit a labeled diagram and a paragraph explaining one revision.\n\nAt 11:40 Monday, substitute teacher Mr. Alvarez clarified the labels. Mark the span, the part crossing the gap, and the supports, the parts holding it up. He explicitly kept the Wednesday deadline and all material limits. At 3:15 Tuesday, Ms. Chen corrected a supply problem. The tape limit was now forty centimeters, and her note said, \"This message supersedes—replaces—only the earlier tape amount. Keep the paper limit, labels, revision paragraph, test, and deadline.\"\n\nMina arranged the posts by time and boxed the exact words that changed. Jalen restored the diagram while she checked their tape. With two minutes left, their display held the bridge, washer-test record, labeled span and supports, and revision paragraph.\n\nBy the end, the bridge passed inspection, but the messages had supplied the harder test. A newer instruction can replace one detail without erasing every requirement that came before it.",
+    "questions": [
+      {
+        "id": "q1",
+        "type": "multiple-choice",
+        "prompt": "What is the main idea of the passage?",
+        "choices": [
+          "Students should ignore messages from substitute teachers.",
+          "The newest message always replaces every earlier requirement.",
+          "Readers must combine messages and identify exactly which instructions changed.",
+          "A paper bridge needs unlimited tape to hold washers."
+        ],
+        "correctChoice": "Readers must combine messages and identify exactly which instructions changed.",
+        "skillTag": "main-idea",
+        "answerExplanation": "Mina reconstructs the assignment by keeping unchanged requirements and replacing only the tape limit."
+      },
+      {
+        "id": "q2",
+        "type": "multiple-choice",
+        "prompt": "What does \"supersedes\" mean in Ms. Chen's correction?",
+        "choices": [
+          "Replaces an earlier instruction",
+          "Repeats without changing",
+          "Hides from the class",
+          "Adds an optional decoration"
+        ],
+        "correctChoice": "Replaces an earlier instruction",
+        "skillTag": "vocabulary",
+        "answerExplanation": "The correction replaces the earlier sixty-centimeter tape amount with forty centimeters while preserving other requirements."
+      },
+      {
+        "id": "q3",
+        "type": "multiple-choice",
+        "prompt": "Which order shows how the assignment messages develop?",
+        "choices": [
+          "Tape correction, original assignment, label clarification",
+          "Label clarification, tape correction, original assignment",
+          "Original assignment, tape correction, label clarification",
+          "Original assignment, label clarification, tape correction"
+        ],
+        "correctChoice": "Original assignment, label clarification, tape correction",
+        "skillTag": "sequence",
+        "answerExplanation": "The timestamps place Ms. Chen's original post first, Mr. Alvarez's label clarification second, and Ms. Chen's tape correction last."
+      },
+      {
+        "id": "q4",
+        "type": "short-response",
+        "prompt": "Using the three messages, state the current tape limit and two requirements that remain unchanged. Explain how you know.",
+        "skillTag": "reading-comprehension",
+        "responseGuidance": "A strong response gives forty centimeters of tape, names two retained requirements, and cites the correction's statement that only the tape amount was replaced.",
+        "writingSkillTags": ["short-writing", "sentence-quality"]
+      }
+    ],
+    "skillTags": ["main-idea", "vocabulary", "sequence", "reading-comprehension"],
+    "sourceUrls": []
+  },
+  {
+    "id": "expansion-world-australia-map-scale-01",
+    "title": "Zoom In Before Time Runs Out",
+    "theme": "world-geography",
+    "difficulty": "difficult",
+    "passageType": "informational",
+    "missionLabel": "Rescue a virtual expedition with three map scales",
+    "passageTitle": "Zoom In Before Time Runs Out",
+    "passageText": "Australia is both a country and a continent in the Southern Hemisphere. A virtual research team has missed its museum check-in there, giving Reyana's geography club a six-minute challenge: rebuild the route. The simulation offers three maps—but opening the wrong one wastes precious time. Map A shows the whole country with states, territories, capitals, and major highways. Map B shows one region with smaller roads, rivers, and towns. Map C shows a city center with individual streets, parks, and buildings.\n\nThe first clue says the team traveled from one state capital toward another, so the club chooses Map A. A national map fits an enormous area onto one page but leaves out local detail. The next clue names a smaller highway approaching the study region. The students switch to Map B, which covers less territory and reveals more roads.\n\nThen the simulation reports a final signal near a city station. The club opens Map C and traces individual streets to the museum. Mapmakers call this detailed city view a larger-scale map than Map A. The term sounds backward because Map C covers the smallest area. Scale, however, compares distance on the page with distance on the ground. Features appear larger relative to the page, allowing finer detail.\n\nWith twenty seconds left, the club identifies the museum entrance and completes the route. By the end, the team has not found one map that does everything. It has solved a three-stage puzzle by trading broad area for local detail each time it zooms in.",
+    "questions": [
+      {
+        "id": "q1",
+        "type": "multiple-choice",
+        "prompt": "What is the main idea of the passage?",
+        "choices": [
+          "Different map scales are useful for different questions because area and detail trade off.",
+          "A city map should be used for every trip across Australia.",
+          "National maps contain every local road and building.",
+          "A map's scale describes only the size of its paper."
+        ],
+        "correctChoice": "Different map scales are useful for different questions because area and detail trade off.",
+        "skillTag": "main-idea",
+        "answerExplanation": "The club selects national, regional, and city maps according to the area and detail needed for each task."
+      },
+      {
+        "id": "q2",
+        "type": "multiple-choice",
+        "prompt": "Which map does the club use after comparing the cross-country route but before planning the city walk?",
+        "choices": [
+          "Map A, the national map",
+          "Map B, the regional map",
+          "Map C, the city map",
+          "No map at all"
+        ],
+        "correctChoice": "Map B, the regional map",
+        "skillTag": "sequence",
+        "answerExplanation": "The club uses Map A first, Map B next to study regional roads, and Map C last for the city walk."
+      },
+      {
+        "id": "q3",
+        "type": "multiple-choice",
+        "prompt": "Which detail explains why Map C is called larger-scale even though it covers the smallest area?",
+        "choices": [
+          "It is printed on heavier paper.",
+          "It shows every state capital.",
+          "It must be physically taller than Map A.",
+          "Features are drawn larger relative to the page, allowing more local detail."
+        ],
+        "correctChoice": "Features are drawn larger relative to the page, allowing more local detail.",
+        "skillTag": "reading-comprehension",
+        "answerExplanation": "The third paragraph explains that larger scale means features appear larger relative to the page, so less territory can be shown in greater detail."
+      },
+      {
+        "id": "q4",
+        "type": "short-response",
+        "prompt": "Summarize the tradeoff among the three map scales and give one task suited to a broad-area map and one suited to a detailed map.",
+        "skillTag": "summary",
+        "responseGuidance": "A strong response explains that broad maps cover more area with less detail, detailed maps cover less area with more detail, and gives examples such as comparing capitals versus planning a city walk.",
+        "writingSkillTags": ["short-writing", "sentence-quality"]
+      }
+    ],
+    "skillTags": ["main-idea", "sequence", "reading-comprehension", "summary"],
+    "sourceUrls": [
+      "https://www.ga.gov.au/data-pubs/maps",
+      "https://www.ga.gov.au/scientific-topics/national-location-information/topographic-maps-data/basics/what-is-map-scale",
+      "https://www.usgs.gov/educational-resources/integrating-geography-standards-teaching-topographic-maps"
+    ]
   }
 ]

@@ -21,6 +21,7 @@ from backend.app.content_schema import (
     list_seed_activities,
     list_seed_themes,
     load_content_manifest,
+    load_review_statuses,
     verify_content_manifest,
 )
 
@@ -68,6 +69,89 @@ def test_every_activity_theme_is_in_themes_file() -> None:
         assert activity.theme in themes, f"{activity.id} theme {activity.theme!r} not allowed"
 
 
+def test_release_a_drafts_match_the_approved_production_contract() -> None:
+    expected = {
+        "expansion-animals-cat-whiskers-01": (
+            "easy",
+            ["main-idea", "vocabulary", "sequence", "inference"],
+            [3, 4, 2],
+            True,
+        ),
+        "expansion-friendship-quiet-mapmaker-01": (
+            "easy",
+            ["main-idea", "sequence", "inference", "summary"],
+            [4, 2, 3],
+            False,
+        ),
+        "expansion-world-netherlands-water-01": (
+            "easy",
+            ["main-idea", "sequence", "reading-comprehension", "summary"],
+            [3, 1, 4],
+            True,
+        ),
+        "expansion-animals-conservation-dogs-01": (
+            "medium",
+            ["main-idea", "vocabulary", "sequence", "inference"],
+            [3, 4, 2],
+            True,
+        ),
+        "expansion-nature-maglev-train-01": (
+            "medium",
+            ["reading-comprehension", "sequence", "inference", "summary"],
+            [4, 1, 3],
+            True,
+        ),
+        "expansion-history-rosetta-stone-01": (
+            "medium",
+            ["main-idea", "vocabulary", "reading-comprehension", "summary"],
+            [1, 4, 3],
+            True,
+        ),
+        "expansion-history-antikythera-mechanism-01": (
+            "difficult",
+            ["reading-comprehension", "vocabulary", "sequence", "inference"],
+            [3, 4, 1],
+            True,
+        ),
+        "expansion-community-changing-instructions-01": (
+            "difficult",
+            ["main-idea", "vocabulary", "sequence", "reading-comprehension"],
+            [3, 1, 4],
+            False,
+        ),
+        "expansion-world-australia-map-scale-01": (
+            "difficult",
+            ["main-idea", "sequence", "reading-comprehension", "summary"],
+            [1, 2, 4],
+            True,
+        ),
+    }
+    activities = {activity.id: activity for activity in list_seed_activities()}
+    statuses = load_review_statuses()
+
+    assert set(expected).issubset(activities)
+    for activity_id, (tier, skills, positions, needs_sources) in expected.items():
+        activity = activities[activity_id]
+        assert statuses[activity_id] == "reviewed"
+        assert activity.difficulty == tier
+        assert [question.skillTag for question in activity.questions] == skills
+        multiple_choice = [
+            question for question in activity.questions if question.type == "multiple-choice"
+        ]
+        assert len(multiple_choice) == 3
+        assert [
+            question.choices.index(question.correctChoice) + 1  # type: ignore[union-attr]
+            for question in multiple_choice
+        ] == positions
+        short_response = activity.questions[-1]
+        assert short_response.type == "short-response"
+        assert set(short_response.writingSkillTags) == {
+            "short-writing",
+            "sentence-quality",
+        }
+        assert bool(activity.sourceUrls) is needs_sources
+
+
 def test_manifest_checksums_match_canonical_files() -> None:
     verify_content_manifest()  # raises if drift
 
@@ -104,9 +188,9 @@ def test_content_cli_audit_reports_coverage_and_returns_zero_for_reviewed_pool(
     output = capsys.readouterr().out
     assert "reviewed skill x difficulty coverage" in output
     rows = [line.split() for line in output.splitlines()]
-    assert ["reading-comprehension", "3", "2", "1"] in rows
-    assert ["sequence", "1", "1", "0"] in rows
-    assert "sequence/difficult=+4" in output
+    assert ["reading-comprehension", "4", "4", "4"] in rows
+    assert ["sequence", "4", "3", "3"] in rows
+    assert "sequence/difficult=+1" in output
 
 
 def test_content_cli_validate_returns_one_when_manifest_drifts(

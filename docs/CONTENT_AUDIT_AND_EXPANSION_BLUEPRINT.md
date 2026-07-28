@@ -446,7 +446,8 @@ plan for Batches 1–3 is in
 
 ### Batch 1 — Complete the weakest adaptive cells
 
-Create nine reviewed activities emphasizing:
+Create a mixed-difficulty vertical slice of nine reviewed activities
+(`E2, E3, E9, M2, M6, M7, D5, D8, D9`) emphasizing:
 
 - difficult sequence/text structure;
 - difficult key details;

@@ -33,7 +33,8 @@ The 27-activity production specification for the reviewed-core expansion is in
 - [x] Report reviewed activity coverage by reading skill and difficulty
 - [x] Show remaining gaps to the four-activities-per-cell target
 - [x] Fail CI when any verified coverage cell regresses
-- [ ] Author and review the first content release
+- [x] Draft the nine-activity mixed-difficulty Release A
+- [ ] Review, revise, and approve the first content release
 
 ## Locked MVP decisions
 
