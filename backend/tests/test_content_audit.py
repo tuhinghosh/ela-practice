@@ -11,7 +11,7 @@ def _content():
 def test_review_registry_classifies_every_activity_once() -> None:
     activities, statuses = _content()
     assert set(statuses) == {activity.id for activity in activities}
-    assert list(statuses.values()).count("reviewed") == 9
+    assert list(statuses.values()).count("reviewed") == 18
     assert list(statuses.values()).count("rewrite-required") == 26
     assert list(statuses.values()).count("draft") == 53
 
@@ -20,46 +20,41 @@ def test_reviewed_pool_passes_all_hard_quality_gates() -> None:
     activities, statuses = _content()
     report = audit_content(activities, statuses)
     assert report.errors == []
-    assert report.reviewed_count == 9
-    assert report.tier_counts == {"easy": 3, "medium": 3, "difficult": 3}
+    assert report.reviewed_count == 18
+    assert report.tier_counts == {"easy": 6, "medium": 6, "difficult": 6}
 
 
 def test_reviewed_skill_by_difficulty_coverage_matches_verified_baseline() -> None:
     activities, statuses = _content()
     report = audit_content(activities, statuses)
     assert report.skill_tier_coverage == {
-        "reading-comprehension": {"easy": 3, "medium": 2, "difficult": 1},
-        "main-idea": {"easy": 1, "medium": 2, "difficult": 2},
-        "inference": {"easy": 3, "medium": 3, "difficult": 3},
-        "sequence": {"easy": 1, "medium": 1, "difficult": 0},
-        "summary": {"easy": 2, "medium": 2, "difficult": 3},
-        "vocabulary": {"easy": 2, "medium": 2, "difficult": 3},
+        "reading-comprehension": {"easy": 4, "medium": 4, "difficult": 4},
+        "main-idea": {"easy": 4, "medium": 4, "difficult": 4},
+        "inference": {"easy": 5, "medium": 5, "difficult": 4},
+        "sequence": {"easy": 4, "medium": 3, "difficult": 3},
+        "summary": {"easy": 4, "medium": 4, "difficult": 4},
+        "vocabulary": {"easy": 3, "medium": 4, "difficult": 5},
     }
     assert report.skill_tier_target_gaps["sequence"] == {
-        "easy": 3,
-        "medium": 3,
-        "difficult": 4,
-    }
-    assert report.skill_tier_target_gaps["inference"] == {
-        "easy": 1,
+        "easy": 0,
         "medium": 1,
         "difficult": 1,
+    }
+    assert report.skill_tier_target_gaps["inference"] == {
+        "easy": 0,
+        "medium": 0,
+        "difficult": 0,
     }
 
 
 def test_audit_rejects_skill_by_difficulty_coverage_regression() -> None:
     activities, statuses = _content()
-    easy_main_idea = next(
-        activity
-        for activity in activities
-        if statuses[activity.id] == "reviewed"
-        and activity.difficulty == "easy"
-        and any(question.skillTag == "main-idea" for question in activity.questions)
-    )
-    question = next(
-        question for question in easy_main_idea.questions if question.skillTag == "main-idea"
-    )
-    question.skillTag = None
+    for activity in activities:
+        if statuses[activity.id] != "reviewed" or activity.difficulty != "easy":
+            continue
+        for question in activity.questions:
+            if question.skillTag == "main-idea":
+                question.skillTag = None
 
     report = audit_content(activities, statuses)
 

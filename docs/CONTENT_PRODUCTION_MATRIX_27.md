@@ -63,15 +63,15 @@ Skill abbreviations used below:
 | M3 | Medium | School: *Credit on the Science Board* | friendship | Literary | MI, SEQ, INF, SUM | 4, 2, 3 |
 | M4 | Medium | Space: *A Message Across Mars* | space | Informational | KD, VOC, INF, SUM | 1, 3, 4 |
 | M5 | Medium | Body: *The Long Trip After Lunch* | human-body | Informational | KD, VOC, SEQ, INF | 3, 4, 1 |
-| M6 | Medium | Board games: *The Rule Nobody Wrote* | logic | Literary | KD, SEQ, INF, SUM | 4, 1, 3 |
-| M7 | Medium | Mystery: *Footprints in the Greenhouse* | mystery | Literary | MI, VOC, KD, SUM | 1, 4, 3 |
+| M6 | Medium | Magnets: *The Train That Rises Off the Track* | nature | Informational | KD, SEQ, INF, SUM | 4, 1, 3 |
+| M7 | Medium | History: *The Stone With Three Voices* | history | Informational | MI, VOC, KD, SUM | 1, 4, 3 |
 | M8 | Medium | Performance fantasy: *The Twelve-Second Change* | arts | Literary | MI, VOC, SEQ, KD | 3, 1, 4 |
 | M9 | Medium | India: *Reading a Monsoon Map* | world-geography | Informational | MI, SEQ, KD, SUM | 1, 2, 4 |
 | D1 | Difficult | Indonesia: *Islands on Moving Plates* | world-geography | Informational | MI, VOC, INF, SUM | 2, 3, 4 |
 | D2 | Difficult | Dogs: *When an Alert Is Only the Beginning* | animals | Informational | MI, VOC, SEQ, INF | 3, 4, 2 |
 | D3 | Difficult | School: *Two Rubrics, One Project* | community | Paired literary documents | MI, SEQ, INF, SUM | 4, 2, 3 |
 | D4 | Difficult | Body: *How Sound Becomes a Signal* | human-body | Informational | KD, VOC, INF, SUM | 1, 3, 4 |
-| D5 | Difficult | Board games: *Seven Reds in a Row* | logic | Literary with data table | KD, VOC, SEQ, INF | 3, 4, 1 |
+| D5 | Difficult | History: *The Gears Beneath the Sea* | history | Informational | KD, VOC, SEQ, INF | 3, 4, 1 |
 | D6 | Difficult | Mystery: *Three Accounts of the Missing Banner* | mystery | Paired literary accounts | KD, SEQ, INF, SUM | 4, 1, 3 |
 | D7 | Difficult | Performance fantasy: *The Festival Cue Web* | arts | Literary | MI, VOC, KD, SUM | 1, 4, 3 |
 | D8 | Difficult | School: *The Instructions That Changed* | community | Paired literary messages | MI, VOC, SEQ, KD | 3, 1, 4 |
@@ -95,9 +95,10 @@ skill.
 Portfolio composition after expansion:
 
 - 12 easy, 12 medium, and 12 difficult activities;
-- 20 informational, 15 literary, and one poetry activity;
+- 23 informational, 12 literary, and one poetry activity;
 - 6 new geography, 4 school/friendship, 3 animals, 3 human body,
-  3 logic/board games, 3 mystery, 3 arts/performance, and 2 space activities;
+  1 logic/board games, 1 magnets/general-science, 2 mystery,
+  2 history/archaeology, 3 arts/performance, and 2 space activities;
 - no theme exceeds 20% of the final reviewed pool.
 
 The existing reviewed pool has correct-answer counts `{1: 10, 2: 15, 3: 2,
@@ -336,36 +337,43 @@ the same production batch.
 - **Vocabulary / care:** digest, absorb, nutrient, peristalsis. Use neutral,
   non-gross language and avoid dietary or medical advice.
 
-### M6 — The Rule Nobody Wrote
+### M6 — The Train That Rises Off the Track
 
-- **ID / schema:** `expansion-logic-unwritten-rule-01`; `logic`; `medium`;
-  `literary`.
-- **Learning focus:** Follow players who discover that experienced players have
-  been applying an unstated board-game rule differently from newcomers.
+- **ID / schema:** `expansion-nature-maglev-train-01`; `nature`; `medium`;
+  `informational`.
+- **Learning focus:** Trace how electricity, electromagnets, sensors, and a
+  powered guideway work together to lift, stabilize, and propel a maglev train.
 - **Question skills:** KD, SEQ, INF, SUM. MC positions: 4, 1, 3.
-- **Misconception to target:** If experienced players agree, the written rule
-  must already be clear.
-- **Evidence demand:** Compare two rounds, identify the hidden assumption,
-  infer why the second group makes a different choice, and summarize the
-  revised rule and example.
-- **Sources:** `sourceUrls: []` — original game, board, rules, and characters.
-- **Vocabulary / care:** assumption, explicit, interpret, exception. Do not
-  reward exploiting ambiguity; the resolution should improve shared fairness.
+- **Misconception to target:** Maglev trains simply sit on repelling permanent
+  magnets, gravity no longer affects them, or lifting alone moves them forward.
+- **Evidence demand:** Identify the feedback controls that maintain the gap,
+  order current-to-field-to-force, infer why the guideway must be powered, and
+  summarize the separate support and propulsion functions.
+- **Sources:** [Federal Railroad Administration — NEC FUTURE glossary and
+  technology overview](https://www.fra.dot.gov/necfuture/tier1_eis/feis/volume_2/chapter_04.aspx);
+  [FRA — Transrapid Maglev System technical report](https://railroads.fra.dot.gov/sites/fra.dot.gov/files/fra_net/1180/fra0206.pdf).
+- **Vocabulary / care:** electromagnet, levitation, guideway, sensor, magnetic
+  field. Make clear that maglev designs differ and describe the cited
+  attraction-based system rather than claiming every system works identically.
 
-### M7 — Footprints in the Greenhouse
+### M7 — The Stone With Three Voices
 
-- **ID / schema:** `expansion-mystery-greenhouse-footprints-01`; `mystery`;
-  `medium`; `literary`.
-- **Learning focus:** Determine why muddy footprints identify a route but not,
-  by themselves, the person who moved a class plant.
-- **Question skills:** MI, VOC (`consistent`), KD, SUM. MC positions: 1, 4, 3.
-- **Misconception to target:** One matching clue proves a complete explanation.
-- **Evidence demand:** Separate observation from conclusion, combine watering
-  notes with footprint direction, and summarize the supported explanation
-  while rejecting an attractive unsupported one.
-- **Sources:** `sourceUrls: []` — original school mystery.
-- **Vocabulary / care:** consistent, trace, observation, conclusion. No
-  criminal framing; the plant is moved to protect it from cold.
+- **ID / schema:** `expansion-history-rosetta-stone-01`; `history`; `medium`;
+  `informational`.
+- **Learning focus:** Explain how the same decree in three scripts gave
+  scholars comparison evidence for deciphering ancient Egyptian writing.
+- **Question skills:** MI, VOC (`deciphering`), KD, SUM. MC positions: 1, 4, 3.
+- **Misconception to target:** The stone was a ready-made dictionary or one
+  person translated every hieroglyph immediately after its discovery.
+- **Evidence demand:** Connect readable Greek to matching unfamiliar scripts,
+  retrieve the importance of repeated names, and summarize the multi-step,
+  multi-scholar reasoning process.
+- **Sources:** [British Museum — The Rosetta Stone: everything you need to
+  know](https://www.britishmuseum.org/blog/everything-you-ever-wanted-know-about-rosetta-stone);
+  [British Museum — decipherment timeline](https://www.britishmuseum.org/exhibitions/hieroglyphs-unlocking-ancient-egypt/egyptian-hieroglyphs-decipherment-timeline).
+- **Vocabulary / care:** decree, script, Demotic, decipher, hieroglyph.
+  Describe the 1799 military context briefly without glorifying conquest, and
+  credit overlapping work by multiple scholars rather than a lone-genius myth.
 
 ### M8 — The Twelve-Second Change
 
@@ -471,23 +479,29 @@ the same production batch.
 - **Vocabulary / care:** amplify, vibration, cochlea, auditory signal. Avoid
   deficit-based language and medical recommendations.
 
-### D5 — Seven Reds in a Row
+### D5 — The Gears Beneath the Sea
 
-- **ID / schema:** `expansion-logic-seven-reds-01`; `logic`; `difficult`;
-  `literary` with a compact results table.
-- **Learning focus:** Evaluate whether a streak in a game test proves the draw
-  bag is unfair, then plan a stronger test.
-- **Question skills:** KD, VOC (`random`), SEQ, INF. MC positions: 3, 4, 1.
-- **Misconception to target:** A surprising short streak cannot occur in a fair
-  random process.
-- **Evidence demand:** Read counts and procedure, identify a replacement-step
-  flaw, distinguish possible from typical, and infer why more controlled
-  trials provide stronger evidence.
-- **Sources:** `sourceUrls: []` — original game and data. Editorial mathematics
-  review must verify all counts and avoid claiming that a small sample proves
-  fairness.
-- **Vocabulary / care:** random, streak, trial, replacement. Distractors should
-  model realistic reasoning errors rather than trick wording.
+- **ID / schema:** `expansion-history-antikythera-mechanism-01`; `history`;
+  `difficult`; `informational`.
+- **Learning focus:** Follow how a corroded shipwreck object was recognized as
+  an ancient astronomical calculator and distinguish surviving evidence from
+  a modern reconstruction.
+- **Question skills:** KD, VOC (`corroded`), SEQ, INF. MC positions: 3, 4, 1.
+- **Misconception to target:** A convincing modern model proves every missing
+  part of an ancient object with certainty.
+- **Evidence demand:** Connect the recovery, later recognition, and X-ray
+  investigation; integrate gears, inscriptions, scans, and missing fragments;
+  infer why reconstructions can be well supported without being identical to
+  the lost original.
+- **Sources:** [Woods Hole Oceanographic Institution — Antikythera
+  shipwreck](https://www.whoi.edu/ocean-learning-hub/ocean-topics/ocean-human-lives/underwater-archaeology/antikythera-shipwreck/);
+  [Nature Astronomy — current
+  knowledge](https://www.nature.com/articles/s41550-017-0347-2);
+  [Scientific Reports — model of the
+  Cosmos](https://www.nature.com/articles/s41598-021-84310-w).
+- **Vocabulary / care:** corroded, inscription, fragment, reconstruction.
+  Clearly label direct evidence, scholarly conclusions, and remaining
+  uncertainty.
 
 ### D6 — Three Accounts of the Missing Banner
 
@@ -560,11 +574,32 @@ the same production batch.
 
 ## Production sequence
 
-The 27 activities should be authored and reviewed in three releases of nine:
+The 27 activities should be authored and reviewed in three mixed-difficulty
+releases of nine. Each release contains three easy, three medium, and three
+difficult activities so the adaptive system gains useful range immediately.
 
-1. **Release A — foundation and balance:** E1–E9.
-2. **Release B — cross-paragraph reasoning:** M1–M9.
-3. **Release C — synthesis and paired evidence:** D1–D9.
+1. **Release A — adaptive vertical slice:** E2, E3, E9, M2, M6, M7, D5, D8,
+   D9.
+2. **Release B — science and world reasoning:** E1, E5, E7, M1, M5, M8, D2,
+   D4, D6.
+3. **Release C — synthesis and remaining balance:** E4, E6, E8, M3, M4, M9,
+   D1, D3, D7.
+
+Release A deliberately prioritizes current coverage gaps while preserving
+topic and genre variety:
+
+| Skill | Easy after A | Medium after A | Difficult after A |
+|---|---:|---:|---:|
+| KD | 4 | 4 | 4 |
+| MI | 4 | 4 | 4 |
+| INF | 5 | 5 | 4 |
+| SEQ | 4 | 3 | 3 |
+| SUM | 4 | 4 | 4 |
+| VOC | 3 | 4 | 5 |
+
+Fifteen of the eighteen cells meet the four-activity target after Release A.
+Release B must include easy vocabulary, medium sequence, and difficult
+sequence evidence before addressing lower-priority surplus coverage.
 
 Within each release:
 

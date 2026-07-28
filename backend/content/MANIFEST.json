@@ -1,10 +1,10 @@
 {
-  "content_version": "1.2.0",
+  "content_version": "1.3.0",
   "files": {
-    "activities.json": "c7d16eaa415ebb3ac8080af160dcbc544526e00f32ebdb990534af8a143a5345",
+    "activities.json": "fb79df82500749e97adaf5ea3ff3a26f75fc54e3341fcecd50ed2671006be95f",
     "skill-tags.json": "865d7cadcd755b40e216511e1e696f03e72fede4c273919bcf69c5b4335a6421",
     "themes.json": "f4bb806a13cbe279ca01b76740af33fd8cb77f8cc5782b8220d18e403a0a94ec",
-    "review-status.json": "c487eaf08f25914aa86fdd2f3c5122fc7bb5268768db70f5a7675e7fba805d34"
+    "review-status.json": "2b2dbcff80c4a73e58157bd9728cee3587b0647f34799c9905f817da8ce935f5"
   },
   "notes": "Authoritative content lives here. Run scripts/sync-content.sh after editing to refresh the frontend mirror."
 }
