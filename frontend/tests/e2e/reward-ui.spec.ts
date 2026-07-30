@@ -4,6 +4,18 @@ const ACTIVITY_TITLE = "The Seed That Wouldn't Grow";
 const SESSION_ID = "session-live-001";
 
 test("results screen shows updated reward celebration after submit", async ({ page }) => {
+  await page.route(`**/api/activities/${ACTIVITY_ID}/start`, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        session_id: SESSION_ID,
+        activity_id: ACTIVITY_ID,
+        started_at: "2026-04-09T00:00:00Z",
+        resumed: false,
+      }),
+    });
+  });
   await page.route(`**/api/activities/${ACTIVITY_ID}`, async (route) => {
     await route.fulfill({
       status: 200,
@@ -147,6 +159,14 @@ test("results screen shows updated reward celebration after submit", async ({ pa
       }),
     });
   });
+  await page.route(`**/api/sessions/${SESSION_ID}/reaction`, async (route) => {
+    const payload = route.request().postDataJSON() as { reaction: string };
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ session_id: SESSION_ID, reaction: payload.reaction }),
+    });
+  });
 
   await page.goto(`/activity/${ACTIVITY_ID}`);
   await page.getByLabel("The birds show teamwork while building a nest.").click();
@@ -161,4 +181,6 @@ test("results screen shows updated reward celebration after submit", async ({ pa
   await expect(page.getByText("Main Idea", { exact: true }).first()).toBeVisible();
   await expect(page.getByRole("heading", { name: "Review your answers" })).toBeVisible();
   await expect(page.getByText("The birds repeatedly work together to finish the nest.")).toBeVisible();
+  await page.getByRole("button", { name: "Fun", exact: true }).click();
+  await expect(page.getByText("Saved: fun.")).toBeVisible();
 });

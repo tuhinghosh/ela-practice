@@ -43,6 +43,7 @@ from backend.app.db import (
     get_child_profile_for_user,
     get_completed_activity_ids,
     get_connection,
+    get_engagement_summary,
     get_latest_progress_snapshot,
     get_recent_responses_with_activity,
     get_recent_score_history,
@@ -52,6 +53,8 @@ from backend.app.db import (
     get_session_responses,
     get_user_by_username,
     insert_chat_message,
+    set_session_reaction,
+    start_activity_session,
     update_user_password,
 )
 from backend.app.scoring import score_activity_submission
@@ -127,7 +130,12 @@ class SubmissionAnswer(BaseModel):
 
 
 class SubmitActivityRequest(BaseModel):
+    session_id: Optional[str] = Field(default=None, min_length=1)
     responses: list[SubmissionAnswer] = Field(min_length=1)
+
+
+class ReactionRequest(BaseModel):
+    reaction: str = Field(pattern="^(fun|okay|confusing)$")
 
 
 class ConnectivityCheckRequest(BaseModel):
@@ -702,6 +710,36 @@ def get_activity(activity_id: str, _: str = Depends(_require_authenticated_usern
     )
 
 
+@app.post("/api/activities/{activity_id}/start")
+def start_activity(
+    activity_id: str,
+    request: Request,
+    username: str = Depends(_require_authenticated_username),
+) -> JSONResponse:
+    try:
+        activity = get_seed_activity(activity_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    with get_connection() as connection:
+        user = get_user_by_username(connection, username)
+        child = _resolve_active_child_or_400(connection, request, user)
+        started = start_activity_session(
+            connection,
+            int(user["id"]),
+            int(child["id"]),
+            activity.id,
+            activity.title,
+        )
+    return JSONResponse(
+        {
+            "session_id": started["session_uuid"],
+            "activity_id": activity.id,
+            "started_at": started["started_at"],
+            "resumed": started["resumed"],
+        }
+    )
+
+
 @app.post("/api/activities/{activity_id}/submit")
 def submit_activity(
     activity_id: str,
@@ -761,15 +799,21 @@ def submit_activity(
     with get_connection() as connection:
         user = get_user_by_username(connection, username)
         child = _resolve_active_child_or_400(connection, request, user)
-        submission = create_submission(
-            connection,
-            int(user["id"]),
-            int(child["id"]),
-            activity.id,
-            activity.title,
-            stored_responses,
-            scoring,
-        )
+        try:
+            submission = create_submission(
+                connection,
+                int(user["id"]),
+                int(child["id"]),
+                activity.id,
+                activity.title,
+                stored_responses,
+                scoring,
+                session_uuid=payload.session_id,
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+        except RuntimeError as exc:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
 
     return JSONResponse(
         {
@@ -784,6 +828,29 @@ def submit_activity(
             "reward_snapshot": submission["reward_snapshot"],
         }
     )
+
+
+@app.post("/api/sessions/{session_id}/reaction")
+def record_session_reaction(
+    session_id: str,
+    payload: ReactionRequest,
+    request: Request,
+    username: str = Depends(_require_authenticated_username),
+) -> JSONResponse:
+    with get_connection() as connection:
+        user = get_user_by_username(connection, username)
+        child = _resolve_active_child_or_400(connection, request, user)
+        try:
+            set_session_reaction(
+                connection,
+                session_id,
+                int(user["id"]),
+                int(child["id"]),
+                payload.reaction,
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    return JSONResponse({"session_id": session_id, "reaction": payload.reaction})
 
 
 @app.get("/api/progress/parent")
@@ -809,6 +876,7 @@ def get_parent_progress(
         )
         rewards = get_reward_state(connection, int(user["id"]))
         completed_activity_ids = get_completed_activity_ids(connection, int(child["id"]))
+        engagement = get_engagement_summary(connection, int(child["id"]))
     practice_next = recommend_practice_next(skill_windows)
     adaptive_recommendation = build_adaptive_recommendation(
         skill_windows, list_seed_activities(), completed_activity_ids
@@ -877,6 +945,7 @@ def get_parent_progress(
                 "remaining": max(0, ai_usage.limit - ai_usage.used) if ai_quota.is_enabled else None,
                 "reset_at": ai_usage.reset_at.isoformat(),
             },
+            "engagement": engagement,
         }
     )
 

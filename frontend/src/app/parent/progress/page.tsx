@@ -45,6 +45,7 @@ export default function ParentProgressPage() {
   const recentQuestions = progress?.recent_questions ?? [];
   const rewards = progress?.rewards;
   const aiUsage = progress?.ai_usage;
+  const engagement = progress?.engagement;
   const recent = progress
     ? progress.recent_sessions.map((session) => ({
         id: session.session_id,
@@ -365,6 +366,38 @@ export default function ParentProgressPage() {
           </ul>
         </Card>
       </Split>
+      {engagement ? (
+        <Card as="article" className={styles.cardWithHeader}>
+          <div className={styles.cardHeader}>
+            <span className={styles.cardIcon} style={{ ["--icon-color" as string]: "var(--accent)" }}>
+              <Icon name="message-circle" size={18} />
+            </span>
+            <h2>Engagement signals</h2>
+          </div>
+          <StatGrid>
+            <div className={styles.stat}>
+              <span className={styles.statLabel}>Typical time</span>
+              <p className={styles.statValue}>
+                {Math.max(1, Math.round(engagement.median_elapsed_seconds / 60))} min
+              </p>
+            </div>
+            <div className={styles.stat}>
+              <span className={styles.statLabel}>Open / paused</span>
+              <p className={styles.statValue}>{engagement.open_attempts}</p>
+            </div>
+            <div className={styles.stat}>
+              <span className={styles.statLabel}>Fun reactions</span>
+              <p className={styles.statValue}>{engagement.reactions.fun}</p>
+            </div>
+          </StatGrid>
+          <p className={styles.muted}>
+            Okay: {engagement.reactions.okay} · Confusing: {engagement.reactions.confusing}
+            {engagement.abandoned_attempts > 0
+              ? ` · ${engagement.abandoned_attempts} open for more than 30 minutes`
+              : ""}
+          </p>
+        </Card>
+      ) : null}
     </AppShell>
   );
 }

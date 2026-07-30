@@ -4,6 +4,18 @@ const ACTIVITY_TITLE = "The Seed That Wouldn't Grow";
 const SESSION_ID = "session-live-001";
 
 async function mockActivityAndSubmission(page: Page) {
+  await page.route(`**/api/activities/${ACTIVITY_ID}/start`, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        session_id: SESSION_ID,
+        activity_id: ACTIVITY_ID,
+        started_at: "2026-04-09T00:00:00Z",
+        resumed: false,
+      }),
+    });
+  });
   await page.route(`**/api/activities/${ACTIVITY_ID}`, async (route) => {
     await route.fulfill({
       status: 200,

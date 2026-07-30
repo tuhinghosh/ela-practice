@@ -8,7 +8,7 @@ import { Button } from "@/components/button";
 import { Card } from "@/components/card";
 import { Icon } from "@/components/icon";
 import { Tag } from "@/components/tag";
-import { ApiError, getActivity, submitActivity, type ActivityDetailResponse } from "@/lib/api";
+import { ApiError, getActivity, startActivity, submitActivity, type ActivityDetailResponse } from "@/lib/api";
 import { activities } from "@/lib/mock-data";
 
 import styles from "../../screens.module.css";
@@ -31,12 +31,15 @@ export default function ActivityClient({ activityId }: Props) {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [usingFallback, setUsingFallback] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
 
   useEffect(() => {
     const run = async () => {
       try {
         const payload = await getActivity(activityId);
         setActivity(payload);
+        const started = await startActivity(activityId);
+        setSessionId(started.session_id);
       } catch (err) {
         if (err instanceof ApiError && err.status === 401) {
           window.location.href = "/login";
@@ -83,6 +86,7 @@ export default function ActivityClient({ activityId }: Props) {
     setError("");
     try {
       const payload = {
+        session_id: sessionId ?? undefined,
         responses: resolved.questions.map((question) =>
           question.type === "multiple-choice"
             ? { question_id: question.id, answer_choice: answers[question.id] }
