@@ -44,6 +44,10 @@ This keeps query-critical data normalized while allowing MVP iteration without r
 - `reward_state`: stars/streaks/badges state
 - `chat_messages`: AI coach history tied to user/child/session context
 
+Activity sessions also store an optional constrained post-completion reaction
+(`fun`, `okay`, or `confusing`) and its timestamp. See
+`ENGAGEMENT_EVENTS.md` for lifecycle, API, privacy, and aggregation rules.
+
 ## Example query projections implemented
 
 - Dashboard projection:

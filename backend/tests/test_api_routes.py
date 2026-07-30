@@ -174,6 +174,45 @@ def test_repeat_submissions_are_predictable(client: TestClient) -> None:
     assert rewards_end["streak_days"] == first.json()["reward_snapshot"]["streak_after"]
 
 
+def test_activity_lifecycle_reaction_and_parent_engagement(client: TestClient) -> None:
+    _login(client)
+
+    first_start = client.post("/api/activities/nature-01/start")
+    resumed_start = client.post("/api/activities/nature-01/start")
+    assert first_start.status_code == 200
+    assert resumed_start.status_code == 200
+    assert first_start.json()["resumed"] is False
+    assert resumed_start.json()["resumed"] is True
+    assert resumed_start.json()["session_id"] == first_start.json()["session_id"]
+
+    payload = _nature_01_payload()
+    payload["session_id"] = first_start.json()["session_id"]
+    submitted = client.post("/api/activities/nature-01/submit", json=payload)
+    assert submitted.status_code == 200
+
+    duplicate = client.post("/api/activities/nature-01/submit", json=payload)
+    assert duplicate.status_code == 409
+
+    reaction = client.post(
+        f"/api/sessions/{submitted.json()['session_id']}/reaction",
+        json={"reaction": "confusing"},
+    )
+    assert reaction.status_code == 200
+    invalid = client.post(
+        f"/api/sessions/{submitted.json()['session_id']}/reaction",
+        json={"reaction": "boring"},
+    )
+    assert invalid.status_code == 422
+
+    parent = client.get("/api/progress/parent")
+    assert parent.status_code == 200
+    engagement = parent.json()["engagement"]
+    assert engagement["completed_with_timing"] == 1
+    assert engagement["reactions"]["confusing"] == 1
+    assert engagement["confusing_activity_ids"] == ["nature-01"]
+    assert engagement["open_attempts"] == 0
+
+
 def test_empty_state_for_new_profile(client: TestClient) -> None:
     _login(client)
     parent = client.get("/api/progress/parent")

@@ -39,6 +39,14 @@ The 27-activity production specification for the reviewed-core expansion is in
 - [x] Meet the four-activities-per-cell skill-by-difficulty target
 - [x] Produce Release C for portfolio variety and answer-position balance
 
+### Learner engagement evidence
+
+- [x] Define the private first-party lifecycle and reaction API contract
+- [x] Persist idempotent activity starts and reuse them on submission
+- [x] Add constrained post-activity reactions
+- [x] Add parent-only duration, abandonment, and reaction aggregates
+- [x] Verify migration, API, frontend, browser, and Docker persistence behavior
+
 ## Locked MVP decisions
 
 These decisions are intentionally locked for MVP implementation unless explicitly changed later:

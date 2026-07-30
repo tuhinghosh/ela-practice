@@ -117,6 +117,25 @@ def _migration_003_child_profile_login_user_id(connection: sqlite3.Connection) -
         connection.execute("PRAGMA foreign_keys = ON")
 
 
+def _migration_004_add_engagement_reaction(connection: sqlite3.Connection) -> None:
+    """Add constrained post-completion reaction fields to activity sessions."""
+    columns = {
+        row["name"]
+        for row in connection.execute("PRAGMA table_info(activity_sessions)").fetchall()
+    }
+    if not columns:
+        return
+    if "reaction" not in columns:
+        connection.execute(
+            "ALTER TABLE activity_sessions ADD COLUMN reaction TEXT "
+            "CHECK(reaction IN ('fun', 'okay', 'confusing'))"
+        )
+    if "reaction_at" not in columns:
+        connection.execute(
+            "ALTER TABLE activity_sessions ADD COLUMN reaction_at TEXT"
+        )
+
+
 MIGRATIONS: List[Migration] = [
     Migration(
         id=1,
@@ -132,6 +151,11 @@ MIGRATIONS: List[Migration] = [
         id=3,
         name="child_profile_login_user_id",
         apply=_migration_003_child_profile_login_user_id,
+    ),
+    Migration(
+        id=4,
+        name="add_engagement_reaction",
+        apply=_migration_004_add_engagement_reaction,
     ),
 ]
 

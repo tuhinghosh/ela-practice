@@ -65,6 +65,8 @@ def create_schema(connection: sqlite3.Connection) -> None:
             status TEXT NOT NULL CHECK(status IN ('started', 'submitted')),
             started_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
             submitted_at TEXT,
+            reaction TEXT CHECK(reaction IN ('fun', 'okay', 'confusing')),
+            reaction_at TEXT,
             metadata_json TEXT NOT NULL DEFAULT '{}',
             FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
             FOREIGN KEY(child_profile_id) REFERENCES child_profiles(id) ON DELETE CASCADE
@@ -525,6 +527,54 @@ def get_recent_writing_feedback(
     return feedback_items
 
 
+def start_activity_session(
+    connection: sqlite3.Connection,
+    user_id: int,
+    child_profile_id: int,
+    activity_id: str,
+    activity_title: str,
+) -> dict[str, Any]:
+    existing = connection.execute(
+        """
+        SELECT session_uuid, started_at
+        FROM activity_sessions
+        WHERE user_id = ? AND child_profile_id = ? AND activity_id = ?
+          AND status = 'started'
+        ORDER BY started_at DESC
+        LIMIT 1
+        """,
+        (user_id, child_profile_id, activity_id),
+    ).fetchone()
+    if existing:
+        return {
+            "session_uuid": existing["session_uuid"],
+            "started_at": existing["started_at"],
+            "resumed": True,
+        }
+
+    session_uuid = str(uuid.uuid4())
+    connection.execute(
+        """
+        INSERT INTO activity_sessions (
+            session_uuid, user_id, child_profile_id, activity_id,
+            activity_title, status, metadata_json
+        )
+        VALUES (?, ?, ?, ?, ?, 'started', '{"lifecycle":"tracked"}')
+        """,
+        (session_uuid, user_id, child_profile_id, activity_id, activity_title),
+    )
+    row = connection.execute(
+        "SELECT started_at FROM activity_sessions WHERE session_uuid = ?",
+        (session_uuid,),
+    ).fetchone()
+    connection.commit()
+    return {
+        "session_uuid": session_uuid,
+        "started_at": row["started_at"],
+        "resumed": False,
+    }
+
+
 def create_submission(
     connection: sqlite3.Connection,
     user_id: int,
@@ -533,17 +583,41 @@ def create_submission(
     activity_title: str,
     responses: list[dict[str, Any]],
     scoring_payload: dict[str, Any],
+    session_uuid: Optional[str] = None,
 ) -> dict[str, Any]:
-    session_uuid = str(uuid.uuid4())
-    connection.execute(
-        """
-        INSERT INTO activity_sessions (
-            session_uuid, user_id, child_profile_id, activity_id, activity_title, status, submitted_at, metadata_json
+    if session_uuid:
+        session = connection.execute(
+            """
+            SELECT id, status FROM activity_sessions
+            WHERE session_uuid = ? AND user_id = ? AND child_profile_id = ?
+              AND activity_id = ?
+            """,
+            (session_uuid, user_id, child_profile_id, activity_id),
+        ).fetchone()
+        if session is None:
+            raise ValueError("Activity session not found.")
+        if session["status"] != "started":
+            raise RuntimeError("Activity session has already been submitted.")
+        connection.execute(
+            """
+            UPDATE activity_sessions
+            SET status = 'submitted', submitted_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+            """,
+            (session["id"],),
         )
-        VALUES (?, ?, ?, ?, ?, 'submitted', CURRENT_TIMESTAMP, ?)
-        """,
-        (session_uuid, user_id, child_profile_id, activity_id, activity_title, "{}"),
-    )
+    else:
+        session_uuid = str(uuid.uuid4())
+        connection.execute(
+            """
+            INSERT INTO activity_sessions (
+                session_uuid, user_id, child_profile_id, activity_id,
+                activity_title, status, submitted_at, metadata_json
+            )
+            VALUES (?, ?, ?, ?, ?, 'submitted', CURRENT_TIMESTAMP, '{}')
+            """,
+            (session_uuid, user_id, child_profile_id, activity_id, activity_title),
+        )
     session_id = connection.execute(
         "SELECT id FROM activity_sessions WHERE session_uuid = ?",
         (session_uuid,),
@@ -654,13 +728,111 @@ def create_submission(
         "points_earned": stars_earned * 10,
         "total_points": stars * 10,
     }
+    metadata_row = connection.execute(
+        "SELECT metadata_json FROM activity_sessions WHERE id = ?",
+        (session_id,),
+    ).fetchone()
+    metadata = json.loads(metadata_row["metadata_json"] or "{}")
+    metadata["reward_snapshot"] = reward_snapshot
     connection.execute(
         "UPDATE activity_sessions SET metadata_json = ? WHERE id = ?",
-        (json.dumps({"reward_snapshot": reward_snapshot}), session_id),
+        (json.dumps(metadata), session_id),
     )
 
     connection.commit()
     return {"session_id": session_id, "session_uuid": session_uuid, "reward_snapshot": reward_snapshot}
+
+
+def set_session_reaction(
+    connection: sqlite3.Connection,
+    session_uuid: str,
+    user_id: int,
+    child_profile_id: int,
+    reaction: str,
+) -> None:
+    cursor = connection.execute(
+        """
+        UPDATE activity_sessions
+        SET reaction = ?, reaction_at = CURRENT_TIMESTAMP
+        WHERE session_uuid = ? AND user_id = ? AND child_profile_id = ?
+          AND status = 'submitted'
+        """,
+        (reaction, session_uuid, user_id, child_profile_id),
+    )
+    if cursor.rowcount == 0:
+        raise ValueError("Submitted activity session not found.")
+    connection.commit()
+
+
+def get_engagement_summary(
+    connection: sqlite3.Connection,
+    child_profile_id: int,
+) -> dict[str, Any]:
+    completed = connection.execute(
+        """
+        SELECT CAST((julianday(submitted_at) - julianday(started_at)) * 86400 AS INTEGER)
+            AS elapsed_seconds
+        FROM activity_sessions
+        WHERE child_profile_id = ? AND status = 'submitted'
+          AND submitted_at IS NOT NULL AND started_at IS NOT NULL
+          AND metadata_json LIKE '%"lifecycle": "tracked"%'
+        ORDER BY elapsed_seconds
+        """,
+        (child_profile_id,),
+    ).fetchall()
+    elapsed = [
+        max(0, int(row["elapsed_seconds"]))
+        for row in completed
+        if row["elapsed_seconds"] is not None
+    ]
+    median = 0
+    if elapsed:
+        middle = len(elapsed) // 2
+        median = (
+            elapsed[middle]
+            if len(elapsed) % 2
+            else round((elapsed[middle - 1] + elapsed[middle]) / 2)
+        )
+    open_row = connection.execute(
+        """
+        SELECT
+          COUNT(*) AS open_attempts,
+          SUM(CASE WHEN started_at <= datetime('now', '-30 minutes') THEN 1 ELSE 0 END)
+            AS abandoned_attempts
+        FROM activity_sessions
+        WHERE child_profile_id = ? AND status = 'started'
+        """,
+        (child_profile_id,),
+    ).fetchone()
+    reaction_rows = connection.execute(
+        """
+        SELECT reaction, COUNT(*) AS count
+        FROM activity_sessions
+        WHERE child_profile_id = ? AND reaction IS NOT NULL
+        GROUP BY reaction
+        """,
+        (child_profile_id,),
+    ).fetchall()
+    confusing_rows = connection.execute(
+        """
+        SELECT DISTINCT activity_id
+        FROM activity_sessions
+        WHERE child_profile_id = ? AND reaction = 'confusing'
+        ORDER BY activity_id
+        """,
+        (child_profile_id,),
+    ).fetchall()
+    reactions = {"fun": 0, "okay": 0, "confusing": 0}
+    for row in reaction_rows:
+        reactions[row["reaction"]] = int(row["count"])
+    return {
+        "completed_with_timing": len(elapsed),
+        "median_elapsed_seconds": median,
+        "open_attempts": int(open_row["open_attempts"] or 0),
+        "abandoned_attempts": int(open_row["abandoned_attempts"] or 0),
+        "reactions": reactions,
+        "confusing_activity_ids": [row["activity_id"] for row in confusing_rows],
+    }
 
 
 def fetch_session_result_by_uuid(connection: sqlite3.Connection, session_uuid: str) -> Optional[sqlite3.Row]:

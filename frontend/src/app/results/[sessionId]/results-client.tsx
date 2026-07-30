@@ -5,12 +5,12 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { AICoachPanel } from "@/components/ai-coach-panel";
 import { AppShell } from "@/components/app-shell";
-import { ButtonLink } from "@/components/button";
+import { Button, ButtonLink } from "@/components/button";
 import { Card } from "@/components/card";
 import { Icon } from "@/components/icon";
 import { Split } from "@/components/layout";
 import { Tag } from "@/components/tag";
-import { ApiError, getAICoachFeedback, getSessionResult, type AICoachResponse, type SessionResultResponse } from "@/lib/api";
+import { ApiError, getAICoachFeedback, getSessionResult, recordSessionReaction, type AICoachResponse, type SessionResultResponse } from "@/lib/api";
 import { coachSample, recentSessions } from "@/lib/mock-data";
 
 import styles from "../../screens.module.css";
@@ -105,6 +105,19 @@ export default function ResultsClient({ initialSessionId }: Props) {
   const [lastAskedQuestion, setLastAskedQuestion] = useState("");
   const [coachError, setCoachError] = useState("");
   const [isAskingCoach, setIsAskingCoach] = useState(false);
+  const [reaction, setReaction] = useState<"fun" | "okay" | "confusing" | null>(null);
+  const [reactionError, setReactionError] = useState("");
+
+  const chooseReaction = async (value: "fun" | "okay" | "confusing") => {
+    if (!result) return;
+    setReactionError("");
+    try {
+      await recordSessionReaction(result.session_id, value);
+      setReaction(value);
+    } catch {
+      setReactionError("Could not save that reaction. Please try again.");
+    }
+  };
 
   useEffect(() => {
     const run = async () => {
@@ -266,6 +279,33 @@ export default function ResultsClient({ initialSessionId }: Props) {
               </li>
             ))}
           </ol>
+        </Card>
+      ) : null}
+      {result ? (
+        <Card>
+          <div className={styles.cardHeader}>
+            <span className={styles.cardIcon} style={{ ["--icon-color" as string]: "var(--accent)" }}>
+              <Icon name="message-circle" size={18} />
+            </span>
+            <div>
+              <h2>How did this mission feel?</h2>
+              <p className={styles.muted}>One quick tap helps choose and improve future missions.</p>
+            </div>
+          </div>
+          <div className={styles.chipRow} aria-label="Activity reaction">
+            {(["fun", "okay", "confusing"] as const).map((value) => (
+              <Button
+                key={value}
+                type="button"
+                tone={reaction === value ? "primary" : "secondary"}
+                onClick={() => void chooseReaction(value)}
+              >
+                {value === "fun" ? "Fun" : value === "okay" ? "Okay" : "Confusing"}
+              </Button>
+            ))}
+          </div>
+          {reaction ? <p role="status">Saved: {reaction}.</p> : null}
+          {reactionError ? <p role="alert" className={styles.error}>{reactionError}</p> : null}
         </Card>
       ) : null}
       <Split>

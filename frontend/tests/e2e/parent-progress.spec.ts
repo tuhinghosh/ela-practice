@@ -46,6 +46,14 @@ test("parent progress shows trend skill summary and writing highlights", async (
           reason: "Recent accuracy is 55%, below the 60% support threshold.",
           rule: "<3 observations: gather evidence; <60%: easier; 60–85%: hold; >85%: harder.",
         },
+        engagement: {
+          completed_with_timing: 4,
+          median_elapsed_seconds: 420,
+          open_attempts: 1,
+          abandoned_attempts: 0,
+          reactions: { fun: 3, okay: 1, confusing: 0 },
+          confusing_activity_ids: [],
+        },
       }),
     });
   });
@@ -59,4 +67,6 @@ test("parent progress shows trend skill summary and writing highlights", async (
   await expect(page.getByRole("heading", { name: "How the next mission was chosen" })).toBeVisible();
   await expect(page.getByText("step-down", { exact: true })).toBeVisible();
   await expect(page.getByText(/below the 60% support threshold/)).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Engagement signals" })).toBeVisible();
+  await expect(page.getByText("7 min")).toBeVisible();
 });

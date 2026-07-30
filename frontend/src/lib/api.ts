@@ -127,6 +127,13 @@ export type SubmitResponse = {
   };
 };
 
+export type StartActivityResponse = {
+  session_id: string;
+  activity_id: string;
+  started_at: string;
+  resumed: boolean;
+};
+
 export type ParentProgressResponse = {
   child_profile: { display_name: string; grade_level: number };
   summary: {
@@ -182,6 +189,14 @@ export type ParentProgressResponse = {
     limit: number;
     remaining: number | null;
     reset_at: string;
+  };
+  engagement?: {
+    completed_with_timing: number;
+    median_elapsed_seconds: number;
+    open_attempts: number;
+    abandoned_attempts: number;
+    reactions: { fun: number; okay: number; confusing: number };
+    confusing_activity_ids: string[];
   };
 };
 
@@ -258,13 +273,32 @@ export async function getActivity(activityId: string): Promise<ActivityDetailRes
   return request<ActivityDetailResponse>(`/api/activities/${activityId}`);
 }
 
+export async function startActivity(activityId: string): Promise<StartActivityResponse> {
+  return request<StartActivityResponse>(`/api/activities/${activityId}/start`, {
+    method: "POST",
+  });
+}
+
 export async function submitActivity(
   activityId: string,
-  payload: { responses: Array<{ question_id: string; answer_choice?: string; answer_text?: string }> },
+  payload: {
+    session_id?: string;
+    responses: Array<{ question_id: string; answer_choice?: string; answer_text?: string }>;
+  },
 ): Promise<SubmitResponse> {
   return request<SubmitResponse>(`/api/activities/${activityId}/submit`, {
     method: "POST",
     body: JSON.stringify(payload),
+  });
+}
+
+export async function recordSessionReaction(
+  sessionId: string,
+  reaction: "fun" | "okay" | "confusing",
+): Promise<{ session_id: string; reaction: string }> {
+  return request(`/api/sessions/${sessionId}/reaction`, {
+    method: "POST",
+    body: JSON.stringify({ reaction }),
   });
 }
 
