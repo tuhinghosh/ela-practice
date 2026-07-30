@@ -206,6 +206,59 @@ def test_release_b_drafts_match_the_approved_production_contract() -> None:
         assert bool(activity.sourceUrls) is needs_sources
 
 
+def test_release_c_matches_the_approved_production_contract() -> None:
+    expected = {
+        "expansion-space-moon-phases-01": (
+            "easy", ["reading-comprehension", "vocabulary", "inference", "summary"], [2, 4, 3], True
+        ),
+        "expansion-nature-seed-hitchhikers-01": (
+            "easy", ["reading-comprehension", "sequence", "inference", "summary"], [3, 4, 1], True
+        ),
+        "expansion-arts-lantern-beat-poem-01": (
+            "easy", ["main-idea", "vocabulary", "sequence", "reading-comprehension"], [1, 4, 3], False
+        ),
+        "expansion-friendship-science-credit-01": (
+            "medium", ["main-idea", "sequence", "inference", "summary"], [4, 2, 3], False
+        ),
+        "expansion-space-mars-message-delay-01": (
+            "medium", ["reading-comprehension", "vocabulary", "inference", "summary"], [1, 3, 4], True
+        ),
+        "expansion-world-india-monsoon-map-01": (
+            "medium", ["main-idea", "sequence", "reading-comprehension", "summary"], [1, 2, 4], True
+        ),
+        "expansion-world-indonesia-plates-01": (
+            "difficult", ["main-idea", "vocabulary", "inference", "summary"], [2, 3, 4], True
+        ),
+        "expansion-community-two-rubrics-01": (
+            "difficult", ["main-idea", "sequence", "inference", "summary"], [4, 2, 3], False
+        ),
+        "expansion-arts-festival-cue-web-01": (
+            "difficult", ["main-idea", "vocabulary", "reading-comprehension", "summary"], [1, 4, 3], False
+        ),
+    }
+    activities = {activity.id: activity for activity in list_seed_activities()}
+    statuses = load_review_statuses()
+
+    for activity_id, (tier, skills, positions, needs_sources) in expected.items():
+        activity = activities[activity_id]
+        assert statuses[activity_id] == "reviewed"
+        assert activity.difficulty == tier
+        assert [question.skillTag for question in activity.questions] == skills
+        multiple_choice = [
+            question for question in activity.questions if question.type == "multiple-choice"
+        ]
+        assert [
+            question.choices.index(question.correctChoice) + 1  # type: ignore[union-attr]
+            for question in multiple_choice
+        ] == positions
+        assert activity.questions[-1].type == "short-response"
+        assert set(activity.questions[-1].writingSkillTags) == {
+            "short-writing",
+            "sentence-quality",
+        }
+        assert bool(activity.sourceUrls) is needs_sources
+
+
 def test_manifest_checksums_match_canonical_files() -> None:
     verify_content_manifest()  # raises if drift
 
@@ -242,8 +295,8 @@ def test_content_cli_audit_reports_coverage_and_returns_zero_for_reviewed_pool(
     output = capsys.readouterr().out
     assert "reviewed skill x difficulty coverage" in output
     rows = [line.split() for line in output.splitlines()]
-    assert ["reading-comprehension", "6", "6", "6"] in rows
-    assert ["sequence", "5", "5", "5"] in rows
+    assert ["reading-comprehension", "9", "8", "7"] in rows
+    assert ["sequence", "7", "7", "6"] in rows
     assert "remaining target gaps: none" in output
 
 

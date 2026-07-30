@@ -192,22 +192,21 @@ the same production batch.
 - **Vocabulary / care:** focus, retina, signal, optic nerve. Keep the passage
   descriptive and avoid medical advice.
 
-### E6 — The Spinner Test
+### E6 — The Seeds That Stole a Ride
 
-- **ID / schema:** `expansion-logic-spinner-test-01`; `logic`; `easy`;
-  `literary`.
-- **Learning focus:** Follow two friends as they test whether a homemade game
-  spinner is fair using repeated trials rather than one result.
+- **ID / schema:** `expansion-nature-seed-hitchhikers-01`; `nature`; `easy`;
+  `informational`.
+- **Learning focus:** Follow how hooked or barbed seeds catch a ride, travel,
+  fall, and may grow in a suitable new place.
 - **Question skills:** KD, SEQ, INF, SUM. MC positions: 3, 4, 1.
-- **Misconception to target:** One win or one unusual spin proves a game is
-  unfair.
-- **Evidence demand:** Track test, observation, adjustment, and retest; infer
-  why more trials provide better evidence; summarize the improved rule.
-- **Sources:** `sourceUrls: []` — original fiction; probability is limited to
-  visible equal sections and repeated observations, with no unsupported
-  statistical claim.
-- **Vocabulary / care:** trial, fair, pattern, adjust. The losing player must
-  not be portrayed as dishonest merely for raising a concern.
+- **Misconception to target:** A plant must actively move in order to spread
+  its seeds.
+- **Evidence demand:** Track catching, carrying, release, and possible growth;
+  infer why dispersal can help without claiming every transported seed grows.
+- **Sources:** [USDA Forest Service — Seed
+  dispersal](https://www.fs.usda.gov/wildflowers/Native_Plant_Materials/Native_Gardening/seeddispersal.shtml).
+- **Vocabulary / care:** hook, barb, disperse, suitable. Separate possible
+  growth from guaranteed growth.
 
 ### E7 — The Book Cart Clue
 
