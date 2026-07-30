@@ -11,7 +11,7 @@ def _content():
 def test_review_registry_classifies_every_activity_once() -> None:
     activities, statuses = _content()
     assert set(statuses) == {activity.id for activity in activities}
-    assert list(statuses.values()).count("reviewed") == 18
+    assert list(statuses.values()).count("reviewed") == 27
     assert list(statuses.values()).count("rewrite-required") == 26
     assert list(statuses.values()).count("draft") == 53
 
@@ -20,25 +20,25 @@ def test_reviewed_pool_passes_all_hard_quality_gates() -> None:
     activities, statuses = _content()
     report = audit_content(activities, statuses)
     assert report.errors == []
-    assert report.reviewed_count == 18
-    assert report.tier_counts == {"easy": 6, "medium": 6, "difficult": 6}
+    assert report.reviewed_count == 27
+    assert report.tier_counts == {"easy": 9, "medium": 9, "difficult": 9}
 
 
 def test_reviewed_skill_by_difficulty_coverage_matches_verified_baseline() -> None:
     activities, statuses = _content()
     report = audit_content(activities, statuses)
     assert report.skill_tier_coverage == {
-        "reading-comprehension": {"easy": 4, "medium": 4, "difficult": 4},
-        "main-idea": {"easy": 4, "medium": 4, "difficult": 4},
-        "inference": {"easy": 5, "medium": 5, "difficult": 4},
-        "sequence": {"easy": 4, "medium": 3, "difficult": 3},
-        "summary": {"easy": 4, "medium": 4, "difficult": 4},
-        "vocabulary": {"easy": 3, "medium": 4, "difficult": 5},
+        "reading-comprehension": {"easy": 6, "medium": 6, "difficult": 6},
+        "main-idea": {"easy": 6, "medium": 6, "difficult": 5},
+        "inference": {"easy": 7, "medium": 7, "difficult": 7},
+        "sequence": {"easy": 5, "medium": 5, "difficult": 5},
+        "summary": {"easy": 6, "medium": 5, "difficult": 6},
+        "vocabulary": {"easy": 6, "medium": 7, "difficult": 7},
     }
     assert report.skill_tier_target_gaps["sequence"] == {
         "easy": 0,
-        "medium": 1,
-        "difficult": 1,
+        "medium": 0,
+        "difficult": 0,
     }
     assert report.skill_tier_target_gaps["inference"] == {
         "easy": 0,
