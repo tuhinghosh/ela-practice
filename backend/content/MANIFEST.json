@@ -4,7 +4,7 @@
     "activities.json": "45e96ab00f377c80581762a8b58afe33118e1e040781739718f45af93b8227e5",
     "skill-tags.json": "865d7cadcd755b40e216511e1e696f03e72fede4c273919bcf69c5b4335a6421",
     "themes.json": "f4bb806a13cbe279ca01b76740af33fd8cb77f8cc5782b8220d18e403a0a94ec",
-    "review-status.json": "be5d7f31f7986cd05246986cd8b176636c2879b582d08a2c2e49b992b98d063f"
+    "review-status.json": "87b48ec917912633f8a951aa75f499e6f463a551e5f00e288f53f5b7e94fb38f"
   },
   "notes": "Authoritative content lives here. Run scripts/sync-content.sh after editing to refresh the frontend mirror."
 }

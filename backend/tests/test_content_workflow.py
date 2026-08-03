@@ -259,7 +259,7 @@ def test_release_c_matches_the_approved_production_contract() -> None:
         assert bool(activity.sourceUrls) is needs_sources
 
 
-def test_release_d_drafts_match_the_easy_mystery_contract() -> None:
+def test_release_d_matches_the_approved_easy_mystery_contract() -> None:
     expected = {
         "onramp-mystery-shadow-01": (
             ["sequence", "vocabulary", "inference", "summary"], [2, 3, 1]
@@ -286,7 +286,7 @@ def test_release_d_drafts_match_the_easy_mystery_contract() -> None:
     assert set(expected).issubset(activities)
     for activity_id, (skills, positions) in expected.items():
         activity = activities[activity_id]
-        assert statuses[activity_id] == "draft"
+        assert statuses[activity_id] == "reviewed"
         assert activity.theme == "mystery"
         assert activity.difficulty == "easy"
         assert activity.passageType == "literary"
@@ -341,8 +341,8 @@ def test_content_cli_audit_reports_coverage_and_returns_zero_for_reviewed_pool(
     output = capsys.readouterr().out
     assert "reviewed skill x difficulty coverage" in output
     rows = [line.split() for line in output.splitlines()]
-    assert ["reading-comprehension", "9", "8", "7"] in rows
-    assert ["sequence", "7", "7", "6"] in rows
+    assert ["reading-comprehension", "13", "8", "7"] in rows
+    assert ["sequence", "10", "7", "6"] in rows
     assert "remaining target gaps: none" in output
 
 

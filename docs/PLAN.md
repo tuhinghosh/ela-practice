@@ -52,7 +52,7 @@ The 27-activity production specification for the reviewed-core expansion is in
 - [x] Audit the reviewed easy-mystery gap and define the six-activity matrix
 - [x] Author six easy mysteries across distinct knowledge domains
 - [x] Complete structured editorial preflight for all six activities
-- [ ] Promote the release to the reviewed adaptive pool
+- [x] Promote the release to the reviewed adaptive pool
 - [x] Pass content, backend, frontend, browser, build, and Docker verification
 
 ## Locked MVP decisions
