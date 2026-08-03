@@ -47,6 +47,14 @@ The 27-activity production specification for the reviewed-core expansion is in
 - [x] Add parent-only duration, abandonment, and reaction aggregates
 - [x] Verify migration, API, frontend, browser, and Docker persistence behavior
 
+### Release D — Easy mystery on-ramp
+
+- [x] Audit the reviewed easy-mystery gap and define the six-activity matrix
+- [x] Author six easy mysteries across distinct knowledge domains
+- [x] Complete structured editorial preflight for all six activities
+- [x] Promote the release to the reviewed adaptive pool
+- [x] Pass content, backend, frontend, browser, build, and Docker verification
+
 ## Locked MVP decisions
 
 These decisions are intentionally locked for MVP implementation unless explicitly changed later:
