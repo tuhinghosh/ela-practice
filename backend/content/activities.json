@@ -5410,5 +5410,389 @@
       {"id":"q3","type":"multiple-choice","prompt":"Which detail shows that the safety check was preserved?","choices":["Sol reports the projection delay.","Imani wants to begin the dance.","Bea waits for the last ribbon to clear the line before releasing the drums.","The audience sees a moon image."],"correctChoice":"Bea waits for the last ribbon to clear the line before releasing the drums.","skillTag":"reading-comprehension","answerExplanation":"That action confirms S4 still occurs before A9."},
       {"id":"q4","type":"short-response","prompt":"Summarize how the projection, movement, and sound teams recover while keeping the cue web safe.","skillTag":"summary","responseGuidance":"A strong response explains that the blue lantern replaces the delayed projection trigger, dancers cross, Bea confirms the safety line, drums begin, and the restored projection rejoins the finale.","writingSkillTags":["short-writing","sentence-quality"]}
     ],"skillTags":["main-idea","vocabulary","reading-comprehension","summary"],"sourceUrls":[]
+  },
+  {
+    "id": "onramp-mystery-shadow-01",
+    "title": "The Message from the Dark Classroom",
+    "theme": "mystery",
+    "difficulty": "easy",
+    "passageType": "literary",
+    "missionLabel": "Decode a glowing classroom clue",
+    "passageTitle": "The Message from the Dark Classroom",
+    "passageText": "When Reyana and Milo passed the empty science room, three giant letters appeared on its back wall: SOS. The room was dark, the door was locked, and no projector was running. Reyana noticed a beam of afternoon sunlight slipping through the narrow window in the door. \"That message needs light,\" she said, \"but what is making the letters?\"\n\nMr. Bell unlocked the room and let the two classroom helpers investigate. As soon as he opened the door wide, the letters vanished. When he almost closed it again, SOS returned. Milo waved his hand through the sunbeam, and part of the message disappeared beneath the shadow of his fingers.\n\nA shadow forms when an object blocks light. The object does not have to touch the wall where the shadow appears. Reyana followed the beam backward from the wall to the door window. Three cardboard shapes had been taped to the glass: a curved S, an oval O, and another S. Sunlight streamed around them, while the shapes blocked parts of the beam.\n\nThe mystery was not finished. The cardboard letters on the window faced the correct way, yet their shadows on the opposite wall also read correctly. Milo thought every shadow should flip like a picture in a mirror. Reyana tested his idea by holding up an arrow cut from scrap paper. Its shadow pointed the same direction as the paper arrow. A shadow shows the outline of the object from the light's direction; it is not a mirror image.\n\nUnder the last cardboard S, they found a tiny note from Ms. Ortiz: \"Sunlight Observation Station. Please leave these shapes for tomorrow's lesson.\" The letters were not a call for rescue at all. They were the initials of the station. Someone had taped them up early, and the low afternoon Sun happened to cast them across the room.\n\nBy the end, Reyana could explain every clue. The message appeared only when the door was nearly closed because that lined up the sunlight, the cardboard letters, and the wall. Opening the door moved the shapes out of the beam. What had looked like a mysterious glowing warning was really a shadow experiment waiting for the right angle of light.",
+    "questions": [
+      {
+        "id": "q1",
+        "type": "multiple-choice",
+        "prompt": "What caused the letters to appear on the back wall?",
+        "choices": [
+          "A hidden projector turned on when the room was empty.",
+          "Cardboard shapes blocked parts of a beam of sunlight.",
+          "Milo wrote the letters with glowing paint.",
+          "A mirror reflected a sign from the hallway."
+        ],
+        "correctChoice": "Cardboard shapes blocked parts of a beam of sunlight.",
+        "skillTag": "sequence",
+        "answerExplanation": "Sunlight passed through the door window after the cardboard shapes were taped there, producing letter-shaped shadows on the wall."
+      },
+      {
+        "id": "q2",
+        "type": "multiple-choice",
+        "prompt": "What does \"outline\" mean as used in the passage?",
+        "choices": [
+          "The bright center of a beam",
+          "A color painted on a wall",
+          "The outer shape or edge of something",
+          "A message written in secret code"
+        ],
+        "correctChoice": "The outer shape or edge of something",
+        "skillTag": "vocabulary",
+        "answerExplanation": "Reyana's arrow test shows that a shadow copies the object's outer shape rather than acting like a mirror."
+      },
+      {
+        "id": "q3",
+        "type": "multiple-choice",
+        "prompt": "Why did opening the door make SOS disappear?",
+        "choices": [
+          "The cardboard letters moved out of the path between the sunlight and wall.",
+          "The open door caused the Sun to stop shining.",
+          "The letters could appear only when nobody was watching.",
+          "Mr. Bell removed the cardboard before entering."
+        ],
+        "correctChoice": "The cardboard letters moved out of the path between the sunlight and wall.",
+        "skillTag": "inference",
+        "answerExplanation": "The passage says the nearly closed door lined up the light, shapes, and wall, so changing the door's position broke that alignment."
+      },
+      {
+        "id": "q4",
+        "type": "short-response",
+        "prompt": "Summarize how Reyana and Milo used two tests to solve the classroom message mystery.",
+        "skillTag": "summary",
+        "responseGuidance": "A strong response explains that Milo blocked part of the beam to connect it with shadows, Reyana traced the light to the cardboard letters, and the arrow test showed that a shadow is an outline rather than a mirror image.",
+        "writingSkillTags": ["short-writing", "sentence-quality"]
+      }
+    ],
+    "skillTags": ["sequence", "vocabulary", "inference", "summary"],
+    "sourceUrls": []
+  },
+  {
+    "id": "onramp-mystery-class-pet-01",
+    "title": "The Case of the Sleepy Class Pet",
+    "theme": "mystery",
+    "difficulty": "easy",
+    "passageType": "literary",
+    "missionLabel": "Investigate what Nori does after dark",
+    "passageTitle": "The Case of the Sleepy Class Pet",
+    "passageText": "For three mornings, Nori the class hamster had stayed curled inside her paper tunnel. She usually greeted the class with a twitching nose, so Ana worried that something was wrong. The food bowl was nearly empty, the water bottle worked, and no one had seen Nori use her wheel. Their teacher, Ms. Shah, asked the class to collect clues before deciding what the sleepy behavior meant.\n\nFirst, they checked Nori's home without waking her. Her bedding was dry, the room was comfortable, and she came out briefly when Ms. Shah offered a small piece of carrot. Nori's eyes looked bright, and she moved normally before carrying the carrot into her tunnel. Those clues made illness seem less likely, but they did not explain the untouched wheel.\n\nLeo suggested placing a strip of removable paper tape across the bottom of the wheel. If the wheel turned, the tape would tear. Ana added a second test: she smoothed a patch of bedding beside the food bowl so tiny footprints would show. The class took a photograph before going home.\n\nThe next morning, the tape had snapped. The smooth bedding was covered with paw prints, and three sunflower-seed shells lay beside the wheel. \"Nori had a busy night,\" Ana said. Ms. Shah explained that hamsters are nocturnal, meaning they are naturally active mostly at night. A nocturnal animal may rest through much of the school day even when it is healthy.\n\nOne clue still puzzled Leo. Why had Nori sometimes appeared in the morning before? The class compared the dates with their classroom schedule. On those mornings, the custodian had arrived early and switched on the lights before the students entered. Nori had probably still been awake from her nighttime activity. This week, bright summer light was already entering the windows later in her active period, and she had settled down sooner.\n\nThe class moved Nori's wheel away from the shared wall so her nighttime running would not disturb the next room. They also made an observation chart with separate spaces for clues and conclusions. By the end, Ana realized that \"I did not see it\" was not the same as \"it did not happen.\" Nori had not stopped exercising; she had simply kept a schedule that the daytime detectives rarely witnessed.",
+    "questions": [
+      {
+        "id": "q1",
+        "type": "multiple-choice",
+        "prompt": "Which clue best showed that Nori used the wheel after the class went home?",
+        "choices": [
+          "Her paper tunnel was still in the cage.",
+          "The classroom windows let in summer light.",
+          "Ms. Shah offered her a piece of carrot.",
+          "The tape across the wheel was torn the next morning."
+        ],
+        "correctChoice": "The tape across the wheel was torn the next morning.",
+        "skillTag": "reading-comprehension",
+        "answerExplanation": "The class placed intact tape across the wheel, so finding it torn provided direct evidence that the wheel had turned."
+      },
+      {
+        "id": "q2",
+        "type": "multiple-choice",
+        "prompt": "What does \"nocturnal\" mean in the passage?",
+        "choices": [
+          "Unable to see in dim light",
+          "Naturally active mostly at night",
+          "Likely to eat only vegetables",
+          "Trained to follow a school schedule"
+        ],
+        "correctChoice": "Naturally active mostly at night",
+        "skillTag": "vocabulary",
+        "answerExplanation": "Ms. Shah defines nocturnal immediately after using the word to describe hamsters."
+      },
+      {
+        "id": "q3",
+        "type": "multiple-choice",
+        "prompt": "Why did the class decide that Nori was probably healthy?",
+        "choices": [
+          "They assumed every sleeping animal is healthy.",
+          "They found that her food bowl was completely full.",
+          "She had bright eyes, moved normally, ate, and left signs of nighttime activity.",
+          "They woke her every hour to watch her run."
+        ],
+        "correctChoice": "She had bright eyes, moved normally, ate, and left signs of nighttime activity.",
+        "skillTag": "inference",
+        "answerExplanation": "Several observations support the conclusion that Nori was following her natural schedule rather than showing signs of illness."
+      },
+      {
+        "id": "q4",
+        "type": "short-response",
+        "prompt": "Summarize the class's investigation and explain the lesson Ana learned from it.",
+        "skillTag": "summary",
+        "responseGuidance": "A strong response describes the tape and footprint tests, explains that the evidence revealed Nori's nighttime activity, and states that not seeing an event does not prove it never happened.",
+        "writingSkillTags": ["short-writing", "sentence-quality"]
+      }
+    ],
+    "skillTags": ["reading-comprehension", "vocabulary", "inference", "summary"],
+    "sourceUrls": []
+  },
+  {
+    "id": "onramp-mystery-map-island-01",
+    "title": "The Map with the Missing Island",
+    "theme": "mystery",
+    "difficulty": "easy",
+    "passageType": "literary",
+    "missionLabel": "Compare two maps to recover an island",
+    "passageTitle": "The Map with the Missing Island",
+    "passageText": "During Geography Game Day, Priya found an island named Gull Key on the class's harbor map. On the world map beside it, Gull Key had vanished. Both maps were new, so Priya wondered whether one of them contained a mistake. Her team needed to explain the missing island before the final round began.\n\nThe harbor map showed a small stretch of coast with docks, beaches, channels, and tiny islands. Its key, the box that explains map symbols, used a black star for a lighthouse and blue dotted lines for ferry routes. Gull Key appeared as a green shape smaller than Priya's thumbnail.\n\nThe world map squeezed every ocean and continent onto one sheet. It showed countries, capitals, and major rivers, but no neighborhood streets or small ferry routes. Mateo measured Gull Key on the harbor map and then looked at the scale bars. Scale compares a distance on a map with the much larger distance on Earth. The world map covered so much area that Gull Key would be smaller than the point of a pencil.\n\nPriya tested the scale idea with two drawings of the classroom. On a full-page drawing, she could include every desk. When she drew the entire school on the same size paper, the classroom became one small rectangle and individual desks disappeared. Leaving them out did not make the school drawing false; they were simply too small for that map's purpose.\n\nThen Mateo spotted another clue. A pale blue circle near Gull Key appeared only in winter, according to the harbor map's note. It marked a floating safety buoy, not a second island. The map key prevented the team from mistaking a symbol for land.\n\nBy the end, Priya concluded that neither map was wrong. The harbor map showed Gull Key because sailors needed local details, while the world map showed broad locations and left out very small features. Her team won the round by explaining that good map readers ask three questions: What area does this map cover? What does its scale allow it to show? What do its symbols mean? Gull Key had never vanished from Earth. It had only become too tiny for one map to display.",
+    "questions": [
+      {
+        "id": "q1",
+        "type": "multiple-choice",
+        "prompt": "What is the main idea of the passage?",
+        "choices": [
+          "Maps with different purposes and scales can show different amounts of detail without either being wrong.",
+          "World maps should include every dock, desk, and tiny island.",
+          "Gull Key disappears from Earth during Geography Game Day.",
+          "A map key measures the distance between two countries."
+        ],
+        "correctChoice": "Maps with different purposes and scales can show different amounts of detail without either being wrong.",
+        "skillTag": "main-idea",
+        "answerExplanation": "The investigation shows that the local map can display Gull Key while the world map leaves it out because the maps cover different areas and serve different purposes."
+      },
+      {
+        "id": "q2",
+        "type": "multiple-choice",
+        "prompt": "What does \"scale\" mean in this passage?",
+        "choices": [
+          "A list of every symbol used on a map",
+          "The colors chosen to represent land and water",
+          "A tool used only to weigh an island",
+          "A comparison between map distance and actual distance on Earth"
+        ],
+        "correctChoice": "A comparison between map distance and actual distance on Earth",
+        "skillTag": "vocabulary",
+        "answerExplanation": "The passage directly defines scale while Mateo compares the two maps."
+      },
+      {
+        "id": "q3",
+        "type": "multiple-choice",
+        "prompt": "Why does the author include Priya's two drawings of the classroom and school?",
+        "choices": [
+          "To prove that Priya prefers drawing desks to reading maps",
+          "To demonstrate why smaller details disappear when a map covers a larger area",
+          "To show that the school is located on Gull Key",
+          "To explain the meaning of the lighthouse symbol"
+        ],
+        "correctChoice": "To demonstrate why smaller details disappear when a map covers a larger area",
+        "skillTag": "reading-comprehension",
+        "answerExplanation": "The drawings provide a familiar model of the same area-versus-detail tradeoff that explains the missing island."
+      },
+      {
+        "id": "q4",
+        "type": "short-response",
+        "prompt": "Why was Gull Key shown on the harbor map but not on the world map? Use at least two details from the passage.",
+        "skillTag": "inference",
+        "responseGuidance": "A strong response explains that the harbor map covers a small local area and is designed to show sailing details, while the world map covers the whole planet and Gull Key would be too small to display clearly.",
+        "writingSkillTags": ["short-writing", "sentence-quality"]
+      }
+    ],
+    "skillTags": ["main-idea", "vocabulary", "reading-comprehension", "inference"],
+    "sourceUrls": []
+  },
+  {
+    "id": "onramp-mystery-museum-clock-01",
+    "title": "The Museum Clock That Ran Backward",
+    "theme": "mystery",
+    "difficulty": "easy",
+    "passageType": "literary",
+    "missionLabel": "Repair a shadow clock before the tour",
+    "passageTitle": "The Museum Clock That Ran Backward",
+    "passageText": "Ten minutes before the museum opened, a guard called for junior guide Elena. The courtyard's new sundial had a shadow pointing near the mark labeled four, but the morning clock inside read eight. Worse, yesterday's test photographs made the shadow seem to move backward. Elena needed to decide whether the historical clock was broken before visitors arrived.\n\nA sundial tells time using the Sun and a shadow. Its raised pointer is called a gnomon. As Earth turns, the Sun appears to travel across the sky, and the gnomon's shadow changes direction. The hour marks must be arranged for the sundial's location and for the direction the gnomon points.\n\nElena studied the photographs in order. At eight in the morning, the shadow fell across the four mark. At noon, it reached the twelve mark. At four in the afternoon, it crossed the eight mark. The shadow moved smoothly, but every morning label matched an afternoon time, and every afternoon label matched a morning time.\n\nShe checked the museum's older sundial in the history gallery. Its hour labels ran around the stone in the opposite direction. Then she read the delivery card: \"Replica copied from courtyard design; use tracing beneath template.\" A replica is a carefully made copy. The builder had placed the paper tracing faceup instead of flipping it over, reversing the hour pattern like a stamp viewed from the wrong side.\n\nThe gnomon and the moving shadow worked correctly. Only the labels were backward. Elena laid transparent paper over the dial, marked the proper positions, and asked the exhibit team to replace the number tiles. At noon, the shadow touched twelve on both the old and new sundials.\n\nBy the end, Elena had solved the case without blaming the Sun or the ancient invention. She used the order of the photographs to separate what worked from what did not. The shadow's steady movement was evidence that the gnomon worked; the swapped morning and afternoon marks revealed the reversed template. The museum opened with a corrected clock and a new tour story about how one careful reader rescued time.",
+    "questions": [
+      {
+        "id": "q1",
+        "type": "multiple-choice",
+        "prompt": "Which sequence matches the shadow positions in the test photographs?",
+        "choices": [
+          "Eight mark, twelve mark, four mark",
+          "Twelve mark, four mark, eight mark",
+          "Four mark, twelve mark, eight mark",
+          "Four mark, eight mark, twelve mark"
+        ],
+        "correctChoice": "Four mark, twelve mark, eight mark",
+        "skillTag": "sequence",
+        "answerExplanation": "The photographs show the shadow at the four mark in the morning, twelve at noon, and eight in the afternoon."
+      },
+      {
+        "id": "q2",
+        "type": "multiple-choice",
+        "prompt": "What is a \"replica\"?",
+        "choices": [
+          "A carefully made copy",
+          "A shadow that appears at noon",
+          "A machine that turns Earth",
+          "A mistake in a photograph"
+        ],
+        "correctChoice": "A carefully made copy",
+        "skillTag": "vocabulary",
+        "answerExplanation": "The delivery card identifies the new sundial as a copy, and the passage defines replica directly."
+      },
+      {
+        "id": "q3",
+        "type": "multiple-choice",
+        "prompt": "How did Elena know the gnomon was working?",
+        "choices": [
+          "The guard said that every number was correct.",
+          "The indoor clock also used a shadow.",
+          "The new sundial looked exactly like the old one.",
+          "The shadow moved steadily even though it crossed the wrong labels."
+        ],
+        "correctChoice": "The shadow moved steadily even though it crossed the wrong labels.",
+        "skillTag": "inference",
+        "answerExplanation": "A moving shadow showed that the pointer was doing its job, while the swapped time labels pointed to a separate problem."
+      },
+      {
+        "id": "q4",
+        "type": "short-response",
+        "prompt": "Summarize how Elena identified and corrected the sundial problem.",
+        "skillTag": "summary",
+        "responseGuidance": "A strong response explains that Elena ordered the photos, compared the new sundial with the old one, discovered the reversed tracing, and replaced the number tiles while keeping the working gnomon.",
+        "writingSkillTags": ["short-writing", "sentence-quality"]
+      }
+    ],
+    "skillTags": ["sequence", "vocabulary", "inference", "summary"],
+    "sourceUrls": []
+  },
+  {
+    "id": "onramp-mystery-vanishing-voice-01",
+    "title": "The Mystery of the Vanishing Voice",
+    "theme": "mystery",
+    "difficulty": "easy",
+    "passageType": "literary",
+    "missionLabel": "Recover a whisper from the recording booth",
+    "passageTitle": "The Mystery of the Vanishing Voice",
+    "passageText": "At podcast club, Zara recorded the same mystery line in three places: the classroom, the tiled hallway, and the blanket-lined reading booth. Her voice sounded clear in the first two recordings, but it nearly vanished in the booth. The sound meter showed a flat line. Zara noticed that the booth was quiet, yet quiet should have made her whisper easier to hear, not erase it.\n\nSound begins with vibrations, or quick back-and-forth movements. When Zara speaks, her vocal cords vibrate and make nearby air move. Those moving waves travel to a listener's ears or to a microphone, which changes them into a recorded signal. Soft materials can absorb some sound instead of bouncing it back, so the blankets explained why the booth had no hallway-like echo. They did not explain a completely missing voice.\n\nClub partner Ben replayed the recordings in order. In the classroom, Zara stood one hand-length from the microphone. In the hallway, she stood two hand-lengths away and heard a small echo. In the booth photograph, she stood at the same close distance, but a folded corner of the thick blanket hung between her mouth and the microphone.\n\nThey tested each clue. First Zara spoke close to the uncovered microphone, and the meter jumped. Next she stepped across the booth, and the line became smaller because sound spreads as it travels. Finally, Ben placed one blanket fold directly over the microphone. The meter almost flattened because the thick cloth blocked and absorbed much of the already-soft whisper before it reached the microphone.\n\nThe mystery had two different effects that were easy to mix up. Blankets on the walls reduced echoes by absorbing reflected sound. The loose blanket over the microphone blocked the direct sound they wanted to record. Ben clipped the hanging corner safely to the wall and marked a standing spot near the microphone.\n\nBy the end, Zara's whisper returned without making the booth noisy. She recorded the line once more, and the meter drew a row of lively peaks. The detectives had learned to trace sound from its vibrating source to its receiver. A quiet room can improve a recording, but only if the useful sound still has a clear path to the microphone.",
+    "questions": [
+      {
+        "id": "q1",
+        "type": "multiple-choice",
+        "prompt": "What directly caused Zara's voice to nearly vanish from the booth recording?",
+        "choices": [
+          "The tiled hallway created a small echo.",
+          "A thick blanket fold hung between Zara and the microphone.",
+          "Zara's vocal cords stopped vibrating in quiet rooms.",
+          "The club played the recordings in the wrong order."
+        ],
+        "correctChoice": "A thick blanket fold hung between Zara and the microphone.",
+        "skillTag": "reading-comprehension",
+        "answerExplanation": "The photograph and follow-up test showed that the blanket fold blocked and absorbed the whisper before it reached the microphone."
+      },
+      {
+        "id": "q2",
+        "type": "multiple-choice",
+        "prompt": "What are \"vibrations\" as described in the passage?",
+        "choices": [
+          "Pictures displayed by a sound meter",
+          "Blankets used to cover a wall",
+          "Quick back-and-forth movements",
+          "Words repeated at the end of a hallway"
+        ],
+        "correctChoice": "Quick back-and-forth movements",
+        "skillTag": "vocabulary",
+        "answerExplanation": "The passage defines vibrations before explaining how Zara's vocal cords produce sound."
+      },
+      {
+        "id": "q3",
+        "type": "multiple-choice",
+        "prompt": "What did Zara and Ben test immediately before covering the microphone with the blanket fold?",
+        "choices": [
+          "Zara moved farther from the microphone and the signal became smaller.",
+          "They removed every blanket from the booth.",
+          "Ben recorded his voice in the tiled hallway.",
+          "They replaced the microphone with a sound meter."
+        ],
+        "correctChoice": "Zara moved farther from the microphone and the signal became smaller.",
+        "skillTag": "sequence",
+        "answerExplanation": "Their tests proceed from close uncovered speech, to greater distance, to placing a blanket fold over the microphone."
+      },
+      {
+        "id": "q4",
+        "type": "short-response",
+        "prompt": "Why could blankets help the booth sound better but also make Zara's recorded voice disappear? Use evidence from the passage.",
+        "skillTag": "inference",
+        "responseGuidance": "A strong response distinguishes blankets on the walls, which absorb reflected sound and reduce echoes, from the blanket over the microphone, which blocked the direct whisper before it reached the receiver.",
+        "writingSkillTags": ["short-writing", "sentence-quality"]
+      }
+    ],
+    "skillTags": ["reading-comprehension", "vocabulary", "sequence", "inference"],
+    "sourceUrls": []
+  },
+  {
+    "id": "onramp-mystery-moon-footprints-01",
+    "title": "The Footprints Beside the Moon Base",
+    "theme": "mystery",
+    "difficulty": "easy",
+    "passageType": "literary",
+    "missionLabel": "Identify the visitor to a model Moon base",
+    "passageTitle": "The Footprints Beside the Moon Base",
+    "passageText": "At the space museum's Moon Base Challenge, four neat tracks appeared beside the model air lock before anyone entered the exhibit. Two tracks were wide boot prints, but the other two were long, shallow curves. No animal lived in the sealed room, and the overnight camera showed no visitor. Junior investigator Camila needed to identify what made every mark before the morning teams arrived.\n\nThe model ground was covered with gray powder designed to behave like loose Moon soil. On the real Moon, fine broken rock called regolith covers much of the surface. With almost no wind or rain to smooth marks away, tracks can remain for a very long time. In the museum, however, fans and footsteps could disturb the powder after each challenge.\n\nCamila compared the marks with the equipment chart. The wide prints matched the zigzag tread on the instructor's training boots. Tread is the raised pattern on the bottom of a shoe. The curved marks had no tread at all, so they were probably not made by a second pair of boots. Each curve also began beside a deep boot print and ended beside the next one.\n\nThe instructor, Mr. Liu, demonstrated the activity from the previous evening. He wore a harness that gently lifted part of his weight to imitate low gravity. When he pushed forward in a slow, bouncing step, the toe of each boot sometimes dragged through the powder before landing. One boot therefore made both a shallow curve and a deep print. From above, the alternating drags looked like tracks from a mysterious companion.\n\nThe camera had shown no intruder because there had been none. Mr. Liu had made all four lines during one demonstration, and the ventilation fans had switched off overnight before erasing them. Camila photographed the evidence, then raked the model surface flat for the next group.\n\nBy the end, she had solved more than a footprint puzzle. A mark's shape can reveal how something moved, not just what touched the ground. The tread identified the boot, while the paired curves showed the dragging motion between steps. The pretend Moon visitor was one instructor learning to move in a new way, not two walkers entering a locked base.",
+    "questions": [
+      {
+        "id": "q1",
+        "type": "multiple-choice",
+        "prompt": "What is the main idea of the passage?",
+        "choices": [
+          "A museum animal enters a sealed Moon exhibit overnight.",
+          "Wind on the Moon quickly removes every footprint.",
+          "Two instructors secretly walk beside the model base.",
+          "Camila uses the shape and pattern of tracks to show that one person's movement made all the marks."
+        ],
+        "correctChoice": "Camila uses the shape and pattern of tracks to show that one person's movement made all the marks.",
+        "skillTag": "main-idea",
+        "answerExplanation": "The mystery is solved by connecting both the boot prints and curved drags to Mr. Liu's low-gravity practice movement."
+      },
+      {
+        "id": "q2",
+        "type": "multiple-choice",
+        "prompt": "What does \"tread\" mean in the passage?",
+        "choices": [
+          "The raised pattern on the bottom of a shoe",
+          "The gray powder used in the model",
+          "A camera that records overnight",
+          "A harness that lifts part of a person's weight"
+        ],
+        "correctChoice": "The raised pattern on the bottom of a shoe",
+        "skillTag": "vocabulary",
+        "answerExplanation": "The passage defines tread as Camila compares the marks with the instructor's boots."
+      },
+      {
+        "id": "q3",
+        "type": "multiple-choice",
+        "prompt": "Which detail best proves that the shallow curves and boot prints were connected?",
+        "choices": [
+          "The exhibit used gray powder.",
+          "Each curve began by one boot print and ended beside the next.",
+          "The camera showed no visitor overnight.",
+          "Mr. Liu photographed the equipment chart."
+        ],
+        "correctChoice": "Each curve began by one boot print and ended beside the next.",
+        "skillTag": "reading-comprehension",
+        "answerExplanation": "The repeated placement of each curve between two landings supports the explanation that a toe dragged during the same person's step."
+      },
+      {
+        "id": "q4",
+        "type": "short-response",
+        "prompt": "Summarize how Camila determined who made the two kinds of tracks and why they looked different.",
+        "skillTag": "summary",
+        "responseGuidance": "A strong response explains that the zigzag tread matched Mr. Liu's boots, the curves linked consecutive prints, and his harness-supported bouncing steps caused his toes to drag before each landing.",
+        "writingSkillTags": ["short-writing", "sentence-quality"]
+      }
+    ],
+    "skillTags": ["main-idea", "vocabulary", "reading-comprehension", "summary"],
+    "sourceUrls": []
   }
 ]

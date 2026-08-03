@@ -13,7 +13,7 @@ def test_review_registry_classifies_every_activity_once() -> None:
     assert set(statuses) == {activity.id for activity in activities}
     assert list(statuses.values()).count("reviewed") == 36
     assert list(statuses.values()).count("rewrite-required") == 26
-    assert list(statuses.values()).count("draft") == 53
+    assert list(statuses.values()).count("draft") == 59
 
 
 def test_reviewed_pool_passes_all_hard_quality_gates() -> None:

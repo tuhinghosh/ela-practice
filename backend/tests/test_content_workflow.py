@@ -259,6 +259,52 @@ def test_release_c_matches_the_approved_production_contract() -> None:
         assert bool(activity.sourceUrls) is needs_sources
 
 
+def test_release_d_drafts_match_the_easy_mystery_contract() -> None:
+    expected = {
+        "onramp-mystery-shadow-01": (
+            ["sequence", "vocabulary", "inference", "summary"], [2, 3, 1]
+        ),
+        "onramp-mystery-class-pet-01": (
+            ["reading-comprehension", "vocabulary", "inference", "summary"], [4, 2, 3]
+        ),
+        "onramp-mystery-map-island-01": (
+            ["main-idea", "vocabulary", "reading-comprehension", "inference"], [1, 4, 2]
+        ),
+        "onramp-mystery-museum-clock-01": (
+            ["sequence", "vocabulary", "inference", "summary"], [3, 1, 4]
+        ),
+        "onramp-mystery-vanishing-voice-01": (
+            ["reading-comprehension", "vocabulary", "sequence", "inference"], [2, 3, 1]
+        ),
+        "onramp-mystery-moon-footprints-01": (
+            ["main-idea", "vocabulary", "reading-comprehension", "summary"], [4, 1, 2]
+        ),
+    }
+    activities = {activity.id: activity for activity in list_seed_activities()}
+    statuses = load_review_statuses()
+
+    assert set(expected).issubset(activities)
+    for activity_id, (skills, positions) in expected.items():
+        activity = activities[activity_id]
+        assert statuses[activity_id] == "draft"
+        assert activity.theme == "mystery"
+        assert activity.difficulty == "easy"
+        assert activity.passageType == "literary"
+        assert [question.skillTag for question in activity.questions] == skills
+        multiple_choice = [
+            question for question in activity.questions if question.type == "multiple-choice"
+        ]
+        assert [
+            question.choices.index(question.correctChoice) + 1  # type: ignore[union-attr]
+            for question in multiple_choice
+        ] == positions
+        assert activity.questions[-1].type == "short-response"
+        assert set(activity.questions[-1].writingSkillTags) == {
+            "short-writing",
+            "sentence-quality",
+        }
+
+
 def test_manifest_checksums_match_canonical_files() -> None:
     verify_content_manifest()  # raises if drift
 
