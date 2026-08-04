@@ -55,6 +55,14 @@ The 27-activity production specification for the reviewed-core expansion is in
 - [x] Promote the release to the reviewed adaptive pool
 - [x] Pass content, backend, frontend, browser, build, and Docker verification
 
+### Flexible mission choice
+
+- [x] Replace the fixed pilot gate with any three distinct reviewed completions
+- [x] Keep the original starter path visible but optional and order-independent
+- [x] Restrict the child chooser to editorially reviewed activities
+- [x] Add a one-click alternative to the recommended mission
+- [x] Pass backend, frontend, browser, build, and Docker verification
+
 ## Locked MVP decisions
 
 These decisions are intentionally locked for MVP implementation unless explicitly changed later:

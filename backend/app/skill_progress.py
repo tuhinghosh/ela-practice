@@ -28,6 +28,7 @@ PILOT_ACTIVITY_IDS = (
     "pilot-space-mars-01",
     "pilot-world-japan-01",
 )
+STARTER_COMPLETION_TARGET = 3
 ADAPTIVE_SKILLS = (
     "main-idea",
     "vocabulary",
@@ -225,23 +226,42 @@ def build_adaptive_recommendation(
         from backend.app.content_schema import load_review_statuses
 
         review_statuses = load_review_statuses()
-    by_id = {activity.id: activity for activity in activity_list}
-
-    for activity_id in PILOT_ACTIVITY_IDS:
-        if activity_id not in completed and activity_id in by_id:
-            activity = by_id[activity_id]
-            return {
-                "phase": "baseline",
-                "activity_id": activity.id,
-                "activity_title": activity.title,
-                "difficulty": activity.difficulty,
-                "target_skill": None,
-                "decision": "complete-baseline",
-                "attempts": 0,
-                "avg_score": None,
-                "reason": "Complete the three starter missions before difficulty adapts.",
-                "rule": "Starter missions run in order: cat mystery → Mars → Japan.",
-            }
+    reviewed_ids = {
+        activity.id for activity in activity_list if review_statuses.get(activity.id) == "reviewed"
+    }
+    reviewed_completed = completed & reviewed_ids
+    if len(reviewed_completed) < STARTER_COMPLETION_TARGET:
+        uncompleted_easy = [
+            activity
+            for activity in activity_list
+            if activity.id in reviewed_ids
+            and activity.id not in reviewed_completed
+            and activity.difficulty == "easy"
+        ]
+        pilot_rank = {activity_id: index for index, activity_id in enumerate(PILOT_ACTIVITY_IDS)}
+        uncompleted_easy.sort(
+            key=lambda activity: (
+                activity.id not in pilot_rank,
+                pilot_rank.get(activity.id, len(pilot_rank)),
+                activity.id,
+            )
+        )
+        selected = uncompleted_easy[0] if uncompleted_easy else None
+        return {
+            "phase": "baseline",
+            "activity_id": selected.id if selected else None,
+            "activity_title": selected.title if selected else None,
+            "difficulty": selected.difficulty if selected else "easy",
+            "target_skill": None,
+            "decision": "complete-baseline",
+            "attempts": len(reviewed_completed),
+            "avg_score": None,
+            "reason": (
+                f"{len(reviewed_completed)} of {STARTER_COMPLETION_TARGET} starter activities complete. "
+                "Try this one or choose any reviewed activity."
+            ),
+            "rule": "Any three distinct reviewed activities unlock difficulty adaptation.",
+        }
 
     bucket = skill_windows.get(window, {})
     states = []

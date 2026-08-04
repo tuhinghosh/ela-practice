@@ -26,9 +26,9 @@ const REYANA_MISSION_IDS = [
 ] as const;
 
 const REYANA_MISSION_META: Record<(typeof REYANA_MISSION_IDS)[number], { step: string; kicker: string }> = {
-  "pilot-mystery-cat-01": { step: "Mission 1", kicker: "School mystery • Start here" },
-  "pilot-space-mars-01": { step: "Mission 2", kicker: "Mars science • Next challenge" },
-  "pilot-world-japan-01": { step: "Mission 3", kicker: "World geography • Final challenge" },
+  "pilot-mystery-cat-01": { step: "Mission 1", kicker: "School mystery" },
+  "pilot-space-mars-01": { step: "Mission 2", kicker: "Mars science" },
+  "pilot-world-japan-01": { step: "Mission 3", kicker: "World geography" },
 };
 
 export default function Home() {
@@ -102,13 +102,13 @@ export default function Home() {
   const themeOptions = availableThemes.length > 0 ? availableThemes : fallbackThemes;
   const suggestedActivityId = typeof window !== "undefined" ? localStorage.getItem("ela:suggested-activity") : null;
 
-  const attempted = new Set((dashboard?.recent_sessions ?? []).map((session) => session.activity_id));
+  const attempted = new Set(
+    dashboard?.completed_activity_ids ?? (dashboard?.recent_sessions ?? []).map((session) => session.activity_id),
+  );
   const suggested = availableActivities.find((activity) => activity.id === suggestedActivityId);
-  const nextPilotId = REYANA_MISSION_IDS.find((id) => !attempted.has(id));
-  const nextPilot = availableActivities.find((activity) => activity.id === nextPilotId);
   const unattempted = availableActivities.find((activity) => !attempted.has(activity.id));
   const fromDashboard = availableActivities.find((activity) => activity.id === dashboard?.mission.activity_id);
-  const autoSelectedActivityId = (suggested ?? nextPilot ?? fromDashboard ?? unattempted ?? availableActivities[0])?.id ?? null;
+  const autoSelectedActivityId = (suggested ?? fromDashboard ?? unattempted ?? availableActivities[0])?.id ?? null;
   const selectedActivityId =
     userSelectedActivityId && availableActivities.some((activity) => activity.id === userSelectedActivityId)
       ? userSelectedActivityId
@@ -161,6 +161,16 @@ export default function Home() {
     : recentSessions;
 
   const missionDifficulty = DIFFICULTY_META[mission.difficulty] ?? DIFFICULTY_META.easy;
+  const isUserChoice = userSelectedActivityId === mission.activityId;
+  const isDashboardRecommendation = dashboard?.recommendation?.activity_id === mission.activityId;
+  const chooseAnotherMission = () => {
+    const alternatives = availableActivities.filter(
+      (activity) => activity.id !== mission.activityId && !attempted.has(activity.id),
+    );
+    const fallbackAlternatives = availableActivities.filter((activity) => activity.id !== mission.activityId);
+    const next = alternatives[0] ?? fallbackAlternatives[0];
+    if (next) setUserSelectedActivityId(next.id);
+  };
 
   return (
     <AppShell
@@ -181,10 +191,10 @@ export default function Home() {
             <div>
               <span className={styles.cardEyebrow}>
                 <Icon name="sparkles" size={12} />
-                Three-part starter adventure
+                Optional starter adventure
               </span>
               <h2 className={styles.missionTitle}>Reyana&apos;s Missions</h2>
-              <p className={styles.muted}>Begin with the cat mystery, travel to Mars, then explore Japan.</p>
+              <p className={styles.muted}>Try these in any order—or choose any reviewed activity below.</p>
             </div>
             <span className={styles.pilotProgress}>
               {REYANA_MISSION_IDS.filter((id) => attempted.has(id)).length} of {REYANA_MISSION_IDS.length} complete
@@ -196,11 +206,10 @@ export default function Home() {
                 fallbackActivities.find((activity) => activity.id === id);
               if (!item) return null;
               const complete = attempted.has(id);
-              const isNext = id === nextPilotId;
               const meta = REYANA_MISSION_META[id];
               const difficulty = DIFFICULTY_META[item.difficulty];
               return (
-                <li key={id} className={`${styles.pilotStep} ${isNext ? styles.pilotStepNext : ""}`}>
+                <li key={id} className={styles.pilotStep}>
                   <span className={styles.pilotStepNumber} aria-hidden="true">
                     {complete ? <Icon name="check-circle" size={18} /> : meta.step.replace("Mission ", "")}
                   </span>
@@ -214,11 +223,11 @@ export default function Home() {
                       >
                         {difficulty.label}
                       </span>
-                      {complete ? "Completed" : isNext ? "Up next" : "Ready when you are"}
+                      {complete ? "Completed" : "Optional starter"}
                     </span>
                   </div>
-                  <ButtonLink href={`/activity/${id}`} tone={isNext ? "primary" : "secondary"} className={styles.pilotAction}>
-                    {complete ? "Practice again" : isNext ? "Start mission" : "Open"}
+                  <ButtonLink href={`/activity/${id}`} tone="secondary" className={styles.pilotAction}>
+                    {complete ? "Practice again" : "Try mission"}
                     <Icon name="arrow-right" size={14} />
                   </ButtonLink>
                 </li>
@@ -232,7 +241,7 @@ export default function Home() {
             <div className={styles.missionHeading}>
               <span className={styles.cardEyebrow}>
                 <Icon name="target" size={12} />
-                Recommended next
+                {isUserChoice ? "Your chosen mission" : "Suggested next"}
               </span>
               <h2 className={styles.missionTitle}>{mission.title}</h2>
               <p className={styles.muted}>{mission.missionLabel}</p>
@@ -301,13 +310,21 @@ export default function Home() {
             </div>
           ) : null}
 
-          <ButtonLink href={`/activity/${mission.activityId}`}>
-            <Icon name="play" size={16} />
-            Start mission
-          </ButtonLink>
-          {dashboard?.recommendation ? (
+          <div className={styles.missionActions}>
+            <ButtonLink href={`/activity/${mission.activityId}`}>
+              <Icon name="play" size={16} />
+              Start this mission
+            </ButtonLink>
+            {availableActivities.length > 1 ? (
+              <Button type="button" tone="secondary" onClick={chooseAnotherMission}>
+                <Icon name="sparkles" size={16} />
+                Show me another
+              </Button>
+            ) : null}
+          </div>
+          {dashboard?.recommendation && isDashboardRecommendation ? (
             <div className={styles.recommendationReason}>
-              <strong>Why this mission?</strong>
+              <strong>Why this suggestion?</strong>
               <span>{dashboard.recommendation.reason}</span>
               <small>{dashboard.recommendation.rule}</small>
             </div>

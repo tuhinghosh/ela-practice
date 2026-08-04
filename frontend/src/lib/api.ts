@@ -45,6 +45,7 @@ export type DashboardResponse = {
     strengths: string[];
     growth_areas: string[];
   };
+  completed_activity_ids: string[];
   recent_sessions: Array<{
     session_id: string;
     activity_id: string;

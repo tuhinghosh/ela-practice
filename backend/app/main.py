@@ -33,6 +33,7 @@ from backend.app.content_schema import (
     list_seed_activities,
     list_seed_difficulty_tiers,
     list_seed_themes,
+    load_review_statuses,
     verify_content_manifest,
 )
 from backend.app.db import ensure_database
@@ -577,7 +578,10 @@ def get_dashboard(
     request: Request,
     username: str = Depends(_require_authenticated_username),
 ) -> JSONResponse:
-    activities = list_seed_activities()
+    statuses = load_review_statuses()
+    activities = [
+        item for item in list_seed_activities() if statuses.get(item.id) == "reviewed"
+    ]
     mission = activities[0]
     with get_connection() as connection:
         user = get_user_by_username(connection, username)
@@ -621,6 +625,7 @@ def get_dashboard(
                 "strengths": json.loads(progress["strengths_json"]) if progress else [],
                 "growth_areas": json.loads(progress["growth_areas_json"]) if progress else [],
             },
+            "completed_activity_ids": sorted(completed_activity_ids),
             "recent_sessions": [
                 {
                     "session_id": row["session_uuid"],
@@ -641,7 +646,10 @@ def list_activities(
     theme: Optional[str] = Query(default=None),
     difficulty: Optional[str] = Query(default=None),
 ) -> JSONResponse:
-    activities = list_seed_activities()
+    statuses = load_review_statuses()
+    activities = [
+        item for item in list_seed_activities() if statuses.get(item.id) == "reviewed"
+    ]
     allowed_themes = list_seed_themes()
     allowed_difficulties = list_seed_difficulty_tiers()
     if theme:

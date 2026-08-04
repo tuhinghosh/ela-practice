@@ -18,16 +18,17 @@ The 30-day skill window aggregates these response-level observations. Older
 sessions that predate question evidence remain readable through their stored
 session-level skill breakdown.
 
-## Baseline gate
+## Flexible starter phase
 
-The three reviewed pilot activities run in this order before adaptation:
+The first three distinct reviewed activities establish enough initial evidence
+to begin adaptation. The original pilot activities remain visible as a
+suggested starter path, but they are optional and may be completed in any
+order. Any reviewed activity counts toward the three-activity starter phase.
 
-1. The Case of the Library Paw Prints
-2. A Day Called a Sol
-3. Japan: One Country, Many Islands
-
-This produces initial evidence across the current core skills. Until all three
-are complete, the next unfinished pilot is the recommendation.
+While fewer than three reviewed activities are complete, the system suggests
+an uncompleted easy reviewed activity. The child can accept that suggestion,
+ask to see another, filter the reviewed library, or start any reviewed activity
+directly. Recommendations are guidance, never prerequisites.
 
 ## Decision rule
 
@@ -43,9 +44,10 @@ evidence, skills in the productive range, and skills ready to step up.
 
 ## Activity eligibility
 
-An activity can be selected adaptively only when every question explicitly
-declares its primary `skillTag`. This prevents legacy activities from claiming
-targeted learning evidence they were not authored to measure.
+An activity can appear in the child chooser or be selected adaptively only when
+it is editorially reviewed. Adaptive candidates must also have every question
+declare its primary `skillTag`. This prevents draft or legacy activities from
+becoming child-facing practice or claiming targeted evidence.
 
 Within eligible activities, selection prefers:
 
@@ -59,10 +61,8 @@ The child dashboard shows why the recommended mission was chosen. The parent
 view shows the phase, decision, target skill, observation count, average,
 difficulty, reason, and exact threshold rule.
 
-## Current limitation
+## Current scope
 
-The reviewed pool contains nine activities: the three starter missions plus
-six adaptive missions spanning animals, friendship, the human body, board-game
-design, space science, and world geography. Every core adaptive skill has at
-least one eligible easy, medium, and difficult activity; a content test enforces
-that coverage.
+The reviewed pool contains 42 activities, including 18 easy activities and a
+six-activity easy mystery on-ramp. Every core adaptive skill has eligible
+coverage at each difficulty; content tests enforce that coverage.
