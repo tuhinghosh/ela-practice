@@ -21,14 +21,15 @@ session-level skill breakdown.
 ## Flexible starter phase
 
 The first three distinct reviewed activities establish enough initial evidence
-to begin adaptation. The original pilot activities remain visible as a
-suggested starter path, but they are optional and may be completed in any
-order. Any reviewed activity counts toward the three-activity starter phase.
+to begin adaptation. There is no fixed starter path. Any reviewed activity
+counts toward the three-activity starter phase.
 
 While fewer than three reviewed activities are complete, the system suggests
-an uncompleted easy reviewed activity. The child can accept that suggestion,
-ask to see another, filter the reviewed library, or start any reviewed activity
-directly. Recommendations are guidance, never prerequisites.
+an uncompleted easy reviewed activity, preferring the current easy mystery
+on-ramp. The older Paw Prints pilot receives no starter priority. The child can
+accept that suggestion, ask to see another, filter the reviewed library, or
+start any reviewed activity directly. Recommendations are guidance, never
+prerequisites.
 
 ## Decision rule
 

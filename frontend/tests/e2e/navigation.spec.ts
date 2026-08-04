@@ -4,12 +4,17 @@ test("main navigation reaches core Part 3 screens", async ({ page }) => {
 
   await expect(page.getByRole("heading", { name: "Welcome back, Reader!" })).toBeVisible();
 
-  await expect(page.getByRole("heading", { name: "Reyana's Missions" })).toBeVisible();
-  await expect(page.getByText("Try these in any order—or choose any reviewed activity below.")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Reyana's Missions" })).not.toBeVisible();
+  const missionHeading = page.locator("h2").first();
+  const initialTitle = (await missionHeading.textContent()) ?? "";
   await page.getByRole("button", { name: "Show me another" }).click();
-  await expect(page.getByRole("heading", { name: "River Rescue" })).toBeVisible();
+  await expect(missionHeading).not.toHaveText(initialTitle);
+  const secondTitle = (await missionHeading.textContent()) ?? "";
+  await page.getByRole("button", { name: "Show me another" }).click();
+  await expect(missionHeading).not.toHaveText(secondTitle);
+  const chosenTitle = (await missionHeading.textContent()) ?? "";
   await page.getByRole("link", { name: "Start this mission" }).click();
-  await expect(page.getByRole("heading", { name: "River Rescue" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: chosenTitle })).toBeVisible();
 
   await page.getByRole("link", { name: "Missions" }).click();
 

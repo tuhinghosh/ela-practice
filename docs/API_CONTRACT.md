@@ -30,7 +30,7 @@ This document captures the stable backend JSON surfaces used by the frontend in 
 
 - Seeded activity content remains file-based in MVP.
 - Activity entries include `theme` and `difficulty` fields, and `/api/activities` returns available `themes` and `difficulties` values for the reviewed child-facing library.
-- The dashboard recommendation is optional. Any three distinct reviewed completions satisfy the starter phase; the original three-part path is guidance rather than a gate.
+- The dashboard recommendation is optional. Any three distinct reviewed completions satisfy the starter phase; there is no fixed three-passage path.
 - `GET /api/dashboard` includes durable `completed_activity_ids`; starter progress and alternate selection do not depend on the three-item recent-session preview.
 - Progress, reward, and chat/session history persist in SQLite.
 - Validation failures return safe 4xx responses.
