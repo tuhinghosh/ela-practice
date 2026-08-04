@@ -201,13 +201,32 @@ def test_adaptive_thresholds_are_explicit(
     assert result["target_difficulty"] == difficulty
 
 
-def test_adaptive_recommendation_completes_baseline_in_order() -> None:
+def test_starter_recommendation_is_optional_and_counts_any_reviewed_activity() -> None:
     recommendation = build_adaptive_recommendation(
         {}, list_seed_activities(), {PILOT_ACTIVITY_IDS[0]}
     )
     assert recommendation["phase"] == "baseline"
-    assert recommendation["activity_id"] == PILOT_ACTIVITY_IDS[1]
+    assert recommendation["activity_id"] != PILOT_ACTIVITY_IDS[0]
+    assert recommendation["difficulty"] == "easy"
     assert recommendation["decision"] == "complete-baseline"
+    assert recommendation["attempts"] == 1
+    assert "choose any reviewed activity" in str(recommendation["reason"])
+    assert "Any three distinct reviewed activities" in str(recommendation["rule"])
+
+
+def test_three_nonpilot_reviewed_completions_unlock_adaptation() -> None:
+    completed = {
+        "expansion-animals-cat-whiskers-01",
+        "expansion-friendship-quiet-mapmaker-01",
+        "expansion-world-netherlands-water-01",
+    }
+
+    recommendation = build_adaptive_recommendation(
+        {}, list_seed_activities(), completed
+    )
+
+    assert recommendation["phase"] == "adaptive"
+    assert recommendation["decision"] == "gather-evidence"
 
 
 def test_adaptive_recommendation_explains_step_down() -> None:
@@ -233,6 +252,9 @@ def test_adaptive_recommendation_explains_step_down() -> None:
 def test_adaptive_recommendation_excludes_tagged_draft_content() -> None:
     activities = list(list_seed_activities())
     statuses = {activity.id: "draft" for activity in activities}
+    starter_ids = {activity.id for activity in activities[:3]}
+    for activity_id in starter_ids:
+        statuses[activity_id] = "reviewed"
     windows = {
         "30_day": {
             "main-idea": {"attempts": 4, "avg_score": 55.0},
@@ -246,13 +268,14 @@ def test_adaptive_recommendation_excludes_tagged_draft_content() -> None:
     recommendation = build_adaptive_recommendation(
         windows,
         activities,
-        set(PILOT_ACTIVITY_IDS),
+        starter_ids,
         review_statuses=statuses,
     )
 
     assert recommendation["phase"] == "adaptive"
     assert recommendation["target_skill"] == "main-idea"
-    assert recommendation["activity_id"] is None
+    selected_id = recommendation["activity_id"]
+    assert selected_id is None or statuses[str(selected_id)] == "reviewed"
 
 
 def test_pilot_submission_creates_question_level_observations() -> None:

@@ -4,6 +4,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from backend.app.main import app
+from backend.app.content_schema import load_review_statuses
 
 
 @pytest.fixture
@@ -74,13 +75,21 @@ def test_activity_and_progress_routes(client: TestClient) -> None:
     assert "mission" in dashboard.json()
     assert dashboard.json()["recommendation"]["decision"] == "complete-baseline"
     assert dashboard.json()["mission"]["activity_id"] == "pilot-mystery-cat-01"
+    assert "choose any reviewed activity" in dashboard.json()["recommendation"]["reason"]
+    assert dashboard.json()["completed_activity_ids"] == []
 
     activities = client.get("/api/activities")
     assert activities.status_code == 200
     assert len(activities.json()["themes"]) >= 5
     assert set(activities.json()["difficulties"]) == {"easy", "medium", "difficult"}
     activity_items = activities.json()["activities"]
-    assert len(activity_items) >= 50
+    reviewed_ids = {
+        activity_id
+        for activity_id, review_status in load_review_statuses().items()
+        if review_status == "reviewed"
+    }
+    assert len(activity_items) == len(reviewed_ids)
+    assert {item["id"] for item in activity_items} == reviewed_ids
     assert {"easy", "medium", "difficult"}.issuperset({item["difficulty"] for item in activity_items})
     first_theme = activity_items[0]["theme"]
     themed = client.get(f"/api/activities?theme={first_theme}")
@@ -92,7 +101,9 @@ def test_activity_and_progress_routes(client: TestClient) -> None:
     assert len(medium.json()["activities"]) >= 1
     assert all(item["difficulty"] == "medium" for item in medium.json()["activities"])
 
-    activity_id = activity_items[0]["id"]
+    # Direct legacy URLs remain readable for historical sessions, while the
+    # child-facing chooser above exposes reviewed activities only.
+    activity_id = "nature-01"
 
     activity_detail = client.get(f"/api/activities/{activity_id}")
     assert activity_detail.status_code == 200

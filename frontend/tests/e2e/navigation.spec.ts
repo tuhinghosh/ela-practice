@@ -5,8 +5,11 @@ test("main navigation reaches core Part 3 screens", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Welcome back, Reader!" })).toBeVisible();
 
   await expect(page.getByRole("heading", { name: "Reyana's Missions" })).toBeVisible();
-  await page.getByRole("link", { name: /Start mission/ }).first().click();
-  await expect(page.getByRole("heading", { name: "The Case of the Library Paw Prints" })).toBeVisible();
+  await expect(page.getByText("Try these in any order—or choose any reviewed activity below.")).toBeVisible();
+  await page.getByRole("button", { name: "Show me another" }).click();
+  await expect(page.getByRole("heading", { name: "River Rescue" })).toBeVisible();
+  await page.getByRole("link", { name: "Start this mission" }).click();
+  await expect(page.getByRole("heading", { name: "River Rescue" })).toBeVisible();
 
   await page.getByRole("link", { name: "Missions" }).click();
 

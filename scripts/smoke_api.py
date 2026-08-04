@@ -16,7 +16,6 @@ from urllib.request import HTTPCookieProcessor, Request, build_opener
 
 
 FIRST_PILOT_ID = "pilot-mystery-cat-01"
-SECOND_PILOT_ID = "pilot-space-mars-01"
 
 
 class SmokeFailure(RuntimeError):
@@ -109,6 +108,10 @@ def initial_phase(
         dashboard["recommendation"]["decision"] == "complete-baseline",
         "Fresh packaged app did not expose the baseline recommendation reason.",
     )
+    require(
+        "choose any reviewed activity" in dashboard["recommendation"]["reason"],
+        "Fresh packaged app presented its starter suggestion as mandatory.",
+    )
 
     activity = client.request(f"/api/activities/{FIRST_PILOT_ID}")
     require(activity["id"] == FIRST_PILOT_ID, "Packaged pilot content is missing.")
@@ -136,8 +139,16 @@ def initial_phase(
 
     next_dashboard = client.request("/api/dashboard")
     require(
-        next_dashboard["mission"]["activity_id"] == SECOND_PILOT_ID,
-        "Dashboard did not advance from the cat pilot to the Mars pilot.",
+        next_dashboard["mission"]["activity_id"] != FIRST_PILOT_ID,
+        "Dashboard repeated the completed starter instead of suggesting another activity.",
+    )
+    require(
+        next_dashboard["recommendation"]["attempts"] == 1,
+        "Dashboard did not count the completed reviewed starter.",
+    )
+    require(
+        FIRST_PILOT_ID in next_dashboard["completed_activity_ids"],
+        "Dashboard did not expose the durable completed activity id.",
     )
 
     html = client.request("/")
@@ -146,7 +157,13 @@ def initial_phase(
         "FastAPI did not serve the packaged Next.js application.",
     )
     state_file.write_text(
-        json.dumps({"session_id": session_id, "activity_id": FIRST_PILOT_ID}),
+        json.dumps(
+            {
+                "session_id": session_id,
+                "activity_id": FIRST_PILOT_ID,
+                "recommended_activity_id": next_dashboard["mission"]["activity_id"],
+            }
+        ),
         encoding="utf-8",
     )
     print("✓ Login, packaged frontend, submission, feedback, and next mission verified")
@@ -176,8 +193,12 @@ def restart_phase(
         "Persisted session is absent from the dashboard after restart.",
     )
     require(
-        dashboard["mission"]["activity_id"] == SECOND_PILOT_ID,
+        dashboard["mission"]["activity_id"] == state["recommended_activity_id"],
         "Recommendation state did not survive container replacement.",
+    )
+    require(
+        state["activity_id"] in dashboard["completed_activity_ids"],
+        "Completed activity state did not survive container replacement.",
     )
     print("✓ Database persistence and recommendation state survived replacement")
 
