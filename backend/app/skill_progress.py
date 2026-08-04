@@ -238,11 +238,15 @@ def build_adaptive_recommendation(
             and activity.id not in reviewed_completed
             and activity.difficulty == "easy"
         ]
-        pilot_rank = {activity_id: index for index, activity_id in enumerate(PILOT_ACTIVITY_IDS)}
         uncompleted_easy.sort(
             key=lambda activity: (
-                activity.id not in pilot_rank,
-                pilot_rank.get(activity.id, len(pilot_rank)),
+                0
+                if activity.id.startswith("onramp-mystery-")
+                else 1
+                if activity.theme == "mystery" and activity.id != PILOT_ACTIVITY_IDS[0]
+                else 3
+                if activity.id == PILOT_ACTIVITY_IDS[0]
+                else 2,
                 activity.id,
             )
         )

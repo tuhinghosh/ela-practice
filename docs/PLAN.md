@@ -63,6 +63,13 @@ The 27-activity production specification for the reviewed-core expansion is in
 - [x] Add a one-click alternative to the recommended mission
 - [x] Pass backend, frontend, browser, build, and Docker verification
 
+### Remove legacy starter dominance
+
+- [x] Remove the fixed Paw Prints / Mars / Japan panel from mission home
+- [x] Prefer the current easy-mystery on-ramp during starter recommendations
+- [x] Cycle through alternatives without immediately returning to the first item
+- [x] Pass backend, frontend, browser, build, and Docker verification
+
 ## Locked MVP decisions
 
 These decisions are intentionally locked for MVP implementation unless explicitly changed later:

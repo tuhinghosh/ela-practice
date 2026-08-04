@@ -74,7 +74,7 @@ def test_activity_and_progress_routes(client: TestClient) -> None:
     assert dashboard.status_code == 200
     assert "mission" in dashboard.json()
     assert dashboard.json()["recommendation"]["decision"] == "complete-baseline"
-    assert dashboard.json()["mission"]["activity_id"] == "pilot-mystery-cat-01"
+    assert dashboard.json()["mission"]["activity_id"] == "onramp-mystery-class-pet-01"
     assert "choose any reviewed activity" in dashboard.json()["recommendation"]["reason"]
     assert dashboard.json()["completed_activity_ids"] == []
 

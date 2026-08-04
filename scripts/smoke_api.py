@@ -15,7 +15,7 @@ from urllib.error import HTTPError
 from urllib.request import HTTPCookieProcessor, Request, build_opener
 
 
-FIRST_PILOT_ID = "pilot-mystery-cat-01"
+STARTER_PREFIX = "onramp-mystery-"
 
 
 class SmokeFailure(RuntimeError):
@@ -100,9 +100,10 @@ def initial_phase(
     login(client, username, password)
 
     dashboard = client.request("/api/dashboard")
+    first_activity_id = dashboard["mission"]["activity_id"]
     require(
-        dashboard["mission"]["activity_id"] == FIRST_PILOT_ID,
-        "Fresh packaged app did not recommend the first pilot.",
+        first_activity_id.startswith(STARTER_PREFIX),
+        "Fresh packaged app did not recommend the current easy mystery on-ramp.",
     )
     require(
         dashboard["recommendation"]["decision"] == "complete-baseline",
@@ -113,10 +114,10 @@ def initial_phase(
         "Fresh packaged app presented its starter suggestion as mandatory.",
     )
 
-    activity = client.request(f"/api/activities/{FIRST_PILOT_ID}")
-    require(activity["id"] == FIRST_PILOT_ID, "Packaged pilot content is missing.")
+    activity = client.request(f"/api/activities/{first_activity_id}")
+    require(activity["id"] == first_activity_id, "Packaged starter content is missing.")
     submission = client.request(
-        f"/api/activities/{FIRST_PILOT_ID}/submit",
+        f"/api/activities/{first_activity_id}/submit",
         method="POST",
         payload=build_submission(activity),
     )
@@ -139,7 +140,7 @@ def initial_phase(
 
     next_dashboard = client.request("/api/dashboard")
     require(
-        next_dashboard["mission"]["activity_id"] != FIRST_PILOT_ID,
+        next_dashboard["mission"]["activity_id"] != first_activity_id,
         "Dashboard repeated the completed starter instead of suggesting another activity.",
     )
     require(
@@ -147,7 +148,7 @@ def initial_phase(
         "Dashboard did not count the completed reviewed starter.",
     )
     require(
-        FIRST_PILOT_ID in next_dashboard["completed_activity_ids"],
+        first_activity_id in next_dashboard["completed_activity_ids"],
         "Dashboard did not expose the durable completed activity id.",
     )
 
@@ -160,7 +161,7 @@ def initial_phase(
         json.dumps(
             {
                 "session_id": session_id,
-                "activity_id": FIRST_PILOT_ID,
+                "activity_id": first_activity_id,
                 "recommended_activity_id": next_dashboard["mission"]["activity_id"],
             }
         ),

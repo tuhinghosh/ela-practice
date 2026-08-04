@@ -19,18 +19,6 @@ const DIFFICULTY_META: Record<"easy" | "medium" | "difficult", { label: string; 
   difficult: { label: "Difficult", color: "var(--danger)" },
 };
 
-const REYANA_MISSION_IDS = [
-  "pilot-mystery-cat-01",
-  "pilot-space-mars-01",
-  "pilot-world-japan-01",
-] as const;
-
-const REYANA_MISSION_META: Record<(typeof REYANA_MISSION_IDS)[number], { step: string; kicker: string }> = {
-  "pilot-mystery-cat-01": { step: "Mission 1", kicker: "School mystery" },
-  "pilot-space-mars-01": { step: "Mission 2", kicker: "Mars science" },
-  "pilot-world-japan-01": { step: "Mission 3", kicker: "World geography" },
-};
-
 export default function Home() {
   const [dashboard, setDashboard] = useState<DashboardResponse | null>(null);
   const [availableThemes, setAvailableThemes] = useState<string[]>([]);
@@ -164,11 +152,15 @@ export default function Home() {
   const isUserChoice = userSelectedActivityId === mission.activityId;
   const isDashboardRecommendation = dashboard?.recommendation?.activity_id === mission.activityId;
   const chooseAnotherMission = () => {
-    const alternatives = availableActivities.filter(
-      (activity) => activity.id !== mission.activityId && !attempted.has(activity.id),
+    const unattemptedChoices = availableActivities.filter((activity) => !attempted.has(activity.id));
+    const sameDifficultyChoices = unattemptedChoices.filter(
+      (activity) => activity.difficulty === mission.difficulty,
     );
-    const fallbackAlternatives = availableActivities.filter((activity) => activity.id !== mission.activityId);
-    const next = alternatives[0] ?? fallbackAlternatives[0];
+    const cycle = sameDifficultyChoices.length > 1 ? sameDifficultyChoices : unattemptedChoices;
+    const currentIndex = cycle.findIndex((activity) => activity.id === mission.activityId);
+    const next = cycle.length > 1
+      ? cycle[(currentIndex + 1 + cycle.length) % cycle.length]
+      : availableActivities.find((activity) => activity.id !== mission.activityId);
     if (next) setUserSelectedActivityId(next.id);
   };
 
@@ -185,56 +177,6 @@ export default function Home() {
             {error}
           </p>
         ) : null}
-
-        <Card className={styles.pilotCard}>
-          <div className={styles.pilotHeader}>
-            <div>
-              <span className={styles.cardEyebrow}>
-                <Icon name="sparkles" size={12} />
-                Optional starter adventure
-              </span>
-              <h2 className={styles.missionTitle}>Reyana&apos;s Missions</h2>
-              <p className={styles.muted}>Try these in any order—or choose any reviewed activity below.</p>
-            </div>
-            <span className={styles.pilotProgress}>
-              {REYANA_MISSION_IDS.filter((id) => attempted.has(id)).length} of {REYANA_MISSION_IDS.length} complete
-            </span>
-          </div>
-          <ol className={styles.pilotPath}>
-            {REYANA_MISSION_IDS.map((id) => {
-              const item = availableActivities.find((activity) => activity.id === id) ??
-                fallbackActivities.find((activity) => activity.id === id);
-              if (!item) return null;
-              const complete = attempted.has(id);
-              const meta = REYANA_MISSION_META[id];
-              const difficulty = DIFFICULTY_META[item.difficulty];
-              return (
-                <li key={id} className={styles.pilotStep}>
-                  <span className={styles.pilotStepNumber} aria-hidden="true">
-                    {complete ? <Icon name="check-circle" size={18} /> : meta.step.replace("Mission ", "")}
-                  </span>
-                  <div className={styles.pilotStepBody}>
-                    <span className={styles.pilotKicker}>{meta.kicker}</span>
-                    <strong>{item.title}</strong>
-                    <span className={styles.activityMeta}>
-                      <span
-                        className={styles.metaPill}
-                        style={{ ["--pill-color" as string]: difficulty.color }}
-                      >
-                        {difficulty.label}
-                      </span>
-                      {complete ? "Completed" : "Optional starter"}
-                    </span>
-                  </div>
-                  <ButtonLink href={`/activity/${id}`} tone="secondary" className={styles.pilotAction}>
-                    {complete ? "Practice again" : "Try mission"}
-                    <Icon name="arrow-right" size={14} />
-                  </ButtonLink>
-                </li>
-              );
-            })}
-          </ol>
-        </Card>
 
         <Card className={styles.missionCard}>
           <div className={styles.missionTopRow}>

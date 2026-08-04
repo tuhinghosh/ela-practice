@@ -206,12 +206,21 @@ def test_starter_recommendation_is_optional_and_counts_any_reviewed_activity() -
         {}, list_seed_activities(), {PILOT_ACTIVITY_IDS[0]}
     )
     assert recommendation["phase"] == "baseline"
-    assert recommendation["activity_id"] != PILOT_ACTIVITY_IDS[0]
+    assert str(recommendation["activity_id"]).startswith("onramp-mystery-")
     assert recommendation["difficulty"] == "easy"
     assert recommendation["decision"] == "complete-baseline"
     assert recommendation["attempts"] == 1
     assert "choose any reviewed activity" in str(recommendation["reason"])
     assert "Any three distinct reviewed activities" in str(recommendation["rule"])
+
+
+def test_fresh_starter_recommendation_does_not_prioritize_paw_prints() -> None:
+    recommendation = build_adaptive_recommendation(
+        {}, list_seed_activities(), set()
+    )
+
+    assert str(recommendation["activity_id"]).startswith("onramp-mystery-")
+    assert recommendation["activity_id"] != PILOT_ACTIVITY_IDS[0]
 
 
 def test_three_nonpilot_reviewed_completions_unlock_adaptation() -> None:
